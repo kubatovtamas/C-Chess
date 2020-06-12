@@ -1,0 +1,52 @@
+1. Make:
+    1. production target
+    2. debug target
+    3. unit test target
+    4. main test target
+
+2. Cunit tests
+3. Profiling tests, valgrind (???)
+macros, dynamic library, debug mode would be nice
+
+Lib:
+     - initialize board
+     - save state
+     - step (change state)
+         * Hit
+         * Castling
+         * Promotion
+     - undo, redo
+     - save match
+     - load match
+
+Main:
+     - request player name
+     - step
+         * validate step
+             + wrong color
+             + no piece
+             + valid step
+     - give up (defeated)
+     - offer/accept tie
+     - save as (filename)
+         * (lib function)
+     - load game
+         * (lib function)
+
+Game state:
+    1 string representation for each piece (white/black)
+    2D array of gameboard
+    steps: doubly-linked list to allow undo and redo
+        eg:
+            Player: 1 (that moved)
+            before:
+                A2 - white pawn
+            after:
+                A3 - white pawn
+
+            Player: 2
+            before:
+                B3 - black knight
+                C5 - white bishop
+            after:
+                C5 - black knight
