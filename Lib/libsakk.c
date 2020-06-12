@@ -5,7 +5,8 @@
 #include "libsakk.h"
 #include <stdlib.h>
 
-struct State *defaultstate = NULL;
+// TODO Head needs to always point to state 0 with the default board
+const struct State *defaultstate = NULL;
 struct State *laststate = NULL;
 
 // insert a link to the new state to the end of the list
