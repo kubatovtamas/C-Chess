@@ -5,7 +5,7 @@
 #ifndef C_CHESS_LIBSAKK_H
 #define C_CHESS_LIBSAKK_H
 
-#include <stddef.h>
+
 
 // Pieces - Gigi
 enum Piece{
@@ -24,16 +24,12 @@ enum Piece{
  BLACKPAWN = 0x265F
 };
 
-struct Board {
-
-};
 
 // State structure implemented as a
 // Doubly-linked list (idea by Kuba)
 // Outline implementation by Gigi
 struct State {
-    // saved data here
-    struct Board state_board;                           // TODO Board
+    // save state changes here (before,after)
     int key;                                            // 0 default state, each step increments by one
 
     struct State* previous;
@@ -41,10 +37,10 @@ struct State {
 };
 
 // TODO Head needs to always point to state 0 with the default board
-struct State *defaultstate = NULL;                       // this link always point to first Link
-struct State *laststate = NULL;                          // this link always point to last Link
+extern struct State *defaultstate;                       // this link always point to first Link
+extern struct State *laststate;                          // this link always point to last Link
 
-void step(struct Board);                                 // change state
+void step();                                 // change state
 
 // This is just an outline for planned features
 // TODO Proper definitions
