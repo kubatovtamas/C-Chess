@@ -1,0 +1,41 @@
+//
+// Created by gigi on 6/12/20.
+//
+
+#ifndef C_CHESS_LIBSAKK_H
+#define C_CHESS_LIBSAKK_H
+// Pieces - Gigi
+/*
+#define WHITEQUEEN = 0x2654;
+#define WHITEKING = 0x2655;
+#define WHITEROOK = 0x2656;
+#define WHITEBISHOP = 0x2657;
+#define WHITEKNIGHT = 0x2658;
+#define WHITEPAWN = 0x2659;
+
+#define BLACKQUEEN = 0x2660;
+#define BLACKKING = 0x2661;
+#define BLACKROOK = 0x2662;
+#define BLACKBISHOP = 0x2663;
+#define BLACKKNIGHT = 0x2664;
+#define BLACKPAWN = 0x2665;
+*/
+enum {
+ WHITEQUEEN = 0x2654,
+ WHITEKING = 0x2655,
+ WHITEROOK = 0x2656,
+ WHITEBISHOP = 0x2657,
+ WHITEKNIGHT = 0x2658,
+ WHITEPAWN = 0x2659,
+
+ BLACKQUEEN = 0x2660,
+ BLACKKING = 0x2661,
+ BLACKROOK = 0x2662,
+ BLACKBISHOP = 0x2663,
+ BLACKKNIGHT = 0x2664,
+ BLACKPAWN = 0x2665
+};
+// - Gigi
+
+
+#endif //C_CHESS_LIBSAKK_H
