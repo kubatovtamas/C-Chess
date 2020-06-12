@@ -3,6 +3,7 @@
 //
 
 #include "libsakk.h"
+#include <stdlib.h>
 
 // insert a link to the new state to the end of the list
 // - Gigi
@@ -13,6 +14,6 @@ void step(struct Board board) {
 
    // Our struct will never be empty in this case
     laststate->next = newstate;
-    newstate->prev = laststate;
+    newstate->previous = laststate;
     laststate = newstate;
 }

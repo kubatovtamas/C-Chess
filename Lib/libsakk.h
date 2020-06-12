@@ -4,6 +4,9 @@
 
 #ifndef C_CHESS_LIBSAKK_H
 #define C_CHESS_LIBSAKK_H
+
+#include <stddef.h>
+
 // Pieces - Gigi
 enum Piece{
  WHITEQUEEN = 0x2654,
@@ -19,6 +22,10 @@ enum Piece{
  BLACKBISHOP = 0x265D,
  BLACKKNIGHT = 0x265E,
  BLACKPAWN = 0x265F
+};
+
+struct Board {
+
 };
 
 // State structure implemented as a
@@ -41,7 +48,7 @@ void step(struct Board);                                 // change state
 
 // This is just an outline for planned features
 // TODO Proper definitions
-state initialize();
+struct State initialize();
 _Bool save_state();
 _Bool undo();
 _Bool redo();
