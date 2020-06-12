@@ -5,7 +5,7 @@
 #ifndef C_CHESS_LIBSAKK_H
 #define C_CHESS_LIBSAKK_H
 // Pieces - Gigi
-enum {
+enum pieces {
  WHITEQUEEN = 0x2654,
  WHITEKING = 0x2655,
  WHITEROOK = 0x2656,
