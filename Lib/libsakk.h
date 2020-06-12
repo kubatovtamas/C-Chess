@@ -5,6 +5,8 @@
 #ifndef C_CHESS_LIBSAKK_H
 #define C_CHESS_LIBSAKK_H
 
+#include<wchar.h>
+
 // Pieces - Gigi
 enum Piece {
  WHITEQUEEN = 0x2654,
@@ -42,9 +44,9 @@ struct Step {
     //after: [NULL, WHITEPAWN];   // Array of Pieces
     // TODO tile implementation
     //  tiles[4];
-    wchar_t[2] before;
-    wchar_t[2] after;
-}
+    wchar_t before[2];
+    wchar_t after[2];
+};
 
 extern const struct State *defaultstate;                 // this link always point to first Link
 extern struct State *laststate;                          // this link always point to last Link
