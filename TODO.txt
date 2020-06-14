@@ -172,7 +172,7 @@ prompt for move:
   }
   Need to add parameters for castling?
 
-  TODO CMake instead of Makefile?
-  ( this might mess with IDE )
-  TODO split libsakk library into several files, and then compile those into a single library
+  DONE CMake instead of Makefile?  ( I didn't add to gitrepo yet, this might mess with IDE )
+  DONE split libsakk library into several files, and then compile those into a single library
+  TODO rename libsakk to sakk since CMake prefixes it with lib anyway
 ----------------

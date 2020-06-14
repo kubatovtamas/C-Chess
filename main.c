@@ -5,7 +5,8 @@
 #include<wchar.h>
 #include<locale.h>
 
-#include "sakk.h"
+// ... ?
+#include "libsakk.h"
 
 int inmenu = 1;
 int playing = 0;

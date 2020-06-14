@@ -14,3 +14,5 @@ renamed Color to COLOR
 added typedef PIECE_TYPE
 added typedef COLOR
 added typedefs to all other structs on separate lines
+------------------------
+// Split library into a few new files
