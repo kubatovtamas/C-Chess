@@ -1,11 +1,16 @@
 ------------------------
-// Struct Piece, Pos, and enum Color added to libsakk.h. Changelist.txt created. TODO.txt updated
+// Struct Piece, Pos, and enum Color added to libsakk.h. Changelist.txt created.
 libbsakk.h:
-enum Color
-struct Piece
-struct Position
-
-TODO.txt editted
+added enum Color
+added struct Piece
+added struct Position
 
 Changelist.txt created
 ------------------------
+// Added typedefs, uppercased constant enums
+libsakk.h
+renamed PieceType to PIECE_TYPE
+renamed Color to COLOR
+added typedef PIECE_TYPE
+added typedef COLOR
+added typedefs to all other structs on separate lines

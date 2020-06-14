@@ -148,7 +148,8 @@ prompt for move:
     increment global round count
 
 ------------------------
-hasmoved bool helyett
+
+ Piece struct in place of hasmoved bool
  Piece {
       type
       color
@@ -161,11 +162,17 @@ hasmoved bool helyett
       y
   }
 
-  Illetve a megjelenítéshez tenyleg egy switch-case
+  TODO modify printboard with switch-case
 
-  Ezzel együtt pedig a Step strukúrát lehetne valami olyasmivé változtatni hogy
+  Modify Step struct to
   Step {
     struct Piece before;        // moved piece before move
     struct Piece after;         // after move (info new position and if promoted)
     struct Piece hit;           // piece that was hit and moved out of play
   }
+  Need to add parameters for castling?
+
+  TODO CMake instead of Makefile?
+  ( this might mess with IDE )
+  TODO split libsakk library into several files, and then compile those into a single library
+----------------
