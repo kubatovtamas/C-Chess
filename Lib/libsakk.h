@@ -8,7 +8,7 @@
 #include<wchar.h>
 
 // Pieces - Gigi
-enum Piece {
+enum PieceType {
  WHITEQUEEN = 0x2654,
  WHITEKING = 0x2655,
  WHITEROOK = 0x2656,
@@ -24,6 +24,8 @@ enum Piece {
  BLACKPAWN = 0x265F
 };
 
+enum Color {WHITE, BLACK};  // white 1, black 0 (e.g. if white, go first)
+
 // State structure implemented as a Doubly-linked list (idea by Kuba)
 // A Round holds a pointer to the next round (init NULL) and the previous Round.
 // The Step struct holds the data for the moves of the current round.
@@ -36,6 +38,8 @@ struct State {
     struct State* previous;
     struct State* next;
 };
+extern const struct State *defaultstate;                 // this link always point to first Link
+extern struct State *laststate;                          // this link always point to last Link
 
 // Step struct idea and pseudocode by Kuba
 struct Step {
@@ -48,10 +52,21 @@ struct Step {
     wchar_t after[2];
 };
 
-extern const struct State *defaultstate;                 // this link always point to first Link
-extern struct State *laststate;                          // this link always point to last Link
-
 void step();                                             // change state
+
+// bool pieceHasMoved idea by Kuba
+// struct alternative by Gigi
+struct Piece {
+    enum PieceType type;               // stores what type of piece
+    enum Color color;                   // piece Color
+    _Bool hasmoved;                     // has the piece moved so far in the game
+    struct Position pos;                // x and y coordinates of piece location
+};
+
+struct Position{
+    int x;
+    int y;
+};
 
 // This is just an outline for planned features
 // TODO Proper definitions

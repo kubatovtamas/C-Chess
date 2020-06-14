@@ -1,0 +1,11 @@
+------------------------
+// Struct Piece, Pos, and enum Color added to libsakk.h. Changelist.txt created. TODO.txt updated
+libbsakk.h:
+enum Color
+struct Piece
+struct Position
+
+TODO.txt editted
+
+Changelist.txt created
+------------------------
