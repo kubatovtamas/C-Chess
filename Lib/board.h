@@ -10,7 +10,6 @@
 enum { BOARD_ROW_SIZE = 8, BOARD_COL_SIZE = 8 };
 
 void drawBoard();
-// extern struct Position Board[BOARD_ROW_SIZE][BOARD_COL_SIZE];
-// extern Piece Board[BOARD_ROW_SIZE][BOARD_COL_SIZE];
+extern PIECE_TYPE Board[BOARD_ROW_SIZE][BOARD_COL_SIZE];
 
 #endif //C_CHESS_BOARD_H

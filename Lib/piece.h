@@ -24,15 +24,4 @@ typedef enum PIECE_TYPE PIECE_TYPE;
 enum COLOR {WHITE, BLACK};
 typedef enum COLOR COLOR;
 
-// bool pieceHasMoved idea by Kuba
-// struct Piece and struct Position alternative idea by Gigi
-struct Piece {
-    PIECE_TYPE type;                // stores what type of piece
-    COLOR color;                    // piece Color
-    _Bool hasmoved;                 // has the piece moved so far in the game
-};
-typedef struct Piece Piece;
-
-Piece* initPiece();
-
 #endif // C_CHESS_PIECE_H
