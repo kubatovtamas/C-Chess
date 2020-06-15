@@ -13,15 +13,13 @@
 
 /*****************************************************************************************************************/
 
-bool valid_position(const char *input);
+//bool valid_position(const char *input);
 
-bool valid_move(const char *input);
+//bool valid_move(const char *input);
 
 void play_game();
 
 void get_choice();
-
-//bool piece_is_color(int row, int col);
 
 void get_input(char *str, int size);
 
@@ -68,7 +66,7 @@ int main() {
             }
             case 2: {
                 system("clear");
-                // load_from_file
+                // load_from_file()
                 break;
             }
             case 3: {
@@ -109,7 +107,11 @@ void get_choice() {
                 valid_choice = true;
                 char from[10];
                 char to[10];
-
+                /*
+                 * Take user input until
+                 * valid FROM tile and
+                 * valid TO tile is provided.
+                 */
                 while (!valid_tile_from(from));
                 while (!valid_tile_to(to));
                 move(from, to);
@@ -147,6 +149,9 @@ void get_choice() {
     }
 }
 
+/*
+ * Clear the terminal and print the main menu.
+ */
 void print_main_menu() {
     system("clear");
     wprintf(L"1. New Game\n");
@@ -154,6 +159,9 @@ void print_main_menu() {
     wprintf(L"3. Quit\n");
 }
 
+/*
+ * Draw the board and print the move selection menu.
+ */
 void print_move_menu() {
     draw_board();
     wprintf(L"Round: %d. %s's turn. ", round_count + 1, is_even(round_count) ? "WHITE" : "BLACK");
@@ -166,24 +174,11 @@ void print_move_menu() {
     wprintf(L"6. BACK TO MAIN MENU \n");
 }
 
-// This is a lie at this point ( board is now 10x10 instead of 8x8 )
-//bool valid_move(const char *input) {
-//    if (strlen(input) < 2) {
-//        return 0;
-//    }
-//
-//    int col = (tolower(input[0]) - 'a') - 1;
-//    int row = input[1] - '0' - 1;
-//
-//    // valid range
-//    if ((col < 0 || col >= 8) && (row < 0 || col >= 8)) {
-//        return 0;
-//    }
-//
-//    // valid color
-//    return piece_is_color(row, col);
-//}
-
+/*
+ * Returns true if in a given round, Board[row][col]
+ * is the current players own piece.
+ * Returns false otherwise.
+ */
 bool check_if_own_piece(int row, int col) {
     // WHITE
     if (is_even(round_count)) {
@@ -216,6 +211,7 @@ bool check_if_own_piece(int row, int col) {
 }
 
 /*
+ * Use this for user input, it's hard(er) to break.
  * Store user input from stdin to str,
  * with a set max buffer size.
  * Deletes residue whitespace.
@@ -227,10 +223,25 @@ void get_input(char *str, int size) {
         str[len - 1] = '\0';
 }
 
+/*
+ * ¯\_(ツ)_/¯
+ */
 bool is_even(int n) {
     return (n % 2 == 0);
 }
 
+/*
+ * Takes two string args, in the form of for example "A1"/"D4"/"g7". (case insensitive)
+ * Mutates the Board accordingly. Increments the global round_count.
+ *
+ * Converter functions handle the proper conversions from str to int.
+ * The letter is responsible for the second,
+ * The number is responsible for the first
+ * array selector.
+ *
+ * Eg.  D2 -> Board[7][4]
+ *      D4 -> Board[5][4]
+ */
 bool move(char *from, char *to) {
     int from_letter = convert_tile_letter_to_int(from[0]);
     int from_number = convert_tile_number_to_int(from[1]);
@@ -242,6 +253,13 @@ bool move(char *from, char *to) {
     round_count++;
 }
 
+/*
+ * Validator for FROM tile.
+ * Returns true IF
+ * matches the [A-Ha-h][1-9] regex,
+ * AND
+ * is the player's own piece.
+ */
 bool valid_tile_from(char *input) {
     wprintf(L"FROM (A1-H8): \n");
     get_input(input, 10);
@@ -255,6 +273,13 @@ bool valid_tile_from(char *input) {
     return false;
 }
 
+/*
+ * Validator for TO tile.
+ * Returns true IF
+ * matches the [A-Ha-h][1-9] regex,
+ * AND
+ * is NOT the player's own piece.
+ */
 bool valid_tile_to(char *input) {
     wprintf(L"TO (A1-H8): \n");
     get_input(input, 10);
@@ -269,34 +294,46 @@ bool valid_tile_to(char *input) {
     return false;
 }
 
+/*
+ * Handles the conversion from Tile letter to int.
+ * Returns the proper array selector for the Tile.
+ * A -> 1
+ * B -> 2
+ * C -> 3
+ * D -> 4
+ * E -> 5
+ * F -> 6
+ * G -> 7
+ * H -> 8
+ */
 int convert_tile_letter_to_int(char ch) {
-    /*
-     * A -> 1
-     * B -> 2
-     * C -> 3
-     * D -> 4
-     * E -> 5
-     * F -> 6
-     * G -> 7
-     * H -> 8
-     */
+
     return tolower(ch) - 'a' + 1;
 }
 
+/*
+ * Handles the conversion from Tile number to int.
+ * Returns the proper array selector for the Tile.
+ * 1 -> 8
+ * 2 -> 7
+ * 3 -> 6
+ * 4 -> 5
+ * 5 -> 4
+ * 6 -> 3
+ * 7 -> 2
+ * 8 -> 1
+ */
 int convert_tile_number_to_int(char ch) {
-    /*
-     * 1 -> 8
-     * 2 -> 7
-     * 3 -> 6
-     * 4 -> 5
-     * 5 -> 4
-     * 6 -> 3
-     * 7 -> 2
-     * 8 -> 1
-     */
+
     return 9 - (ch - '0');
 }
 
+/*
+ * Resets the board to the starting state.
+ * Overwrites the memory of the starting Board,
+ * so it may not be okay for long term use
+ * (as we don't have functionality for saving Rounds/Steps)
+ */
 void reset_board() {
     PIECE_T original_board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
             // Black
