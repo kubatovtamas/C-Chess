@@ -64,7 +64,7 @@ void save_to_file(char* file_name, int step, PIECE_T game_board[8][8]) {
     fclose(file_pointer);
 }
 
-void drawBoard() {
+void draw_board() {
     setlocale(LC_CTYPE, "");
     for (int i = 0; i < BOARD_ROW_SIZE; i++) {
         for (int j = 0; j < BOARD_COL_SIZE; ++j) {

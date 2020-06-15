@@ -21,7 +21,7 @@ void play_game();
 
 void get_choice();
 
-bool piece_is_color(int row, int col);
+//bool piece_is_color(int row, int col);
 
 void get_input(char *str, int size);
 
@@ -37,7 +37,9 @@ int convert_tile_number_to_int(char ch);
 
 bool is_even(int n);
 
-bool valid_tile(char *prompt, char *input);
+bool valid_tile_from(char *input);
+
+bool valid_tile_to(char *input);
 
 void reset_board();
 /*****************************************************************************************************************/
@@ -45,7 +47,7 @@ void reset_board();
 bool InMenu = true;
 bool Playing = false;
 char GameChoice[10];
-COLOR PlayerColor = WHITE;
+//COLOR PlayerColor = WHITE;
 extern int round_count;
 
 /*****************************************************************************************************************/
@@ -85,7 +87,7 @@ int main() {
 void play_game() {
     Playing = true;
     while (Playing) {
-        drawBoard();
+        system("clear");
         get_choice();
         if (!InMenu) {
             step();
@@ -108,11 +110,12 @@ void get_choice() {
                 char from[10];
                 char to[10];
 
-                while (!valid_tile("From", from));
-                while (!valid_tile("To", to));
+                while (!valid_tile_from(from));
+                while (!valid_tile_to(to));
                 move(from, to);
 
                 system("clear");
+                draw_board();
                 break;
             case 2:
                 // UNDO
@@ -132,14 +135,14 @@ void get_choice() {
                 break;
             case 6:
                 // BACK TO MAIN
+                valid_choice = true;
                 reset_board();
                 Playing = false;
                 InMenu = true;
                 system("clear");
-                valid_choice = true;
                 break;
             default:
-                wprintf(L"that is not okay, at all\n");
+                system("clear");
         }
     }
 }
@@ -152,6 +155,7 @@ void print_main_menu() {
 }
 
 void print_move_menu() {
+    draw_board();
     wprintf(L"Round: %d. %s's turn. ", round_count + 1, is_even(round_count) ? "WHITE" : "BLACK");
     wprintf(L"Enter choice: \n");
     wprintf(L"1. MOVE \n");
@@ -163,25 +167,26 @@ void print_move_menu() {
 }
 
 // This is a lie at this point ( board is now 10x10 instead of 8x8 )
-bool valid_move(const char *input) {
-    if (strlen(input) < 2) {
-        return 0;
-    }
+//bool valid_move(const char *input) {
+//    if (strlen(input) < 2) {
+//        return 0;
+//    }
+//
+//    int col = (tolower(input[0]) - 'a') - 1;
+//    int row = input[1] - '0' - 1;
+//
+//    // valid range
+//    if ((col < 0 || col >= 8) && (row < 0 || col >= 8)) {
+//        return 0;
+//    }
+//
+//    // valid color
+//    return piece_is_color(row, col);
+//}
 
-    int col = (tolower(input[0]) - 'a') - 1;
-    int row = input[1] - '0' - 1;
-
-    // valid range
-    if ((col < 0 || col >= 8) && (row < 0 || col >= 8)) {
-        return 0;
-    }
-
-    // valid color
-    return piece_is_color(row, col);
-}
-
-bool piece_is_color(int row, int col) {
-    if (PlayerColor == WHITE) {
+bool check_if_own_piece(int row, int col) {
+    // WHITE
+    if (is_even(round_count)) {
         switch (Board[row][col]) {
             case WHITEPAWN:
             case WHITEKNIGHT:
@@ -193,7 +198,9 @@ bool piece_is_color(int row, int col) {
             default:
                 return 0;
         }
-    } else {      // player is black
+    }
+    // BLACK
+    else {
         switch (Board[row][col]) {
             case BLACKPAWN:
             case BLACKKNIGHT:
@@ -235,12 +242,29 @@ bool move(char *from, char *to) {
     round_count++;
 }
 
-bool valid_tile(char *prompt, char *input) {
-    wprintf(L"%s (A1-H8): \n", prompt);
+bool valid_tile_from(char *input) {
+    wprintf(L"FROM (A1-H8): \n");
     get_input(input, 10);
     if ('a' <= tolower(input[0]) && tolower(input[0]) <= 'h' &&
         1 <= (input[1] - '0') && (input[1] - '0') <= 8) {
-        return true;
+        if (check_if_own_piece(convert_tile_number_to_int(input[1]), convert_tile_letter_to_int(input[0]))) {
+            return true;
+        }
+    }
+    wprintf(L"That is not your piece. \n");
+    return false;
+}
+
+bool valid_tile_to(char *input) {
+    wprintf(L"TO (A1-H8): \n");
+    get_input(input, 10);
+    if ('a' <= tolower(input[0]) && tolower(input[0]) <= 'h' &&
+        1 <= (input[1] - '0') && (input[1] - '0') <= 8) {
+        if (!check_if_own_piece(convert_tile_number_to_int(input[1]), convert_tile_letter_to_int(input[0]))) {
+            return true;
+        } else {
+            wprintf(L"That your own piece. \n");
+        }
     }
     return false;
 }
