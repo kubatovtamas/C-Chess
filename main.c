@@ -37,7 +37,9 @@ int convert_tile_number_to_int(char ch);
 
 bool is_even(int n);
 
-bool validate_tile(char *prompt, char *input);
+bool valid_tile(char *prompt, char *input);
+
+void reset_board();
 /*****************************************************************************************************************/
 
 bool InMenu = true;
@@ -106,8 +108,8 @@ void get_choice() {
                 char from[10];
                 char to[10];
 
-                while (!validate_tile("From", from));
-                while (!validate_tile("To", to));
+                while (!valid_tile("From", from));
+                while (!valid_tile("To", to));
                 move(from, to);
 
                 system("clear");
@@ -130,6 +132,7 @@ void get_choice() {
                 break;
             case 6:
                 // BACK TO MAIN
+                reset_board();
                 Playing = false;
                 InMenu = true;
                 system("clear");
@@ -232,7 +235,7 @@ bool move(char *from, char *to) {
     round_count++;
 }
 
-bool validate_tile(char *prompt, char *input) {
+bool valid_tile(char *prompt, char *input) {
     wprintf(L"%s (A1-H8): \n", prompt);
     get_input(input, 10);
     if ('a' <= tolower(input[0]) && tolower(input[0]) <= 'h' &&
@@ -268,4 +271,22 @@ int convert_tile_number_to_int(char ch) {
      * 8 -> 1
      */
     return 9 - (ch - '0');
+}
+
+void reset_board() {
+    PIECE_T original_board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
+            // Black
+            {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'},
+            {'8', BLACKROOK, BLACKKNIGHT, BLACKBISHOP, BLACKQUEEN, BLACKKING, BLACKBISHOP, BLACKKNIGHT, BLACKROOK, '8'},
+            {'7', BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, '7'},
+            {'6', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '6'},
+            {'5', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '5'},
+            {'4', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '4'},
+            {'3', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '3'},
+            {'2', WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, '2'},
+            {'1', WHITEROOK, WHITEKNIGHT, WHITEBISHOP, WHITEQUEEN, WHITEKING, WHITEBISHOP, WHITEKNIGHT, WHITEROOK, '1'},
+            {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'}
+            // White
+    };
+    memcpy(Board, original_board, (sizeof(PIECE_T) * 100));
 }
