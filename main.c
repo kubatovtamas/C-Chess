@@ -1,11 +1,11 @@
 //
 // Created by kuba on 6/12/20.
 //
-#include<stdio.h>
-#include<wchar.h>
-#include<locale.h>
-#include<ctype.h>
-#include<string.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <locale.h>
+#include <ctype.h>
+#include <string.h>
 
 #include "libsakk.h"
 
@@ -31,7 +31,7 @@ int main() {
         wprintf(L"3. Quit\n");
         wprintf(L"\n");
 
-        scanf("%d", &GameChoice);          // get user GameChoiceut
+        scanf("%d", &GameChoice);          // get user GameChoice
 
         switch (GameChoice) {
             case 1: {
@@ -39,7 +39,10 @@ int main() {
                 playGame();
                 break;
             }
-            case 2: wprintf(L"Loading...\n"); break;
+            case 2: {
+                wprintf(L"Loading...\n");
+                break;
+            }
             case 3: {
                 wprintf(L"Goodbye!\n");
                 inmenu = 0;

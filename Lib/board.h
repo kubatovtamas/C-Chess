@@ -7,7 +7,7 @@
 
 #include "piece.h"
 
-enum { BOARD_ROW_SIZE = 8, BOARD_COL_SIZE = 8 };
+enum { BOARD_ROW_SIZE = 10, BOARD_COL_SIZE = 10 };
 
 void drawBoard();
 extern PIECE_TYPE Board[BOARD_ROW_SIZE][BOARD_COL_SIZE];

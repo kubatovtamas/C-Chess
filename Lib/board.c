@@ -22,14 +22,16 @@ _Bool has_moved_black_rook_short = 0;
 PIECE_TYPE Board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
     // Black on top for now
     // top row
-        {BLACKROOK, BLACKKNIGHT, BLACKBISHOP, BLACKQUEEN, BLACKKING, BLACKBISHOP, BLACKKNIGHT, BLACKROOK},
-        {BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN},
-        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-        {WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN},
-        {WHITEROOK, WHITEKNIGHT, WHITEBISHOP, WHITEQUEEN, WHITEKING, WHITEBISHOP, WHITEKNIGHT, WHITEROOK}
+        {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'},
+        {'8', BLACKROOK, BLACKKNIGHT, BLACKBISHOP, BLACKQUEEN, BLACKKING, BLACKBISHOP, BLACKKNIGHT, BLACKROOK, '8'},
+        {'7', BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, '7'},
+        {'6', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '6'},
+        {'5', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '5'},
+        {'4', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '4'},
+        {'3', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '3'},
+        {'2', WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, '2'},
+        {'1', WHITEROOK, WHITEKNIGHT, WHITEBISHOP, WHITEQUEEN, WHITEKING, WHITEBISHOP, WHITEKNIGHT, WHITEROOK, '1'},
+        {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'}
 };
 
 void load_from_file(char* file_name, int* step, PIECE_TYPE game_board[8][8]) {
