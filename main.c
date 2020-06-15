@@ -56,8 +56,12 @@ int main() {
     // Main loop outline -Gigi
     while (InMenu) {
         print_main_menu();
+
         get_input(GameChoice, 10);
-        switch (atoi(GameChoice)) {
+        char* input_string_part;
+        long input_numeric_part = strtol(GameChoice, &input_string_part, 10);
+
+        switch (input_numeric_part) {
             case 1: {
                 system("clear");
                 InMenu = false;
@@ -100,8 +104,10 @@ void get_choice() {
 
         char input[10];
         get_input(input, 10);
+        char* input_string_part;
+        long input_numeric_part = strtol(input, &input_string_part, 10);
 
-        switch (atoi(input)) {
+        switch (input_numeric_part) {
             case 1:
                 // MOVE
                 valid_choice = true;
