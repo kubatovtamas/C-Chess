@@ -8,6 +8,7 @@
 // include all library headers
 #include "piece.h"
 #include "board.h"
+#include <stdbool.h>
 
 // Step struct idea and pseudocode by Kuba
 // Modified by Gigi
@@ -17,9 +18,9 @@ struct Step {
     //after: [NULL, WHITEPAWN];   // Array of Pieces
     // TODO add parameters for castling
 
-    PIECE_TYPE before[2];                   // moved piece before move
-    PIECE_TYPE after[2];                    // after move (info new position and if promoted)
-    PIECE_TYPE hit;                         // piece that was hit and moved out of play
+    PIECE_T before[2];                   // moved piece before move
+    PIECE_T after[2];                    // after move (info new position and if promoted)
+//    PIECE_T hit;                         // piece that was hit and moved out of play
 };
 typedef struct Step Step;
 
@@ -27,29 +28,29 @@ typedef struct Step Step;
 // A Round holds a pointer to the next round (init NULL) and the previous Round.
 // The Step struct holds the data for the moves of the current round.
 // Outline implementation and modification by Gigi
-struct State {
-    // save state changes here (before,after)
-    int key;                  // 0 default state, each step increments by one
-
-    Step* step;
-    struct State* previous;
-    struct State* next;
-};
+//struct State {
+//    // save state changes here (before,after)
+////    int key;                  // 0 default state, each step increments by one
+//
+//    Step* step;
+//    struct State* previous;
+//    struct State* next;
+//};
 //typedef struct State State;
-extern const struct State *defaultstate;                 // this link always point to first Link
-extern struct State *laststate;                          // this link always point to last Link
+//extern const struct State *defaultstate;                 // this link always point to first Link
+//extern struct State *laststate;                          // this link always point to last Link
 
 void step();                                             // change state
 
 // This is just an outline for planned features
 // TODO Proper definitions
 struct State initialize();
-_Bool save_state();
-_Bool undo();
-_Bool redo();
+bool save_state();
+bool undo();
+bool redo();
 
 // file handling. Can be sourced to filehander.h and filehandler.c
-_Bool save();
-_Bool load();
+bool save();
+bool load();
 
 #endif // C_CHESS_LIBSAKK_H

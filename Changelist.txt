@@ -9,9 +9,9 @@ Changelist.txt created
 ------------------------
 // Added typedefs, uppercased constant enums
 libsakk.h
-renamed PieceType to PIECE_TYPE
+renamed PieceType to PIECE_T
 renamed Color to COLOR
-added typedef PIECE_TYPE
+added typedef PIECE_T
 added typedef COLOR
 added typedefs to all other structs on separate lines
 ------------------------

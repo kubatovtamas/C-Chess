@@ -17,7 +17,7 @@ enum PIECE_TYPE {
     BLACKKNIGHT = 0x265E,
     BLACKPAWN = 0x265F
 };
-typedef enum PIECE_TYPE PIECE_TYPE;
+typedef enum PIECE_TYPE PIECE_T;
 
 // color constants by Gigi
 // white 1, black 0 (e.g. if white, go first)

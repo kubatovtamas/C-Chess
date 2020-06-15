@@ -14,6 +14,7 @@ bool InMenu = true;
 bool Playing = false;
 char GameChoice[10];
 COLOR PlayerColor = WHITE;
+extern int round_count;
 
 bool valid_position(const char *input);
 bool valid_move(const char *input);
@@ -24,6 +25,8 @@ void get_input(char* str, int size);
 void print_main_menu();
 
 void print_move_menu();
+
+bool move();
 
 int main() {
     setlocale(LC_CTYPE, "");
@@ -54,13 +57,6 @@ int main() {
     return 0;
 }
 
-void print_main_menu() {
-    system("clear");
-    wprintf(L"1. New Game\n");
-    wprintf(L"2. Load Game\n");
-    wprintf(L"3. Quit\n");
-}
-
 void play_game() {
     Playing = true;
     while(Playing) {
@@ -82,8 +78,12 @@ void get_choice() {
 
         switch (atoi(input)) {
             case 1:
-                // GetMove
                 valid_choice = true;
+
+//                wprintf(L"From (A1-H8): \n");
+//                char move[10];
+//                get_input(move, 10);
+                move("D2", "D4");
                 break;
             case 2:
                 // Draw
@@ -109,7 +109,31 @@ void get_choice() {
     }
 }
 
+// eg. move("D2", "D4");
+bool move(char* from, char* to) {
+    int from_letter = tolower(from[0]) - 'a' + 1; // D -> 3 // OK
+    int from_number = 9 - (from[1] - '0'); // 2
+    int to_letter = tolower(to[0]) - 'a' + 1; // D -> 3 // OK
+    int to_number = 9 - (to[1] - '0'); // 4
+//    int from_num = from_number - '0'; // char to int
+//    int to_num = to_number - '0'; // char to int
+//    from_letter = tolower(from_letter) - 'a'; // a -> 0, b -> 1 ... h -> 7
+//    to_letter = tolower(to_letter) - 'a'; // a -> 0, b -> 1 ... h -> 7
+
+    Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
+    Board[from_number][from_letter] = ' '; // from set
+    round_count++;
+}
+
+void print_main_menu() {
+    system("clear");
+    wprintf(L"1. New Game\n");
+    wprintf(L"2. Load Game\n");
+    wprintf(L"3. Quit\n");
+}
+
 void print_move_menu() {
+    wprintf(L"Round: %d. ", round_count + 1);
     wprintf(L"Enter choice: \n");
     wprintf(L"1. MOVE \n");
     wprintf(L"2. OFFER DRAW \n");
