@@ -8,110 +8,114 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
 #include "libsakk.h"
 
-bool inmenu = true;
-bool playing = false;
+bool InMenu = true;
+bool Playing = false;
 char GameChoice[10];
-COLOR playerColor = WHITE;
+COLOR PlayerColor = WHITE;
 
 bool valid_position(const char *input);
 bool valid_move(const char *input);
-void playGame();
-void getChoice();
+void play_game();
+void get_choice();
 bool piece_is_color(int row, int col);
+void get_input(char* str, int size);
+void print_main_menu();
+
+void print_move_menu();
 
 int main() {
     setlocale(LC_CTYPE, "");
 
     // Main loop outline -Gigi
-    while (inmenu) {
-        // print menu
-        wprintf(L"1. New Game\n");
-        wprintf(L"2. Load Game\n");
-        wprintf(L"3. Quit\n");
-//        wprintf(L"\n");
-
-        fgets(GameChoice, 10, stdin);
-        unsigned long len = strlen(GameChoice);
-        if (len > 0 && GameChoice[len-1] == '\n')
-            GameChoice[len-1] = '\0';
-
+    while (InMenu) {
+        print_main_menu();
+        get_input(GameChoice, 10);
         switch (atoi(GameChoice)) {
             case 1: {
-                wprintf(L"Starting...\n");
-                playGame();
+                system("clear");
+                play_game();
                 break;
             }
             case 2: {
-                wprintf(L"Loading...\n");
+                system("clear");
+                // load_from_file
                 break;
             }
             case 3: {
                 wprintf(L"Goodbye!\n");
-                inmenu = 0;
+                InMenu = false;
                 break;
             }
-            default: wprintf(L"I'm sorry, what was that?\n");
-                break;
         }
     }
 
     return 0;
 }
 
-void playGame() {
-    playing = true;
-    while(playing) {
+void print_main_menu() {
+    system("clear");
+    wprintf(L"1. New Game\n");
+    wprintf(L"2. Load Game\n");
+    wprintf(L"3. Quit\n");
+}
+
+void play_game() {
+    Playing = true;
+    while(Playing) {
         drawBoard();
-        getChoice();
-        step();
+        get_choice();
+        if (!InMenu) {
+            step();
+        }
     }
 }
 
-void getChoice() {
+void get_choice() {
     bool valid_choice = false;
-
     while (!valid_choice) {
-        char input[10];
+        print_move_menu();
 
-        wprintf(L"Enter choice: \n");
-        wprintf(L"1. MOVE \n");
-        wprintf(L"2. OFFER DRAW \n");
-        wprintf(L"3. FORFEIT MATCH \n");
-        wprintf(L"4. SAVE MATCH \n");
-        wprintf(L"5. BACK TO MAIN MENU \n");
-        fgets(input, 10, stdin);
-        unsigned long len = strlen(GameChoice);
-        if (len > 0 && GameChoice[len-1] == '\n')
-            GameChoice[len-1] = '\0';
+        char input[10];
+        get_input(input, 10);
 
         switch (atoi(input)) {
             case 1:
+                // GetMove
                 valid_choice = true;
-                wprintf(L"CASE1\n");
                 break;
             case 2:
+                // Draw
                 valid_choice = true;
-                wprintf(L"CASE2\n");
                 break;
             case 3:
+                // Forfeit
                 valid_choice = true;
-                wprintf(L"CASE3\n");
                 break;
             case 4:
+                // Save
                 valid_choice = true;
-                wprintf(L"CASE4\n");
                 break;
             case 5:
                 valid_choice = true;
-                wprintf(L"CASE5\n");
+                Playing = false;
+                InMenu = true;
+                system("clear");
                 break;
             default:
-                wprintf(L"default\n");
+                wprintf(L"that is not okay, at all\n");
         }
     }
+}
+
+void print_move_menu() {
+    wprintf(L"Enter choice: \n");
+    wprintf(L"1. MOVE \n");
+    wprintf(L"2. OFFER DRAW \n");
+    wprintf(L"3. FORFEIT MATCH \n");
+    wprintf(L"4. SAVE MATCH \n");
+    wprintf(L"5. BACK TO MAIN MENU \n");
 }
 
 bool valid_move(const char *input) {
@@ -132,7 +136,7 @@ bool valid_move(const char *input) {
 }
 
 _Bool piece_is_color(int row, int col) {
-    if (playerColor == WHITE) {
+    if (PlayerColor == WHITE) {
         switch(Board[row][col]) {
             case WHITEPAWN:
             case WHITEKNIGHT:
@@ -158,4 +162,16 @@ _Bool piece_is_color(int row, int col) {
                 return 0;
         }
     }
+}
+
+/*
+ * Store user input from stdin to str,
+ * with a set max buffer size.
+ * Deletes residue whitespace.
+ */
+void get_input(char* str, int size) {
+    fgets(str, size, stdin);
+    unsigned long len = strlen(str);
+    if (len > 0 && str[len-1] == '\n')
+        str[len-1] = '\0';
 }
