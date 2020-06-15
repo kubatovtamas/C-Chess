@@ -6,19 +6,21 @@
 #include <locale.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 #include "libsakk.h"
 
-_Bool inmenu = 1;
-_Bool playing = 0;
-int GameChoice = 0;
+bool inmenu = true;
+bool playing = false;
+char GameChoice[10];
 COLOR playerColor = WHITE;
 
-_Bool valid_position(const char *input);
-_Bool valid_move(const char *input);
+bool valid_position(const char *input);
+bool valid_move(const char *input);
 void playGame();
 void getChoice();
-_Bool piece_is_color(int row, int col);
+bool piece_is_color(int row, int col);
 
 int main() {
     setlocale(LC_CTYPE, "");
@@ -29,11 +31,14 @@ int main() {
         wprintf(L"1. New Game\n");
         wprintf(L"2. Load Game\n");
         wprintf(L"3. Quit\n");
-        wprintf(L"\n");
+//        wprintf(L"\n");
 
-        scanf("%d", &GameChoice);          // get user GameChoice
+        fgets(GameChoice, 10, stdin);
+        unsigned long len = strlen(GameChoice);
+        if (len > 0 && GameChoice[len-1] == '\n')
+            GameChoice[len-1] = '\0';
 
-        switch (GameChoice) {
+        switch (atoi(GameChoice)) {
             case 1: {
                 wprintf(L"Starting...\n");
                 playGame();
@@ -57,7 +62,7 @@ int main() {
 }
 
 void playGame() {
-    _Bool playing = 1;
+    playing = true;
     while(playing) {
         drawBoard();
         getChoice();
@@ -66,19 +71,50 @@ void playGame() {
 }
 
 void getChoice() {
-    _Bool choice = 0;
+    bool valid_choice = false;
 
-    while (!choice) {
-        char input[2];
+    while (!valid_choice) {
+        char input[10];
 
-        wprintf(L"Please enter the position of the piece you would like to move: ");
-        scanf("%s", &input);
+        wprintf(L"Enter choice: \n");
+        wprintf(L"1. MOVE \n");
+        wprintf(L"2. OFFER DRAW \n");
+        wprintf(L"3. FORFEIT MATCH \n");
+        wprintf(L"4. SAVE MATCH \n");
+        wprintf(L"5. BACK TO MAIN MENU \n");
+        fgets(input, 10, stdin);
+        unsigned long len = strlen(GameChoice);
+        if (len > 0 && GameChoice[len-1] == '\n')
+            GameChoice[len-1] = '\0';
 
-        if (valid_move(input)) { choice = 1; }
+        switch (atoi(input)) {
+            case 1:
+                valid_choice = true;
+                wprintf(L"CASE1\n");
+                break;
+            case 2:
+                valid_choice = true;
+                wprintf(L"CASE2\n");
+                break;
+            case 3:
+                valid_choice = true;
+                wprintf(L"CASE3\n");
+                break;
+            case 4:
+                valid_choice = true;
+                wprintf(L"CASE4\n");
+                break;
+            case 5:
+                valid_choice = true;
+                wprintf(L"CASE5\n");
+                break;
+            default:
+                wprintf(L"default\n");
+        }
     }
 }
 
-_Bool valid_move(const char *input) {
+bool valid_move(const char *input) {
     if (strlen(input) < 2) {
         return 0;
     }
@@ -87,8 +123,7 @@ _Bool valid_move(const char *input) {
     int row = input[1] - '0' - 1;
 
     // valid range
-    if ( col < 0 || col >= 8
-        && row < 0 || col >= 8 ) {
+    if ( (col < 0 || col >= 8) && (row < 0 || col >= 8) ) {
         return 0;
     }
 
