@@ -37,6 +37,7 @@ int convert_tile_number_to_int(char ch);
 
 bool is_even(int n);
 
+bool validate_tile(char *prompt, char *input);
 /*****************************************************************************************************************/
 
 bool InMenu = true;
@@ -57,6 +58,7 @@ int main() {
         switch (atoi(GameChoice)) {
             case 1: {
                 system("clear");
+                InMenu = false;
                 play_game();
                 break;
             }
@@ -101,29 +103,11 @@ void get_choice() {
             case 1:
                 // MOVE
                 valid_choice = true;
-                bool valid_from = false;
-                bool valid_to = false;
                 char from[10];
                 char to[10];
 
-                while (!valid_from) {
-                    wprintf(L"From (A1-H8): \n");
-                    get_input(from, 10);
-
-                    if ('a' <= tolower(from[0]) && tolower(from[0]) <= 'h' && 1 <= (from[1] - '0') && (from[1] - '0') <= 8) {
-                        valid_from = true;
-                    }
-                }
-
-                while (!valid_to) {
-                    wprintf(L"To (A1-H8): \n");
-                    get_input(to, 10);
-
-                    if ('a' <= tolower(to[0]) && tolower(to[0]) <= 'h' && 1 <= (to[1] - '0') && (to[1] - '0') <= 8) {
-                        valid_to = true;
-                    }
-                }
-
+                while (!validate_tile("From", from));
+                while (!validate_tile("To", to));
                 move(from, to);
 
                 system("clear");
@@ -248,6 +232,15 @@ bool move(char *from, char *to) {
     round_count++;
 }
 
+bool validate_tile(char *prompt, char *input) {
+    wprintf(L"%s (A1-H8): \n", prompt);
+    get_input(input, 10);
+    if ('a' <= tolower(input[0]) && tolower(input[0]) <= 'h' &&
+        1 <= (input[1] - '0') && (input[1] - '0') <= 8) {
+        return true;
+    }
+    return false;
+}
 
 int convert_tile_letter_to_int(char ch) {
     /*
