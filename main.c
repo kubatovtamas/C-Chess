@@ -4,30 +4,39 @@
 #include<stdio.h>
 #include<wchar.h>
 #include<locale.h>
+#include<ctype.h>
+#include<string.h>
 
 #include "libsakk.h"
 
-int inmenu = 1;
-int playing = 0;
-int inp = 0;
+_Bool inmenu = 1;
+_Bool playing = 0;
+int GameChoice = 0;
+COLOR playerColor = WHITE;
+
+_Bool valid_position(const char *input);
+_Bool valid_move(const char *input);
+void playGame();
+void getChoice();
+_Bool piece_is_color(int row, int col);
 
 int main() {
     setlocale(LC_CTYPE, "");
 
     // Main loop outline -Gigi
-   while (inmenu) {
-       // print menu
+    while (inmenu) {
+        // print menu
         wprintf(L"1. New Game\n");
         wprintf(L"2. Load Game\n");
         wprintf(L"3. Quit\n");
         wprintf(L"\n");
 
-        scanf("%d", &inp);          // get user input
+        scanf("%d", &GameChoice);          // get user GameChoiceut
 
-        switch (inp) {
+        switch (GameChoice) {
             case 1: {
                 wprintf(L"Starting...\n");
-                drawBoard();
+                playGame();
                 break;
             }
             case 2: wprintf(L"Loading...\n"); break;
@@ -39,15 +48,76 @@ int main() {
             default: wprintf(L"I'm sorry, what was that?\n");
                 break;
         }
-   }
-
-   // original unicode testing
-/*
-    for (int i = 0; i < 12; ++i) {
-        wchar_t ch = (0x2654 + i);
-        wprintf(L"%lc\n", ch);
     }
-*/
 
     return 0;
+}
+
+void playGame() {
+    _Bool playing = 1;
+    while(playing) {
+        drawBoard();
+        getChoice();
+        step();
+    }
+}
+
+void getChoice() {
+    _Bool choice = 0;
+
+    while (!choice) {
+        char input[2];
+
+        wprintf(L"Please enter the position of the piece you would like to move: ");
+        scanf("%s", &input);
+
+        if (valid_move(input)) { choice = 1; }
+    }
+}
+
+_Bool valid_move(const char *input) {
+    if (strlen(input) < 2) {
+        return 0;
+    }
+
+    int col = (tolower(input[0]) - 'a') - 1;
+    int row = input[1] - '0' - 1;
+
+    // valid range
+    if ( col < 0 || col >= 8
+        && row < 0 || col >= 8 ) {
+        return 0;
+    }
+
+    // valid color
+    return piece_is_color(row, col);
+}
+
+_Bool piece_is_color(int row, int col) {
+    if (playerColor == WHITE) {
+        switch(Board[row][col]) {
+            case WHITEPAWN:
+            case WHITEKNIGHT:
+            case WHITEBISHOP:
+            case WHITEROOK:
+            case WHITEQUEEN:
+            case WHITEKING:
+                return 1;
+            default:
+                return 0;
+        }
+    }
+    else {      // player is black
+        switch(Board[row][col]) {
+            case BLACKPAWN:
+            case BLACKKNIGHT:
+            case BLACKBISHOP:
+            case BLACKROOK:
+            case BLACKQUEEN:
+            case BLACKKING:
+                return 1;
+            default:
+                return 0;
+        }
+    }
 }
