@@ -17,9 +17,9 @@ struct Step {
     //after: [NULL, WHITEPAWN];   // Array of Pieces
     // TODO add parameters for castling
 
-    Piece before;                   // moved piece before move
-    Piece after;                    // after move (info new position and if promoted)
-    Piece hit;                      // piece that was hit and moved out of play
+    PIECE_TYPE before[2];                   // moved piece before move
+    PIECE_TYPE after[2];                    // after move (info new position and if promoted)
+    PIECE_TYPE hit;                         // piece that was hit and moved out of play
 };
 typedef struct Step Step;
 
