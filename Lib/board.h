@@ -7,8 +7,10 @@
 
 #include "piece.h"
 
+enum { BOARD_ROW_SIZE = 8, BOARD_COL_SIZE = 8 };
+
 void drawBoard();
-// TODO modify from wchar_t to Piece
-extern PIECE_TYPE Board[8][8];
+// extern struct Position Board[BOARD_ROW_SIZE][BOARD_COL_SIZE];
+// extern Piece Board[BOARD_ROW_SIZE][BOARD_COL_SIZE];
 
 #endif //C_CHESS_BOARD_H
