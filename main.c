@@ -1,6 +1,7 @@
 //
 // Created by kuba on 6/12/20.
 //
+
 #include <stdio.h>
 #include <wchar.h>
 #include <locale.h>
@@ -10,23 +11,41 @@
 #include <stdlib.h>
 #include "libsakk.h"
 
+/*****************************************************************************************************************/
+
+bool valid_position(const char *input);
+
+bool valid_move(const char *input);
+
+void play_game();
+
+void get_choice();
+
+bool piece_is_color(int row, int col);
+
+void get_input(char *str, int size);
+
+void print_main_menu();
+
+void print_move_menu();
+
+bool move(char *from, char *to);
+
+int convert_tile_letter_to_int(char ch);
+
+int convert_tile_number_to_int(char ch);
+
+bool is_even(int n);
+
+/*****************************************************************************************************************/
+
 bool InMenu = true;
 bool Playing = false;
 char GameChoice[10];
 COLOR PlayerColor = WHITE;
 extern int round_count;
 
-bool valid_position(const char *input);
-bool valid_move(const char *input);
-void play_game();
-void get_choice();
-bool piece_is_color(int row, int col);
-void get_input(char* str, int size);
-void print_main_menu();
-
-void print_move_menu();
-
-bool move();
+/*****************************************************************************************************************/
 
 int main() {
     setlocale(LC_CTYPE, "");
@@ -57,9 +76,11 @@ int main() {
     return 0;
 }
 
+/*****************************************************************************************************************/
+
 void play_game() {
     Playing = true;
-    while(Playing) {
+    while (Playing) {
         drawBoard();
         get_choice();
         if (!InMenu) {
@@ -78,51 +99,62 @@ void get_choice() {
 
         switch (atoi(input)) {
             case 1:
+                // MOVE
                 valid_choice = true;
+                bool valid_from = false;
+                bool valid_to = false;
+                char from[10];
+                char to[10];
 
-//                wprintf(L"From (A1-H8): \n");
-//                char move[10];
-//                get_input(move, 10);
-                move("D2", "D4");
+                while (!valid_from) {
+                    wprintf(L"From (A1-H8): \n");
+                    get_input(from, 10);
+
+                    if ('a' <= tolower(from[0]) && tolower(from[0]) <= 'h' && 1 <= (from[1] - '0') && (from[1] - '0') <= 8) {
+                        valid_from = true;
+                    }
+                }
+
+                while (!valid_to) {
+                    wprintf(L"To (A1-H8): \n");
+                    get_input(to, 10);
+
+                    if ('a' <= tolower(to[0]) && tolower(to[0]) <= 'h' && 1 <= (to[1] - '0') && (to[1] - '0') <= 8) {
+                        valid_to = true;
+                    }
+                }
+
+                move(from, to);
+
+                system("clear");
                 break;
             case 2:
-                // Draw
+                // UNDO
                 valid_choice = true;
                 break;
             case 3:
-                // Forfeit
+                // DRAW
                 valid_choice = true;
                 break;
             case 4:
-                // Save
+                // FORFEIT
                 valid_choice = true;
                 break;
             case 5:
+                // SAVE
                 valid_choice = true;
+                break;
+            case 6:
+                // BACK TO MAIN
                 Playing = false;
                 InMenu = true;
                 system("clear");
+                valid_choice = true;
                 break;
             default:
                 wprintf(L"that is not okay, at all\n");
         }
     }
-}
-
-// eg. move("D2", "D4");
-bool move(char* from, char* to) {
-    int from_letter = tolower(from[0]) - 'a' + 1; // D -> 3 // OK
-    int from_number = 9 - (from[1] - '0'); // 2
-    int to_letter = tolower(to[0]) - 'a' + 1; // D -> 3 // OK
-    int to_number = 9 - (to[1] - '0'); // 4
-//    int from_num = from_number - '0'; // char to int
-//    int to_num = to_number - '0'; // char to int
-//    from_letter = tolower(from_letter) - 'a'; // a -> 0, b -> 1 ... h -> 7
-//    to_letter = tolower(to_letter) - 'a'; // a -> 0, b -> 1 ... h -> 7
-
-    Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
-    Board[from_number][from_letter] = ' '; // from set
-    round_count++;
 }
 
 void print_main_menu() {
@@ -133,15 +165,17 @@ void print_main_menu() {
 }
 
 void print_move_menu() {
-    wprintf(L"Round: %d. ", round_count + 1);
+    wprintf(L"Round: %d. %s's turn. ", round_count + 1, is_even(round_count) ? "WHITE" : "BLACK");
     wprintf(L"Enter choice: \n");
     wprintf(L"1. MOVE \n");
-    wprintf(L"2. OFFER DRAW \n");
-    wprintf(L"3. FORFEIT MATCH \n");
-    wprintf(L"4. SAVE MATCH \n");
-    wprintf(L"5. BACK TO MAIN MENU \n");
+    wprintf(L"2. UNDO \n");
+    wprintf(L"3. OFFER DRAW \n");
+    wprintf(L"4. FORFEIT MATCH \n");
+    wprintf(L"5. SAVE MATCH \n");
+    wprintf(L"6. BACK TO MAIN MENU \n");
 }
 
+// This is a lie at this point ( board is now 10x10 instead of 8x8 )
 bool valid_move(const char *input) {
     if (strlen(input) < 2) {
         return 0;
@@ -151,7 +185,7 @@ bool valid_move(const char *input) {
     int row = input[1] - '0' - 1;
 
     // valid range
-    if ( (col < 0 || col >= 8) && (row < 0 || col >= 8) ) {
+    if ((col < 0 || col >= 8) && (row < 0 || col >= 8)) {
         return 0;
     }
 
@@ -159,9 +193,9 @@ bool valid_move(const char *input) {
     return piece_is_color(row, col);
 }
 
-_Bool piece_is_color(int row, int col) {
+bool piece_is_color(int row, int col) {
     if (PlayerColor == WHITE) {
-        switch(Board[row][col]) {
+        switch (Board[row][col]) {
             case WHITEPAWN:
             case WHITEKNIGHT:
             case WHITEBISHOP:
@@ -172,9 +206,8 @@ _Bool piece_is_color(int row, int col) {
             default:
                 return 0;
         }
-    }
-    else {      // player is black
-        switch(Board[row][col]) {
+    } else {      // player is black
+        switch (Board[row][col]) {
             case BLACKPAWN:
             case BLACKKNIGHT:
             case BLACKBISHOP:
@@ -193,9 +226,53 @@ _Bool piece_is_color(int row, int col) {
  * with a set max buffer size.
  * Deletes residue whitespace.
  */
-void get_input(char* str, int size) {
+void get_input(char *str, int size) {
     fgets(str, size, stdin);
     unsigned long len = strlen(str);
-    if (len > 0 && str[len-1] == '\n')
-        str[len-1] = '\0';
+    if (len > 0 && str[len - 1] == '\n')
+        str[len - 1] = '\0';
+}
+
+bool is_even(int n) {
+    return (n % 2 == 0);
+}
+
+bool move(char *from, char *to) {
+    int from_letter = convert_tile_letter_to_int(from[0]);
+    int from_number = convert_tile_number_to_int(from[1]);
+    int to_letter = convert_tile_letter_to_int(to[0]);
+    int to_number = convert_tile_number_to_int(to[1]);
+
+    Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
+    Board[from_number][from_letter] = ' '; // from set
+    round_count++;
+}
+
+
+int convert_tile_letter_to_int(char ch) {
+    /*
+     * A -> 1
+     * B -> 2
+     * C -> 3
+     * D -> 4
+     * E -> 5
+     * F -> 6
+     * G -> 7
+     * H -> 8
+     */
+    return tolower(ch) - 'a' + 1;
+}
+
+int convert_tile_number_to_int(char ch) {
+    /*
+     * 1 -> 8
+     * 2 -> 7
+     * 3 -> 6
+     * 4 -> 5
+     * 5 -> 4
+     * 6 -> 3
+     * 7 -> 2
+     * 8 -> 1
+     */
+    return 9 - (ch - '0');
 }
