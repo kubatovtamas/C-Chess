@@ -35,20 +35,22 @@ int convert_tile_number_to_int(char ch);
 
 bool is_even(int n);
 
-bool valid_tile_from(char *input, bool* back);
+bool valid_tile_from(char *input, bool *back);
 
-bool valid_tile_to(char *input, bool* back);
+bool valid_tile_to(char *input, bool *back);
 
 void reset_board();
 
-void really_prompt(char* really);
+void really_prompt(char *really);
 
 bool get_confirmation();
+
+long parse_input_to_long();
 /*****************************************************************************************************************/
 
 bool InMenu = true;
 bool Playing = false;
-char GameChoice[10];
+//char GameChoice[10];
 //COLOR PlayerColor = WHITE;
 extern int round_count;
 
@@ -60,12 +62,8 @@ int main() {
     // Main loop outline -Gigi
     while (InMenu) {
         print_main_menu();
-
-        get_input(GameChoice, 10);
-        char* input_string_part;
-        long input_numeric_part = strtol(GameChoice, &input_string_part, 10);
-
-        switch (input_numeric_part) {
+        long input = parse_input_to_long();
+        switch (input) {
             case 1: {
                 system("clear");
                 InMenu = false;
@@ -95,7 +93,7 @@ int main() {
 void play_game() {
     Playing = true;
     while (Playing) {
-//        system("clear");
+        system("clear");
         get_choice();
         if (!InMenu) {
             step();
@@ -109,14 +107,11 @@ void get_choice() {
         print_move_menu();
 
         // Take user input, parse it to number.
-        char input[10];
-        get_input(input, 10);
-        char* input_string_part;
-        long input_numeric_part = strtol(input, &input_string_part, 10);
+        long input = parse_input_to_long();
+        switch (input) {
 
-        switch (input_numeric_part) {
-            // MOVE
             case 1:
+                // MOVE
                 valid_choice = true;
                 bool back = false;
                 char from[10], to[10];
@@ -130,36 +125,58 @@ void get_choice() {
                 system("clear");
                 draw_board();
                 break;
-            // UNDO
+
             case 2:
+                // UNDO
                 valid_choice = true;
 
                 if (get_confirmation()) {
-                    wprintf(L"said rly\n");
+                    wprintf(L"YES BRANCH\n");
                 } else {
-                    wprintf(L"y u no\n");
+                    wprintf(L"NO BRANCH\n");
                 }
                 break;
-            // DRAW
+
             case 3:
+                // DRAW
                 valid_choice = true;
+
+                if (get_confirmation()) {
+                    wprintf(L"YES BRANCH\n");
+                } else {
+                    wprintf(L"NO BRANCH\n");
+                }
                 break;
-            // FORFEIT
+
             case 4:
+                // FORFEIT
                 valid_choice = true;
+
+                if (get_confirmation()) {
+                    wprintf(L"YES BRANCH\n");
+                } else {
+                    wprintf(L"NO BRANCH\n");
+                }
                 break;
-            // SAVE
+
             case 5:
+                // SAVE
                 valid_choice = true;
                 break;
-            // BACK TO MAIN
+
             case 6:
+                // BACK TO MAIN
                 valid_choice = true;
-                // RLY?
-                reset_board();
-                Playing = false;
-                InMenu = true;
-                system("clear");
+                if (get_confirmation()) {
+                    wprintf(L"YES BRANCH\n");
+
+                    reset_board();
+                    Playing = false;
+                    InMenu = true;
+                    system("clear");
+                } else {
+                    wprintf(L"NO BRANCH\n");
+                }
                 break;
             default:
                 system("clear");
@@ -212,7 +229,7 @@ bool check_if_own_piece(int row, int col) {
                 return 0;
         }
     }
-    // BLACK
+        // BLACK
     else {
         switch (Board[row][col]) {
             case BLACKPAWN:
@@ -239,6 +256,17 @@ void get_input(char *str, int size) {
     unsigned long len = strlen(str);
     if (len > 0 && str[len - 1] == '\n')
         str[len - 1] = '\0';
+}
+
+/*
+ * Calls get_input, parses the string
+ * return a long from the beginning of the string
+ */
+long parse_input_to_long() {
+    char input[10];
+    get_input(input, 10);
+    char *input_string_part;
+    return strtol(input, &input_string_part, 10);
 }
 
 /*
@@ -271,11 +299,21 @@ bool move(char *from, char *to) {
     round_count++;
 }
 
-void really_prompt(char* really) {
+/*
+ * Prompt the users for Y/N answer.
+ */
+void really_prompt(char *really) {
     wprintf(L"SURE? Y/N\n");
     get_input(really, 10);
 }
 
+/*
+ * Calls really_prompt.
+ * Repeats until valid input is given.
+ * Only the first character matters, case insensitive.
+ * Returns true if answer is yes.
+ * Returns false if answer is no.
+ */
 bool get_confirmation() {
     char really[10];
     char first_letter_insensitive;
@@ -301,7 +339,7 @@ bool get_confirmation() {
  * Sets the provided bool pointer to true for navigating
  * back in the menu. Returns false in this case.
  */
-bool valid_tile_from(char *input, bool* back) {
+bool valid_tile_from(char *input, bool *back) {
     // Input prompt
     wprintf(L"FROM (A1-H8) or BACK: \n");
     get_input(input, 10);
@@ -335,7 +373,7 @@ bool valid_tile_from(char *input, bool* back) {
  * Sets the provided bool pointer to true for navigating
  * back in the menu. Returns false in this case.
  */
-bool valid_tile_to(char *input, bool* back) {
+bool valid_tile_to(char *input, bool *back) {
     // Input prompt
     wprintf(L"TO (A1-H8) or BACK: \n");
     get_input(input, 10);
@@ -402,16 +440,16 @@ int convert_tile_number_to_int(char ch) {
 void reset_board() {
     PIECE_T original_board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
             // Black
-            {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'},
+            {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'},
             {'8', BLACKROOK, BLACKKNIGHT, BLACKBISHOP, BLACKQUEEN, BLACKKING, BLACKBISHOP, BLACKKNIGHT, BLACKROOK, '8'},
-            {'7', BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, '7'},
-            {'6', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '6'},
-            {'5', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '5'},
-            {'4', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '4'},
-            {'3', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '3'},
-            {'2', WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, '2'},
+            {'7', BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN,  BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN, '7'},
+            {'6', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '6'},
+            {'5', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '5'},
+            {'4', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '4'},
+            {'3', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '3'},
+            {'2', WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN,  WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN, '2'},
             {'1', WHITEROOK, WHITEKNIGHT, WHITEBISHOP, WHITEQUEEN, WHITEKING, WHITEBISHOP, WHITEKNIGHT, WHITEROOK, '1'},
-            {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'}
+            {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'}
             // White
     };
     memcpy(Board, original_board, (sizeof(PIECE_T) * 100));
