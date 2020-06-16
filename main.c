@@ -112,24 +112,20 @@ void get_choice() {
             // MOVE
             case 1:
                 valid_choice = true;
-                char from[10];
-                char to[10];
                 bool back = false;
-                /*
-                 * Take user input until
-                 * valid FROM tile and
-                 * valid TO tile is provided.
-                 */
-                while (!valid_tile_from(from, &back) && !back);
-                while (!valid_tile_to(to, &back) && !back);
-                if (!back) move(from, to);
+                char from[10], to[10];
+
+                while (!valid_tile_from(from, &back) && !back);     /* Take user input until valid FROM tile */
+                while (!valid_tile_to(to, &back) && !back);         /* AND valid TO tile is provided.        */
+                if (!back) {                                        /* Setting the back flag to true         */
+                    move(from, to);                                 /* terminates the input prompt loop      */
+                }
 
                 system("clear");
                 draw_board();
                 break;
             // UNDO
             case 2:
-
                 valid_choice = true;
                 break;
             // DRAW
@@ -268,17 +264,23 @@ bool move(char *from, char *to) {
  * matches the [A-Ha-h][1-9] regex,
  * AND
  * is the player's own piece.
+ *
+ * Sets the provided bool pointer to true for navigating
+ * back in the menu. Returns false in this case.
  */
 bool valid_tile_from(char *input, bool* back) {
+    // Input prompt
     wprintf(L"FROM (A1-H8) or BACK: \n");
     get_input(input, 10);
 
+    // If input == back (case insensitive)
     if (strcasecmp(input, "back") == 0) {
         system("clear");
         *back = true;
         return false;
     }
 
+    // If input == valid tile (own piece)
     if ('a' <= tolower(input[0]) && tolower(input[0]) <= 'h' &&
         1 <= (input[1] - '0') && (input[1] - '0') <= 8) {
         if (check_if_own_piece(convert_tile_number_to_int(input[1]), convert_tile_letter_to_int(input[0]))) {
@@ -296,17 +298,23 @@ bool valid_tile_from(char *input, bool* back) {
  * matches the [A-Ha-h][1-9] regex,
  * AND
  * is NOT the player's own piece.
+ *
+ * Sets the provided bool pointer to true for navigating
+ * back in the menu. Returns false in this case.
  */
 bool valid_tile_to(char *input, bool* back) {
+    // Input prompt
     wprintf(L"TO (A1-H8) or BACK: \n");
     get_input(input, 10);
 
+    // If input == back (case insensitive)
     if (strcasecmp(input, "back") == 0) {
         system("clear");
         *back = true;
         return false;
     }
 
+    // If input == valid tile (not own piece)
     if ('a' <= tolower(input[0]) && tolower(input[0]) <= 'h' &&
         1 <= (input[1] - '0') && (input[1] - '0') <= 8) {
         if (!check_if_own_piece(convert_tile_number_to_int(input[1]), convert_tile_letter_to_int(input[0]))) {
