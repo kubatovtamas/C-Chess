@@ -35,9 +35,9 @@ int convert_tile_number_to_int(char ch);
 
 bool is_even(int n);
 
-bool valid_tile_from(char *input);
+bool valid_tile_from(char *input, bool* back);
 
-bool valid_tile_to(char *input);
+bool valid_tile_to(char *input, bool* back);
 
 void reset_board();
 /*****************************************************************************************************************/
@@ -102,47 +102,50 @@ void get_choice() {
     while (!valid_choice) {
         print_move_menu();
 
+        // Take user input, parse it to number.
         char input[10];
         get_input(input, 10);
         char* input_string_part;
         long input_numeric_part = strtol(input, &input_string_part, 10);
 
         switch (input_numeric_part) {
+            // MOVE
             case 1:
-                // MOVE
                 valid_choice = true;
                 char from[10];
                 char to[10];
+                bool back = false;
                 /*
                  * Take user input until
                  * valid FROM tile and
                  * valid TO tile is provided.
                  */
-                while (!valid_tile_from(from));
-                while (!valid_tile_to(to));
-                move(from, to);
+                while (!valid_tile_from(from, &back) && !back);
+                while (!valid_tile_to(to, &back) && !back);
+                if (!back) move(from, to);
 
                 system("clear");
                 draw_board();
                 break;
+            // UNDO
             case 2:
-                // UNDO
+
                 valid_choice = true;
                 break;
+            // DRAW
             case 3:
-                // DRAW
                 valid_choice = true;
                 break;
+            // FORFEIT
             case 4:
-                // FORFEIT
                 valid_choice = true;
                 break;
+            // SAVE
             case 5:
-                // SAVE
                 valid_choice = true;
                 break;
+            // BACK TO MAIN
             case 6:
-                // BACK TO MAIN
                 valid_choice = true;
                 reset_board();
                 Playing = false;
@@ -266,15 +269,23 @@ bool move(char *from, char *to) {
  * AND
  * is the player's own piece.
  */
-bool valid_tile_from(char *input) {
-    wprintf(L"FROM (A1-H8): \n");
+bool valid_tile_from(char *input, bool* back) {
+    wprintf(L"FROM (A1-H8) or BACK: \n");
     get_input(input, 10);
+
+    if (strcasecmp(input, "back") == 0) {
+        system("clear");
+        *back = true;
+        return false;
+    }
+
     if ('a' <= tolower(input[0]) && tolower(input[0]) <= 'h' &&
         1 <= (input[1] - '0') && (input[1] - '0') <= 8) {
         if (check_if_own_piece(convert_tile_number_to_int(input[1]), convert_tile_letter_to_int(input[0]))) {
             return true;
         }
     }
+
     wprintf(L"That is not your piece. \n");
     return false;
 }
@@ -286,9 +297,16 @@ bool valid_tile_from(char *input) {
  * AND
  * is NOT the player's own piece.
  */
-bool valid_tile_to(char *input) {
-    wprintf(L"TO (A1-H8): \n");
+bool valid_tile_to(char *input, bool* back) {
+    wprintf(L"TO (A1-H8) or BACK: \n");
     get_input(input, 10);
+
+    if (strcasecmp(input, "back") == 0) {
+        system("clear");
+        *back = true;
+        return false;
+    }
+
     if ('a' <= tolower(input[0]) && tolower(input[0]) <= 'h' &&
         1 <= (input[1] - '0') && (input[1] - '0') <= 8) {
         if (!check_if_own_piece(convert_tile_number_to_int(input[1]), convert_tile_letter_to_int(input[0]))) {
