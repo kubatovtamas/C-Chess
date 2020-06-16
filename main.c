@@ -115,8 +115,8 @@ void get_choice() {
                 bool back = false;
                 char from[10], to[10];
 
-                while (!valid_tile_from(from, &back) && !back);     /* Take user input until valid FROM tile */
-                while (!valid_tile_to(to, &back) && !back);         /* AND valid TO tile is provided.        */
+                while (!back && !valid_tile_from(from, &back));     /* Take user input until valid FROM tile */
+                while (!back && !valid_tile_to(to, &back));         /* AND valid TO tile is provided.        */
                 if (!back) {                                        /* Setting the back flag to true         */
                     move(from, to);                                 /* terminates the input prompt loop      */
                 }
@@ -143,6 +143,7 @@ void get_choice() {
             // BACK TO MAIN
             case 6:
                 valid_choice = true;
+                // RLY?
                 reset_board();
                 Playing = false;
                 InMenu = true;
