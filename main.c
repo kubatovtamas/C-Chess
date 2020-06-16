@@ -40,6 +40,10 @@ bool valid_tile_from(char *input, bool* back);
 bool valid_tile_to(char *input, bool* back);
 
 void reset_board();
+
+void really_prompt(char* really);
+
+bool get_confirmation();
 /*****************************************************************************************************************/
 
 bool InMenu = true;
@@ -78,6 +82,8 @@ int main() {
                 InMenu = false;
                 break;
             }
+            default:
+                break;
         }
     }
 
@@ -89,7 +95,7 @@ int main() {
 void play_game() {
     Playing = true;
     while (Playing) {
-        system("clear");
+//        system("clear");
         get_choice();
         if (!InMenu) {
             step();
@@ -127,6 +133,12 @@ void get_choice() {
             // UNDO
             case 2:
                 valid_choice = true;
+
+                if (get_confirmation()) {
+                    wprintf(L"said rly\n");
+                } else {
+                    wprintf(L"y u no\n");
+                }
                 break;
             // DRAW
             case 3:
@@ -257,6 +269,26 @@ bool move(char *from, char *to) {
     Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
     Board[from_number][from_letter] = ' '; // from set
     round_count++;
+}
+
+void really_prompt(char* really) {
+    wprintf(L"SURE? Y/N\n");
+    get_input(really, 10);
+}
+
+bool get_confirmation() {
+    char really[10];
+    char first_letter_insensitive;
+    do {
+        really_prompt(really);
+        first_letter_insensitive = tolower(really[0]);
+    } while (!(first_letter_insensitive == 'y' || first_letter_insensitive == 'n'));
+
+    if (first_letter_insensitive == 'y') {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /*
