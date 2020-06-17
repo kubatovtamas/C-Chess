@@ -5,11 +5,13 @@
 #ifndef C_CHESS_LIBSAKK_H
 #define C_CHESS_LIBSAKK_H
 
+#include <stdbool.h>
 // include all library headers
 #include "piece.h"
 #include "board.h"
-#include <stdbool.h>
+#include "filehandler.h"
 
+// Possibly move these somewhere more sensible
 extern int round_count;         // round count global
 bool is_even(int n);            // tool to check round count for next color
 
