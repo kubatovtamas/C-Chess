@@ -30,9 +30,9 @@ typedef struct Step Step;
 // Outline implementation and modification by Gigi
 //struct State {
 //    // save state changes here (before,after)
-////    int key;                  // 0 default state, each step increments by one
+////    int key;                  // 0 default state, each change_state increments by one
 //
-//    Step* step;
+//    Step* change_state;
 //    struct State* previous;
 //    struct State* next;
 //};
@@ -40,7 +40,7 @@ typedef struct Step Step;
 //extern const struct State *defaultstate;                 // this link always point to first Link
 //extern struct State *laststate;                          // this link always point to last Link
 
-void step();                                             // change state
+void change_state();
 
 // This is just an outline for planned features
 // TODO Proper definitions

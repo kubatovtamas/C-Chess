@@ -13,7 +13,7 @@ struct State *laststate = NULL;
 
 // insert a link to the new state to the end of the list
 // - Gigi
-void step() {
+void change_state() {
 //    wprintf(L"Step function.\n");
 //   struct State *newstate = (struct State*) malloc(sizeof(struct State));       //create a link
 //   //newstate->key = key;                       // TODO implement current key++

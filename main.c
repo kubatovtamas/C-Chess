@@ -96,7 +96,7 @@ void play_game() {
         system("clear");
         get_choice();
         if (!InMenu) {
-            step();
+            change_state();
         }
     }
 }
