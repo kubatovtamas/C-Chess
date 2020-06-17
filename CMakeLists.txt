@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(Sakk C)
 
-add_subdirectory(Lib)
+include_directories(src)
 
-
-add_executable(main main.c)
-target_link_libraries(main libsakk)
+add_subdirectory(src)
+add_subdirectory(lib)
+add_subdirectory(tst)

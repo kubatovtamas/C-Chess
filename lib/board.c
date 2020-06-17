@@ -6,9 +6,11 @@
 #include <locale.h>
 #include <stdbool.h>
 #include <string.h>         // memcpy
+#include <ctype.h>          // tolower
 
 #include "board.h"
 #include "piece.h"
+#include "libsakk.h"
 
 //_Bool is_even(round_count) ? white : black
 
