@@ -1,6 +1,8 @@
 #ifndef PIECE_H
 #define PIECE_H
 
+#include<stdbool.h>
+
 // Pieces - Gigi
 enum PIECE_TYPE {
     WHITEQUEEN = 0x2654,
@@ -23,5 +25,7 @@ typedef enum PIECE_TYPE PIECE_T;
 // white 1, black 0 (e.g. if white, go first)
 enum COLOR {WHITE, BLACK};
 typedef enum COLOR COLOR;
+
+bool check_if_own_piece(int row, int col);
 
 #endif // C_CHESS_PIECE_H

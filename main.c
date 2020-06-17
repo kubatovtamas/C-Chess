@@ -210,42 +210,6 @@ void print_move_menu() {
 }
 
 /*
- * Returns true if in a given round, Board[row][col]
- * is the current players own piece.
- * Returns false otherwise.
- */
-bool check_if_own_piece(int row, int col) {
-    // WHITE
-    if (is_even(round_count)) {
-        switch (Board[row][col]) {
-            case WHITEPAWN:
-            case WHITEKNIGHT:
-            case WHITEBISHOP:
-            case WHITEROOK:
-            case WHITEQUEEN:
-            case WHITEKING:
-                return 1;
-            default:
-                return 0;
-        }
-    }
-        // BLACK
-    else {
-        switch (Board[row][col]) {
-            case BLACKPAWN:
-            case BLACKKNIGHT:
-            case BLACKBISHOP:
-            case BLACKROOK:
-            case BLACKQUEEN:
-            case BLACKKING:
-                return 1;
-            default:
-                return 0;
-        }
-    }
-}
-
-/*
  * Use this for user input, it's hard(er) to break.
  * Store user input from stdin to str,
  * with a set max buffer size.
@@ -429,28 +393,4 @@ int convert_tile_letter_to_int(char ch) {
 int convert_tile_number_to_int(char ch) {
 
     return 9 - (ch - '0');
-}
-
-/*
- * Resets the board to the starting state.
- * Overwrites the memory of the starting Board,
- * so it may not be okay for long term use
- * (as we don't have functionality for saving Rounds/Steps)
- */
-void reset_board() {
-    PIECE_T original_board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
-            // Black
-            {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'},
-            {'8', BLACKROOK, BLACKKNIGHT, BLACKBISHOP, BLACKQUEEN, BLACKKING, BLACKBISHOP, BLACKKNIGHT, BLACKROOK, '8'},
-            {'7', BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN,  BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN, '7'},
-            {'6', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '6'},
-            {'5', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '5'},
-            {'4', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '4'},
-            {'3', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '3'},
-            {'2', WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN,  WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN, '2'},
-            {'1', WHITEROOK, WHITEKNIGHT, WHITEBISHOP, WHITEQUEEN, WHITEKING, WHITEBISHOP, WHITEKNIGHT, WHITEROOK, '1'},
-            {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'}
-            // White
-    };
-    memcpy(Board, original_board, (sizeof(PIECE_T) * 100));
 }
