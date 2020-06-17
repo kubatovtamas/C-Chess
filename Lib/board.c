@@ -11,7 +11,7 @@
 #include "piece.h"
 
 
-int round_count = 0;
+
 //_Bool is_even(round_count) ? white : black
 bool has_moved_white_king = false;
 bool has_moved_white_rook_long = false;

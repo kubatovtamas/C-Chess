@@ -10,6 +10,9 @@
 #include "board.h"
 #include <stdbool.h>
 
+extern int round_count;         // round count global
+bool is_even(int n);            // tool to check round count for next color
+
 // Step struct idea and pseudocode by Kuba
 // Modified by Gigi
 struct Step {

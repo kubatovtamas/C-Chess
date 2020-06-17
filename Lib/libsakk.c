@@ -7,6 +7,15 @@
 #include <stdio.h>
 #include <wchar.h>
 
+int round_count = 0;        // global
+
+/*
+ * ¯\_(ツ)_/¯
+ */
+bool is_even(int n) {
+    return (n % 2 == 0);
+}
+
 // TODO Head needs to always point to state 0 with the default board
 const struct State *defaultstate = NULL;
 struct State *laststate = NULL;

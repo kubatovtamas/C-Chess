@@ -22,10 +22,10 @@ enum PIECE_TYPE {
 typedef enum PIECE_TYPE PIECE_T;
 
 // color constants by Gigi
-// white 1, black 0 (e.g. if white, go first)
 enum COLOR {WHITE, BLACK};
 typedef enum COLOR COLOR;
 
+COLOR get_current_turn_color();
 bool check_if_own_piece(int row, int col);
 
 #endif // C_CHESS_PIECE_H

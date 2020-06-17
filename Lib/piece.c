@@ -5,8 +5,10 @@
 #include "piece.h"
 #include "board.h"
 
-COLOR get_color() {
-    return is_even(round_count);    // white = 1
+#include "libsakk.h"        // is_even
+
+COLOR get_current_turn_color() {
+    return is_even(round_count) ? WHITE : BLACK;
 }
 
 /*
@@ -16,7 +18,8 @@ COLOR get_color() {
  */
 bool check_if_own_piece(int row, int col) {
     // WHITE
-    if (is_even(round_count)) {
+    COLOR color = get_current_turn_color();
+    if (color == WHITE) {
         switch (Board[row][col]) {
             case WHITEPAWN:
             case WHITEKNIGHT:
