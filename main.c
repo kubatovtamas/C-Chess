@@ -33,13 +33,9 @@ int convert_tile_letter_to_int(char ch);
 
 int convert_tile_number_to_int(char ch);
 
-bool is_even(int n);
-
 bool valid_tile_from(char *input, bool *back);
 
 bool valid_tile_to(char *input, bool *back);
-
-void reset_board();
 
 void really_prompt(char *really);
 
@@ -199,7 +195,7 @@ void print_main_menu() {
  */
 void print_move_menu() {
     draw_board();
-    wprintf(L"Round: %d. %s's turn. ", round_count + 1, is_even(round_count) ? "WHITE" : "BLACK");
+    wprintf(L"Round: %d. %s's turn. ", round_count + 1, get_current_turn_color() == WHITE ? "WHITE" : "BLACK");
     wprintf(L"Enter choice: \n");
     wprintf(L"1. MOVE \n");
     wprintf(L"2. UNDO \n");
@@ -231,13 +227,6 @@ long parse_input_to_long() {
     get_input(input, 10);
     char *input_string_part;
     return strtol(input, &input_string_part, 10);
-}
-
-/*
- * ¯\_(ツ)_/¯
- */
-bool is_even(int n) {
-    return (n % 2 == 0);
 }
 
 /*
