@@ -204,7 +204,7 @@ void get_choice(Game *game) {
                 if (get_confirmation()) {
                     wprintf(L"YES BRANCH\n");
 
-                    // undo game state
+                    undo(game);
 
                 } else {
                     wprintf(L"NO BRANCH\n");
