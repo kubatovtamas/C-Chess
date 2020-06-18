@@ -178,7 +178,7 @@ void get_input_game_choice(Game *game) {
                 if (get_input_confirm_choice("SURE? Y/N")) {
                     wprintf(L"YES BRANCH\n");
 
-                    // undo game state
+                    undo(game);
 
                 } else {
                     wprintf(L"NO BRANCH\n");
