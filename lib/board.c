@@ -16,35 +16,45 @@
 // Starting Position
 PIECE_T Board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
         // Black
-        {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'},
+        {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'},
         {'8', BLACKROOK, BLACKKNIGHT, BLACKBISHOP, BLACKQUEEN, BLACKKING, BLACKBISHOP, BLACKKNIGHT, BLACKROOK, '8'},
-        {'7', BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, BLACKPAWN, '7'},
-        {'6', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '6'},
-        {'5', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '5'},
-        {'4', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '4'},
-        {'3', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '3'},
-        {'2', WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, WHITEPAWN, '2'},
+        {'7', BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN,  BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN, '7'},
+        {'6', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '6'},
+        {'5', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '5'},
+        {'4', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '4'},
+        {'3', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '3'},
+        {'2', WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN,  WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN, '2'},
         {'1', WHITEROOK, WHITEKNIGHT, WHITEBISHOP, WHITEQUEEN, WHITEKING, WHITEBISHOP, WHITEKNIGHT, WHITEROOK, '1'},
-        {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'}
+        {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'}
         // White
 };
 
-void load_from_file(char* file_name, int step, PIECE_T game_board[BOARD_ROW_SIZE][BOARD_COL_SIZE]) {
-    FILE* file_pointer;
+bool load_from_file(char *input_name, int *global_round_count,
+                    char *global_p1_name, char *global_p2_name, PIECE_T game_board[BOARD_ROW_SIZE][BOARD_COL_SIZE]) {
+    FILE *file_pointer;
+
+    char file_name[100] = "";
+    strcpy(file_name, "Saved_Games/");
+    strcat(file_name, input_name);
+
     file_pointer = fopen(file_name, "r");
     if (file_pointer == NULL)
-        return;
-    fscanf(file_pointer, "%d ", &step);
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
+        return false;
+
+    fscanf(file_pointer, "%d ", global_round_count);
+    fscanf(file_pointer, "%s ", global_p1_name);
+    fscanf(file_pointer, "%s ", global_p2_name);
+    for (int i = 0; i < BOARD_COL_SIZE; i++) {
+        for (int j = 0; j < BOARD_ROW_SIZE; j++) {
             fscanf(file_pointer, "%x ", &game_board[i][j]);
         }
     }
     fclose(file_pointer);
+    return true;
 }
 
-void save_to_file(char* file_name, int global_round_count, char* global_p1_name, char* global_p2_name) {
-    FILE* file_pointer;
+void save_to_file(char *file_name, int global_round_count, char *global_p1_name, char *global_p2_name) {
+    FILE *file_pointer;
     file_pointer = fopen(file_name, "w");
     if (file_pointer == NULL)
         return;
@@ -61,7 +71,6 @@ void save_to_file(char* file_name, int global_round_count, char* global_p1_name,
     }
     fclose(file_pointer);
 }
-
 
 
 /*
@@ -85,7 +94,6 @@ void reset_board() {
     };
     memcpy(Board, original_board, (sizeof(PIECE_T) * BOARD_ROW_SIZE * BOARD_COL_SIZE));
 }
-
 
 
 void draw_board() {
@@ -118,8 +126,8 @@ bool move(Game *game, char *from, char *to) {
     int to_number = convert_tile_number_to_int(to[1]);
 
     // Game Data Before
-    char* tiles[4] = { from, to, NULL, NULL };        // Castling not implemented
-    PIECE_T before[2] = { Board[from_number][from_letter], Board[to_number][to_letter] };
+    char *tiles[4] = {from, to, NULL, NULL};        // Castling not implemented
+    PIECE_T before[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
 
     // Move
     Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
@@ -127,7 +135,7 @@ bool move(Game *game, char *from, char *to) {
     Round_Count++;
 
     // Game Data After
-    PIECE_T after[2] = { Board[from_number][from_letter], Board[to_number][to_letter] };
+    PIECE_T after[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
 
     if (displayed_game_state_ptr->next) {
         free_game_state_to_end(displayed_game_state_ptr->next);
@@ -140,12 +148,12 @@ bool move(Game *game, char *from, char *to) {
 }
 
 
-void undo(Game* game) {
+void undo(Game *game) {
 
     if (!displayed_game_state_ptr->previous) { return; }
 
-    char* from = (displayed_game_state_ptr->data->tiles)[0];      // { from, to, NULL, NULL };
-    char* to = displayed_game_state_ptr->data->tiles[1];        // { from, to, NULL, NULL };
+    char *from = (displayed_game_state_ptr->data->tiles)[0];      // { from, to, NULL, NULL };
+    char *to = displayed_game_state_ptr->data->tiles[1];        // { from, to, NULL, NULL };
 
     int from_letter = convert_tile_letter_to_int(from[0]);
     int from_number = convert_tile_number_to_int(from[1]);

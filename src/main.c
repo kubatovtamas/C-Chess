@@ -29,7 +29,7 @@ bool get_input_accept_draw();
 
 void get_input_save_game();
 
-void get_input_load_game();
+bool get_input_load_game();
 
 
 
@@ -41,6 +41,7 @@ void print_menu_winner();
 
 void print_menu_options();
 
+void print_menu_saved_games();
 
 
 bool is_valid_tile_from(char *input, bool *back);
@@ -79,6 +80,7 @@ char Player_One_Name[100];
 char Player_Two_Name[100];
 bool Is_Draw_Offered = false;
 int Winner = -1; // -1: none, 0: draw, 1: player1 (white), 2: player2(black)
+bool LoadedGame = false;
 
 /*********************************************** Main ***********************************************/
 
@@ -91,15 +93,16 @@ int main() {
 
         long input = parse_input_to_long();
         switch (input) {
-            case 1: {
-                system("clear");
+            PLAY: case 1: {
                 In_Menu = false;
                 play_game();
                 break;
             }
             case 2: {
-                system("clear");
-                get_input_load_game();
+                if (get_input_load_game()) {
+                    LoadedGame = true;
+                    goto PLAY;
+                }
                 break;
             }
             case 3: {
@@ -124,7 +127,9 @@ void play_game() {
     }
 
     system("clear");
-    get_input_names();
+    if (!LoadedGame) {
+        get_input_names();
+    }
 
     Playing = true;
     while (Playing) {
@@ -217,6 +222,7 @@ void get_input_game_choice(Game *game) {
                     memset(Player_Two_Name,0,strlen(Player_Two_Name));
                     Is_Draw_Offered = false;
                     Round_Count = 0;
+                    LoadedGame = false;
 
                     system("clear");
                 }
@@ -318,14 +324,22 @@ void get_input_save_game() {
     get_input_prompted(input_save_name, "Save game as: ", 80);
     strcpy(file_name, "Saved_Games/");
     strcat(file_name, input_save_name);
+
     save_to_file(file_name, Round_Count, Player_One_Name, Player_Two_Name);
 }
 
-void get_input_load_game() {
+bool get_input_load_game() {
     char input_load_name[100];
-    wprintf(L"Saved games:\n");
-    system("ls -1 Saved_Games/");
+    print_menu_saved_games();
     get_input_prompted(input_load_name, "\nLoad file: ", 80);
+    return load_from_file(input_load_name, &Round_Count, (char *) &Player_One_Name, (char *) &Player_One_Name,
+                    *&Board);
+}
+
+void print_menu_saved_games() {
+    wprintf(L"Saved games:\n");
+//    system("ls -1 ../../Saved_Games"); // DEBUG MODE
+    system("ls -1 Saved_Games"); // PROD MODE
 }
 
 /*
