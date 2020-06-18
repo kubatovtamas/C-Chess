@@ -53,6 +53,8 @@ Game* game_start() {
 void new_game_state(Game* game) {
     Game_State *newstate = malloc(sizeof(Game_State));       //create a link
 
+    // TODO save steps taken
+
     (game->currentstate)->next = newstate;
     newstate->previous = game->currentstate;
     game->currentstate = newstate;
