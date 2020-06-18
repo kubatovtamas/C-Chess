@@ -13,40 +13,41 @@
 
 /*****************************************************************************************************************/
 
-//bool valid_position(const char *input);
-
-//bool valid_move(const char *input);
-
 void play_game();
 
-void get_choice(Game *game);
+void get_input_game_choice(Game *game);
 
-void get_input(char *str, int size);
+void get_input_saved_to(char *save_to, int size);
 
-void print_main_menu();
+void print_menu_main();
 
-void print_move_menu();
+void print_menu_move();
 
-bool valid_tile_from(char *input, bool *back);
+bool is_valid_tile_from(char *input, bool *back);
 
-bool valid_tile_to(char *input, bool *back);
+bool is_valid_tile_to(char *input, bool *back);
 
-void really_prompt(char *really);
+void get_input_prompted(char *save_to, char* prompt);
 
-bool get_confirmation();
+bool get_input_confirm_choice(char* prompt);
 
 long parse_input_to_long();
-
-
-
 
 void get_input_names();
 
 void offer_draw();
 
-void accept_draw();
+bool get_input_accept_draw();
 
 void forfeit();
+
+void print_menu_winner();
+
+
+
+/*****************************************************************************************************************/
+
+
 
 bool checked();
 
@@ -60,15 +61,14 @@ bool is_revivable_piece();
 
 void get_input_tranform_piece();
 
-void show_winner();
-
 /*****************************************************************************************************************/
 
-bool InMenu = true;
+bool In_Menu = true;
 bool Playing = false;
-char player_one_name[100];
-char player_two_name[100];
-//char GameChoice[10];
+char Player_One_Name[100];
+char Player_Two_Name[100];
+bool Is_Draw_Offered = false;
+int Winner = -1; // -1: none, 0: draw, 1: player1 (white), 2: player2(black)
 
 /*****************************************************************************************************************/
 
@@ -76,33 +76,31 @@ int main() {
     setlocale(LC_CTYPE, "");
 
     // Main loop outline -Gigi
-    while (InMenu) {
-        print_main_menu();
+    while (In_Menu) {
+        print_menu_main();
+
         long input = parse_input_to_long();
         switch (input) {
             case 1: {
                 system("clear");
-                InMenu = false;
+                In_Menu = false;
                 play_game();
                 break;
             }
             case 2: {
                 system("clear");
-
                 // load_from_file()
-
                 break;
             }
             case 3: {
                 wprintf(L"Goodbye!\n");
-                InMenu = false;
+                In_Menu = false;
                 break;
             }
             default:
                 break;
         }
     }
-
     return 0;
 }
 
@@ -114,65 +112,42 @@ void play_game() {
         wprintf(L"Failed to allocate memory for game.\n");
         return;
     }
-    system("clear");
 
-    // ide jöhet: get_input_names()?
+    system("clear");
     get_input_names();
 
     Playing = true;
     while (Playing) {
         system("clear");
-        get_choice(game);
-        if (!InMenu) {
-            // change_state(); // TODO remove this?
+
+        // If draw or either player won, exit main loop
+        if (Winner != -1) {
+            Playing = false;
         }
+
+        get_input_game_choice(game);
+//        if (!In_Menu) {
+//            change_state(); // TODO remove this?
+//        }
     }
+    print_menu_winner();
     game_end(game);
 }
 
-/*********************************************** NEW FUNCTIONS ***************************************************/
-
-void get_input_names() {
-    wprintf(L"Enter Player1's name (WHITE): ");
-    get_input(player_one_name, 100);
-
-    wprintf(L"\nEnter Player2's name (BLACK): ");
-    get_input(player_two_name, 100);
-}
-
-void offer_draw();
-
-void accept_draw();
-
-void forfeit();
-
-bool checked();
-
-bool can_transform();
-
-void transform();
-
-bool get_input_piece_to_transform();
-
-bool is_revivable_piece();
-
-void get_input_tranform_piece();
-
-void show_winner();
-
 /*****************************************************************************************************************/
 
-void get_choice(Game *game) {
+void get_input_game_choice(Game *game) {
     bool valid_choice = false;
     while (!valid_choice) {
-        print_move_menu();
 
-        // Take user input, parse it to number.
+
+        print_menu_move();
+        if (Winner != -1) {
+            break;
+        }
         long input = parse_input_to_long();
         switch (input) {
-
-            case 1:
-                // MOVE
+            case 1: // MOVE
                 valid_choice = true;
                 bool back = false;
                 char from[10], to[10];
@@ -180,10 +155,10 @@ void get_choice(Game *game) {
 
                 // ide jöhet: checked()?
 
-                while (!back && !valid_tile_from(from, &back));     /* Take user input until valid FROM tile */
-                while (!back && !valid_tile_to(to, &back));         /* AND valid TO tile is provided.        */
-                if (!back) {                                        /* Setting the back flag to true         */
-                    move(game, from, to);                           /* terminates the input prompt loop      */
+                while (!back && !is_valid_tile_from(from, &back));      /* Take user input until valid FROM tile */
+                while (!back && !is_valid_tile_to(to, &back));          /* AND valid TO tile is provided.        */
+                if (!back) {                                            /* Setting the back flag to true         */
+                    move(game, from, to);                               /* terminates the input prompt loop      */
 
                     //  ide jöhet: transform()?
                         //  if (enemys row && your pawn)
@@ -197,11 +172,10 @@ void get_choice(Game *game) {
                 draw_board();
                 break;
 
-            case 2:
-                // UNDO
+            case 2: // UNDO
                 valid_choice = true;
 
-                if (get_confirmation()) {
+                if (get_input_confirm_choice("SURE? Y/N")) {
                     wprintf(L"YES BRANCH\n");
 
                     // undo game state
@@ -215,15 +189,8 @@ void get_choice(Game *game) {
                 // DRAW
                 valid_choice = true;
 
-                if (get_confirmation()) {
-                    wprintf(L"YES BRANCH\n");
-
-                    // ide jöhet: offer_draw()?
-                    //              -> accept_draw()
-                    //              -> show_winner()
-
-                } else {
-                    wprintf(L"NO BRANCH\n");
+                if (get_input_confirm_choice("SURE? Y/N")) {
+                    offer_draw();
                 }
                 break;
 
@@ -231,14 +198,8 @@ void get_choice(Game *game) {
                 // FORFEIT
                 valid_choice = true;
 
-                if (get_confirmation()) {
-                    wprintf(L"YES BRANCH\n");
-
-                    // ide jöhet: forfeit()?
-                    //              -> show_winner()
-
-                } else {
-                    wprintf(L"NO BRANCH\n");
+                if (get_input_confirm_choice("SURE? Y/N")) {
+                    forfeit();
                 }
                 break;
 
@@ -250,12 +211,12 @@ void get_choice(Game *game) {
             case 6:
                 // BACK TO MAIN
                 valid_choice = true;
-                if (get_confirmation()) {
+                if (get_input_confirm_choice("SURE? Y/N")) {
                     wprintf(L"YES BRANCH\n");
 
                     reset_board();
                     Playing = false;
-                    InMenu = true;
+                    In_Menu = true;
                     system("clear");
                 } else {
                     wprintf(L"NO BRANCH\n");
@@ -267,10 +228,12 @@ void get_choice(Game *game) {
     }
 }
 
+/*****************************************************************************************************************/
+
 /*
  * Clear the terminal and print the main menu.
  */
-void print_main_menu() {
+void print_menu_main() {
     system("clear");
     wprintf(L"1. New Game\n");
     wprintf(L"2. Load Game\n");
@@ -280,64 +243,71 @@ void print_main_menu() {
 /*
  * Draw the board and print the move selection menu.
  */
-void print_move_menu() {
+void print_menu_move() {
     draw_board();
-    wprintf(L"Round: %d. %s's %s turn. ", round_count + 1, get_current_turn_color() == WHITE ? player_one_name : player_two_name,
+    wprintf(L"Round: %d. %s's %s turn. ", round_count + 1, get_current_turn_color() == WHITE ? Player_One_Name : Player_Two_Name,
             get_current_turn_color() == WHITE ? "(WHITE)" : "(BLACK)");
-    wprintf(L"Enter choice: \n");
-    wprintf(L"1. MOVE \n");
-    wprintf(L"2. UNDO \n");
-    wprintf(L"3. OFFER DRAW \n");
-    wprintf(L"4. FORFEIT MATCH \n");
-    wprintf(L"5. SAVE MATCH \n");
-    wprintf(L"6. BACK TO MAIN MENU \n");
+
+    if (Is_Draw_Offered) {
+        get_input_accept_draw();
+    } else {
+        wprintf(L"Enter choice: \n");
+        wprintf(L"1. MOVE \n");
+        wprintf(L"2. UNDO \n");
+        wprintf(L"3. OFFER DRAW \n");
+        wprintf(L"4. FORFEIT MATCH \n");
+        wprintf(L"5. SAVE MATCH \n");
+        wprintf(L"6. BACK TO MAIN MENU \n");
+    }
+
 }
 
 /*
- * Use this for user input, it's hard(er) to break.
- * Store user input from stdin to str,
- * with a set max buffer size.
- * Deletes residue whitespace.
- */
-void get_input(char *str, int size) {
-    fgets(str, size, stdin);
-    unsigned long len = strlen(str);
-    if (len > 0 && str[len - 1] == '\n')
-        str[len - 1] = '\0';
-}
-
-/*
- * Calls get_input, parses the string
+ * Calls get_input_saved_to, parses the string
  * return a long from the beginning of the string
  */
 long parse_input_to_long() {
     char input[10];
-    get_input(input, 10);
+    get_input_saved_to(input, 10);
     char *input_string_part;
     return strtol(input, &input_string_part, 10);
 }
 
 /*
- * Prompt the users for Y/N answer.
+ * Use this for user input, it's hard(er) to break.
+ * Store user input from stdin to save_to,
+ * with a set max buffer size.
+ * Deletes residue whitespace.
  */
-void really_prompt(char *really) {
-    wprintf(L"SURE? Y/N\n");
-    get_input(really, 10);
+void get_input_saved_to(char *save_to, int size) {
+    fgets(save_to, size, stdin);
+    unsigned long len = strlen(save_to);
+    if (len > 0 && save_to[len - 1] == '\n')
+        save_to[len - 1] = '\0';
 }
 
 /*
- * Calls really_prompt.
+ * Calls get_input_saved_to.
+ * Plus displays a prompt to the terminal.
+ */
+void get_input_prompted(char *save_to, char* prompt) {
+    wprintf(L"%s\n", prompt);
+    get_input_saved_to(save_to, 10);
+}
+
+/*
+ * Calls get_input_prompted.
  * Repeats until valid input is given.
  * Only the first character matters, case insensitive.
  * Returns true if answer is yes.
  * Returns false if answer is no.
  */
-bool get_confirmation() {
-    char really[10];
+bool get_input_confirm_choice(char* prompt) {
+    char save_to[10];
     char first_letter_insensitive;
     do {
-        really_prompt(really);
-        first_letter_insensitive = tolower(really[0]);
+        get_input_prompted(save_to, prompt);
+        first_letter_insensitive = tolower(save_to[0]);
     } while (!(first_letter_insensitive == 'y' || first_letter_insensitive == 'n'));
 
     if (first_letter_insensitive == 'y') {
@@ -357,10 +327,10 @@ bool get_confirmation() {
  * Sets the provided bool pointer to true for navigating
  * back in the menu. Returns false in this case.
  */
-bool valid_tile_from(char *input, bool *back) {
+bool is_valid_tile_from(char *input, bool *back) {
     // Input prompt
     wprintf(L"FROM (A1-H8) or BACK: \n");
-    get_input(input, 10);
+    get_input_saved_to(input, 10);
 
     // If input == back (case insensitive)
     if (strcasecmp(input, "back") == 0) {
@@ -391,10 +361,10 @@ bool valid_tile_from(char *input, bool *back) {
  * Sets the provided bool pointer to true for navigating
  * back in the menu. Returns false in this case.
  */
-bool valid_tile_to(char *input, bool *back) {
+bool is_valid_tile_to(char *input, bool *back) {
     // Input prompt
     wprintf(L"TO (A1-H8) or BACK: \n");
-    get_input(input, 10);
+    get_input_saved_to(input, 10);
 
     // If input == back (case insensitive)
     if (strcasecmp(input, "back") == 0) {
@@ -409,9 +379,69 @@ bool valid_tile_to(char *input, bool *back) {
         if (!check_if_own_piece(convert_tile_number_to_int(input[1]), convert_tile_letter_to_int(input[0]))) {
             return true;
         } else {
-            wprintf(L"That your own piece. \n");
+            wprintf(L"That's your own piece. \n");
         }
     }
     return false;
 }
 
+/*********************************************** NEW FUNCTIONS ***************************************************/
+
+void get_input_names() {
+    wprintf(L"Enter Player1's name (WHITE): ");
+    get_input_saved_to(Player_One_Name, 100);
+
+    wprintf(L"\nEnter Player2's name (BLACK): ");
+    get_input_saved_to(Player_Two_Name, 100);
+}
+
+void offer_draw() {
+    round_count++;
+    Is_Draw_Offered = true;
+}
+
+bool get_input_accept_draw() {
+    wprintf(L"%s %s offered a draw. \n", get_current_turn_color() == WHITE ? Player_Two_Name : Player_One_Name,
+            get_current_turn_color() == WHITE ? "(BLACK)" : "(WHITE)");
+
+    if (get_input_confirm_choice("Do you accept? Y/N")) {
+        Is_Draw_Offered = false;
+        Winner = 0;
+    } else {
+        Is_Draw_Offered = false;
+        round_count++;
+    }
+
+}
+
+void forfeit() {
+    if (get_current_turn_color() == WHITE) {
+        Winner = 2;
+    } else {
+        Winner = 1;
+    }
+}
+
+void print_menu_winner() {
+    if (Winner == 0) {
+        wprintf(L"It's a draw.\n");
+    } else if (Winner == 1) {
+        wprintf(L"%s (WHITE) wins.\n", Player_One_Name);
+    } else if (Winner == 2) {
+        wprintf(L"%s (BLACK) wins.\n", Player_Two_Name);
+    }
+}
+
+bool checked();
+
+bool can_transform();
+
+void transform();
+
+bool get_input_piece_to_transform();
+
+bool is_revivable_piece();
+
+void get_input_tranform_piece();
+
+/*****************************************************************************************************************/

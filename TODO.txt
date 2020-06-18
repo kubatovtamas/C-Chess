@@ -143,7 +143,7 @@ prompt for move:
                     if so, enemy is only allowed steps that stop the check
                         (step_in_check function?)
                 check if checkmate
-                    is so, end game, print winner player
+                    is so, end game, print Winner player
             }
     increment global round count
 
