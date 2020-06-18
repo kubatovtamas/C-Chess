@@ -44,7 +44,7 @@ void print_menu_options();
 void print_menu_saved_games();
 
 
-bool is_valid_tile_from(char *input, bool *back);
+bool is_valid_tile_from(char *input, bool *back, bool *castling);
 
 bool is_valid_tile_to(char *input, bool *back);
 
@@ -61,8 +61,6 @@ void forfeit();
 
 
 bool is_checked();
-
-bool can_castle();
 
 bool can_transform();
 
@@ -104,7 +102,7 @@ int main() {
             }
             // FALLTHROUGH
             case 1: { // NEW GAME
-                system("clear");
+//                system("clear");
                 In_Menu = false;
                 play_game();
                 break;
@@ -162,14 +160,18 @@ void get_input_game_choice(Game *game) {
             case 1: // MOVE
                 valid_choice = true;
                 bool back = false;
-                char from[10], to[10];
+                bool castling = false;
+                char from[20], to[20];
 
                 // ide jöhet: can_castle()
                 // ide jöhet: is_checked()
 
-                while (!back && !is_valid_tile_from(from, &back));      /* Take user input until valid FROM tile */
-                while (!back && !is_valid_tile_to(to, &back));          /* AND valid TO tile is provided.        */
-                if (!back) {                                            /* Setting the back flag to true         */
+                while (!back && !is_valid_tile_from(from, &back, &castling));
+                if (!castling) {
+                    while (!back && !is_valid_tile_to(to, &back));
+                }                                                        /* Take user input until valid FROM tile */
+                          /* AND valid TO tile is provided.        */
+                if (!back && !castling) {                                            /* Setting the back flag to true         */
                     move(game, from, to);                               /* terminates the input prompt loop      */
 
                     //  ide jöhet: transform_piece()
@@ -339,14 +341,13 @@ bool get_input_load_game() {
     char input_load_name[100];
     print_menu_saved_games();
     get_input_prompted(input_load_name, "\nLoad file: ", 80);
-    return load_from_file(input_load_name, &Round_Count, (char *) &Player_One_Name, (char *) &Player_One_Name,
-                    *&Board);
+    return load_from_file(input_load_name, &Round_Count, Player_One_Name, Player_Two_Name, Board);
 }
 
 void print_menu_saved_games() {
     wprintf(L"Saved games:\n");
-//    system("ls -1 ../../Saved_Games"); // DEBUG MODE
-    system("ls -1 Saved_Games"); // PROD MODE
+    system("ls -1 ../../Saved_Games"); // DEBUG MODE
+//    system("ls -1 Saved_Games"); // PROD MODE
 }
 
 /*
@@ -359,16 +360,42 @@ void print_menu_saved_games() {
  * Sets the provided bool pointer to true for navigating
  * back in the menu. Returns false in this case.
  */
-bool is_valid_tile_from(char *input, bool *back) {
+bool is_valid_tile_from(char *input, bool *back, bool *castling) {
     // Input prompt
-    wprintf(L"FROM (A1-H8) or BACK: \n");
-    get_input_saved_to(input, 10);
+    bool kingside = can_castle_kingside();
+    bool queenside = can_castle_queenside();
+    if (kingside && queenside) {
+        wprintf(L"FROM (A1-H8) or BACK or KINGSIDE or QUEENSIDE to castle: \n");
+    } else if (kingside) {
+        wprintf(L"FROM (A1-H8) or BACK or KINGSIDE to castle: \n");
+    } else if (queenside) {
+        wprintf(L"FROM (A1-H8) or BACK or QUEENSIDE to castle: \n");
+    } else {
+        wprintf(L"FROM (A1-H8) or BACK: \n");
+    }
+    get_input_saved_to(input, 20);
 
-    // If input == back (case insensitive)
+    // If input == BACK (case insensitive)
     if (strcasecmp(input, "back") == 0) {
         system("clear");
         *back = true;
         return false;
+    }
+
+    // If input == KINGSIDE (case insensitive)
+    if (strcasecmp(input, "kingside") == 0) {
+        system("clear");
+        // KINGSIDE CASTLE
+        return true;
+    }
+
+    // If input == QUEENSIDE (case insensitive)
+    if (strcasecmp(input, "queenside") == 0) {
+        system("clear");
+        // QUEENSIDE CASTLE
+        *castling = true;
+        castle_queenside();
+        return true;
     }
 
     // If input == valid tile (own piece)
@@ -379,7 +406,7 @@ bool is_valid_tile_from(char *input, bool *back) {
         }
     }
 
-    wprintf(L"That is not your piece. \n");
+    wprintf(L"That is not a valid input, or that is not your piece. \n");
     return false;
 }
 
