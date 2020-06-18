@@ -79,14 +79,21 @@ int main() {
 /*****************************************************************************************************************/
 
 void play_game() {
+    Game *game = game_start();
+    if (!game) {
+        wprintf(L"Failed to allocate memory for game.\n");
+        return;
+    }
+
     Playing = true;
     while (Playing) {
         system("clear");
         get_choice();
         if (!InMenu) {
-            change_state();
+            new_game_state(game);
         }
     }
+    game_end(game);
 }
 
 void get_choice() {

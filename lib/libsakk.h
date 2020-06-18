@@ -15,47 +15,18 @@
 extern int round_count;         // round count global
 // bool is_even(int n);            // tool to check round count for next color
 
-// Step struct idea and pseudocode by Kuba
-// Modified by Gigi
-struct Step {
-    //tiles: [C2, C3];            // Array of Tiles, min:2(normal), max: 4(castling)
-    //before: [WHITEPAWN, NULL];  // Array of Pieces
-    //after: [NULL, WHITEPAWN];   // Array of Pieces
-    // TODO add parameters for castling
+typedef struct Game Game;                                      // Game structure linking game states
+typedef struct Game_State Game_State;                          // Game_State nodes for a single game state
+typedef struct Game_State_Data Game_State_Data;                // Game_State_Data data for Game_State nodes
 
-    PIECE_T before[2];                   // moved piece before move
-    PIECE_T after[2];                    // after move (info new position and if promoted)
-//    PIECE_T hit;                         // piece that was hit and moved out of play
-};
-typedef struct Step Step;
 
-// State structure implemented as a Doubly-linked list (idea by Kuba)
-// A Round holds a pointer to the next round (init NULL) and the previous Round.
-// The Step struct holds the data for the moves of the current round.
-// Outline implementation and modification by Gigi
-//struct State {
-//    // save state changes here (before,after)
-////    int key;                  // 0 default state, each change_state increments by one
-//
-//    Step* change_state;
-//    struct State* previous;
-//    struct State* next;
-//};
-//typedef struct State State;
-//extern const struct State *defaultstate;                 // this link always point to first Link
-//extern struct State *laststate;                          // this link always point to last Link
+Game* game_start();                             // sets Game_State first and last to default Game_State (Game_Data is null)
+void game_end(Game*);                           // calls free_game_state_to_end on first state and frees game
+void new_game_state(Game*);                      // creates new game state and links it to game->last
+// TODO rename new_game_state for use in main
 
-void change_state();
+void free_game_state(Game_State*);               // free Game_State data and free Game_State
+void free_game_state_to_end(Game_State*);        // iterate through Game_States from node and free all of them
 
-// This is just an outline for planned features
-// TODO Proper definitions
-struct State initialize();
-bool save_state();
-bool undo();
-bool redo();
-
-// file handling. Can be sourced to filehander.h and filehandler.c
-bool save();
-bool load();
 
 #endif // C_CHESS_LIBSAKK_H
