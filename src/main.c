@@ -19,29 +19,29 @@ void get_input_game_choice(Game *game);
 
 void get_input_saved_to(char *save_to, int size);
 
+void get_input_prompted(char *save_to, char* prompt);
+
+bool get_input_confirm_choice(char* prompt);
+
+void get_input_names();
+
+bool get_input_accept_draw();
+
 void print_menu_main();
 
 void print_menu_move();
+
+void print_menu_winner();
 
 bool is_valid_tile_from(char *input, bool *back);
 
 bool is_valid_tile_to(char *input, bool *back);
 
-void get_input_prompted(char *save_to, char* prompt);
-
-bool get_input_confirm_choice(char* prompt);
-
 long parse_input_to_long();
-
-void get_input_names();
 
 void offer_draw();
 
-bool get_input_accept_draw();
-
 void forfeit();
-
-void print_menu_winner();
 
 
 
@@ -53,7 +53,7 @@ bool checked();
 
 bool can_transform();
 
-void transform();
+void transform_piece();
 
 bool get_input_piece_to_transform();
 
@@ -160,7 +160,7 @@ void get_input_game_choice(Game *game) {
                 if (!back) {                                            /* Setting the back flag to true         */
                     move(game, from, to);                               /* terminates the input prompt loop      */
 
-                    //  ide jöhet: transform()?
+                    //  ide jöhet: transform_piece()?
                         //  if (enemys row && your pawn)
                         //      do while ( !(valid piece input && is_revivable_piece) )
                         //          prompt_for_transform()
@@ -176,12 +176,7 @@ void get_input_game_choice(Game *game) {
                 valid_choice = true;
 
                 if (get_input_confirm_choice("SURE? Y/N")) {
-                    wprintf(L"YES BRANCH\n");
-
                     undo(game);
-
-                } else {
-                    wprintf(L"NO BRANCH\n");
                 }
                 break;
 
@@ -436,12 +431,10 @@ bool checked();
 
 bool can_transform();
 
-void transform();
+void transform_piece();
 
 bool get_input_piece_to_transform();
 
 bool is_revivable_piece();
 
 void get_input_tranform_piece();
-
-/*****************************************************************************************************************/
