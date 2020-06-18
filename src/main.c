@@ -94,11 +94,13 @@ int main() {
         long input = parse_input_to_long();
         switch (input) {
             PLAY: case 1: {
+                system("clear");
                 In_Menu = false;
                 play_game();
                 break;
             }
             case 2: {
+                system("clear");
                 if (get_input_load_game()) {
                     LoadedGame = true;
                     goto PLAY;
