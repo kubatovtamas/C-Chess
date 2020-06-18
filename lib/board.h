@@ -29,4 +29,8 @@ bool load_from_file(char *input_name, int *global_round_count,
                     char *global_p1_name, char *global_p2_name, PIECE_T game_board[BOARD_ROW_SIZE][BOARD_COL_SIZE]);
 void save_to_file(char* file_name, int global_round_count, char* global_p1_name, char* global_p2_name);
 
+bool can_castle_kingside();
+
+bool can_castle_queenside();
+
 #endif //C_CHESS_BOARD_H

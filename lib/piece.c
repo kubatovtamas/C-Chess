@@ -8,12 +8,6 @@
 #include "libsakk.h"        // is_even
 
 
-bool has_moved_white_king = false;
-bool has_moved_white_rook_long = false;
-bool has_moved_white_rook_short = false;
-bool has_moved_black_king = false;
-bool has_moved_black_rook_long = false;
-bool has_moved_black_rook_short = false;
 
 COLOR get_current_turn_color() {
     // return is_even(Round_Count) ? WHITE : BLACK;

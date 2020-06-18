@@ -67,11 +67,11 @@ Game state:
 global variables:
     bool is_even(Round_Count) ? white : black
     bool has_moved_white_king
-    bool has_moved_white_rook_long
-    bool has_moved_white_rook_short
+    bool has_moved_white_rook_queenside
+    bool has_moved_white_rook_kingside
     bool has_moved_black_king
-    bool has_moved_black_rook_long
-    bool has_moved_black_rook_short
+    bool has_moved_black_rook_queenside
+    bool has_moved_black_rook_kingside
 
 Data Structure of a
 Step {
@@ -139,7 +139,7 @@ prompt for move:
                     if not, prompt for move
                 check if promotion
                     if so, prompt for what piece to sub in
-                check if enemy king is checked
+                check if enemy king is is_checked
                     if so, enemy is only allowed steps that stop the check
                         (step_in_check function?)
                 check if checkmate

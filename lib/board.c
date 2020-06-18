@@ -29,6 +29,58 @@ PIECE_T Board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
         // White
 };
 
+bool has_moved_white_king = false;              // D1
+bool has_moved_white_rook_queenside = false;    // A1
+bool has_moved_white_rook_kingside = false;     // H1
+
+bool has_moved_black_king = false;              // D8
+bool has_moved_black_rook_queenside = false;    // A8
+bool has_moved_black_rook_kingside = false;     // H8
+
+bool can_castle_kingside() {
+    if (get_current_turn_color() == WHITE) {
+        if (!has_moved_white_king) {
+            if (!has_moved_white_rook_kingside) {
+                if (Board[8][6] == ' ' && Board[8][7] == ' ') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    } else {
+        if (!has_moved_black_king) {
+            if (!has_moved_black_rook_kingside) {
+                if (Board[1][6] == ' ' && Board[1][7] == ' ') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
+bool can_castle_queenside() {
+    if (get_current_turn_color() == WHITE) {
+        if (!has_moved_white_king) {
+            if (!has_moved_white_rook_queenside) {
+                if (Board[8][2] == ' ' && Board[8][3] == ' ' && Board[8][4] == ' ') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    } else {
+        if (!has_moved_black_king) {
+            if (!has_moved_black_rook_queenside) {
+                if (Board[1][2] == ' ' && Board[1][3] == ' ' && Board[1][4] == ' ') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
 bool load_from_file(char *input_name, int *global_round_count,
                     char *global_p1_name, char *global_p2_name, PIECE_T game_board[BOARD_ROW_SIZE][BOARD_COL_SIZE]) {
     FILE *file_pointer;

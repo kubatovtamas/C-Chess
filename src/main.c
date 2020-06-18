@@ -60,7 +60,9 @@ void forfeit();
 
 
 
-bool checked();
+bool is_checked();
+
+bool can_castle();
 
 bool can_transform();
 
@@ -162,15 +164,15 @@ void get_input_game_choice(Game *game) {
                 bool back = false;
                 char from[10], to[10];
 
-
-                // ide jöhet: checked()?
+                // ide jöhet: can_castle()
+                // ide jöhet: is_checked()
 
                 while (!back && !is_valid_tile_from(from, &back));      /* Take user input until valid FROM tile */
                 while (!back && !is_valid_tile_to(to, &back));          /* AND valid TO tile is provided.        */
                 if (!back) {                                            /* Setting the back flag to true         */
                     move(game, from, to);                               /* terminates the input prompt loop      */
 
-                    //  ide jöhet: transform_piece()?
+                    //  ide jöhet: transform_piece()
                         //  if (enemys row && your pawn)
                         //      do while ( !(valid piece input && is_revivable_piece) )
                         //          prompt_for_transform()
@@ -491,7 +493,7 @@ void print_menu_options() {
     wprintf(L"6. BACK TO MAIN MENU \n");
 }
 
-bool checked();
+bool is_checked();
 
 bool can_transform();
 
