@@ -3,13 +3,14 @@
 //
 
 // Main tests
-#include "libsakk.h"
+// #include "libsakk.h"
 
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
 
 CU_SuiteInfo mainsakk_suites[] = {
-        { "main", NULL, NULL, /*TEST SETUP*/, /*TEST TEARDOWN*/, mainsakk_tests },
+        /* { "main", NULL, NULL, TEST SETUP, TEST TEARDOWN, mainsakk_tests }, */
+        { "main", NULL, NULL, NULL, NULL, mainsakk_tests },
         CU_SUITE_INFO_NULL      // this is needed at the end
 };
 
