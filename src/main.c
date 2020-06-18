@@ -19,13 +19,17 @@ void get_input_game_choice(Game *game);
 
 void get_input_saved_to(char *save_to, int size);
 
-void get_input_prompted(char *save_to, char* prompt);
+void get_input_prompted(char *save_to, char* prompt, int size);
 
 bool get_input_confirm_choice(char* prompt);
 
 void get_input_names();
 
 bool get_input_accept_draw();
+
+void get_input_save_game();
+
+void get_input_load_game();
 
 
 
@@ -95,7 +99,7 @@ int main() {
             }
             case 2: {
                 system("clear");
-                // load_from_file()
+                get_input_load_game();
                 break;
             }
             case 3: {
@@ -196,14 +200,24 @@ void get_input_game_choice(Game *game) {
 
             case 5: // SAVE
                 valid_choice = true;
+
+                if (get_input_confirm_choice("SURE? Y/N")) {
+                    get_input_save_game();
+                }
                 break;
 
             case 6: // BACK TO MAIN
                 valid_choice = true;
                 if (get_input_confirm_choice("SURE? Y/N")) {
                     reset_board();
+
                     Playing = false;
                     In_Menu = true;
+                    memset(Player_One_Name,0,strlen(Player_One_Name));
+                    memset(Player_Two_Name,0,strlen(Player_Two_Name));
+                    Is_Draw_Offered = false;
+                    Round_Count = 0;
+
                     system("clear");
                 }
                 break;
@@ -212,6 +226,7 @@ void get_input_game_choice(Game *game) {
         }
     }
 }
+
 
 /*********************************************** Implementations ***********************************************/
 
@@ -229,6 +244,7 @@ void print_menu_main() {
  * Draw the board and print the move selection menu.
  */
 void print_menu_move() {
+    system("clear");
     draw_board();
     wprintf(L"Round: %d. %s's %s turn. ", Round_Count + 1,
             get_current_turn_color() == WHITE ? Player_One_Name : Player_Two_Name,
@@ -269,9 +285,9 @@ void get_input_saved_to(char *save_to, int size) {
  * Calls get_input_saved_to.
  * Plus displays a prompt to the terminal.
  */
-void get_input_prompted(char *save_to, char* prompt) {
+void get_input_prompted(char *save_to, char* prompt, int size) {
     wprintf(L"%s\n", prompt);
-    get_input_saved_to(save_to, 10);
+    get_input_saved_to(save_to, size);
 }
 
 /*
@@ -283,9 +299,9 @@ void get_input_prompted(char *save_to, char* prompt) {
  */
 bool get_input_confirm_choice(char* prompt) {
     char save_to[10];
-    char first_letter_insensitive;
+    int first_letter_insensitive;
     do {
-        get_input_prompted(save_to, prompt);
+        get_input_prompted(save_to, prompt, 10);
         first_letter_insensitive = tolower(save_to[0]);
     } while (!(first_letter_insensitive == 'y' || first_letter_insensitive == 'n'));
 
@@ -294,6 +310,22 @@ bool get_input_confirm_choice(char* prompt) {
     } else {
         return false;
     }
+}
+
+void get_input_save_game() {
+    char input_save_name[100];
+    char file_name[100] = "";
+    get_input_prompted(input_save_name, "Save game as: ", 80);
+    strcpy(file_name, "Saved_Games/");
+    strcat(file_name, input_save_name);
+    save_to_file(file_name, Round_Count, Player_One_Name, Player_Two_Name);
+}
+
+void get_input_load_game() {
+    char input_load_name[100];
+    wprintf(L"Saved games:\n");
+    system("ls -1 Saved_Games/");
+    get_input_prompted(input_load_name, "\nLoad file: ", 80);
 }
 
 /*
