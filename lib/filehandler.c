@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "filehandler.h"
 
-void load_from_file(char* file_name, int* step, PIECE_T game_board[BOARD_ROW_SIZE][BOARD_COL_SIZE]) {
+void load_from_file(char* file_name, int step, PIECE_T game_board[BOARD_ROW_SIZE][BOARD_COL_SIZE]) {
     FILE* file_pointer;
     file_pointer = fopen(file_name, "r");
     if (file_pointer == NULL)

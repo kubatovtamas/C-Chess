@@ -36,10 +36,38 @@ void really_prompt(char *really);
 bool get_confirmation();
 
 long parse_input_to_long();
+
+
+
+
+void get_input_names();
+
+void offer_draw();
+
+void accept_draw();
+
+void forfeit();
+
+bool checked();
+
+bool can_transform();
+
+void transform();
+
+bool get_input_piece_to_transform();
+
+bool is_revivable_piece();
+
+void get_input_tranform_piece();
+
+void show_winner();
+
 /*****************************************************************************************************************/
 
 bool InMenu = true;
 bool Playing = false;
+char player_one_name[100];
+char player_two_name[100];
 //char GameChoice[10];
 
 /*****************************************************************************************************************/
@@ -60,7 +88,9 @@ int main() {
             }
             case 2: {
                 system("clear");
+
                 // load_from_file()
+
                 break;
             }
             case 3: {
@@ -84,6 +114,10 @@ void play_game() {
         wprintf(L"Failed to allocate memory for game.\n");
         return;
     }
+    system("clear");
+
+    // ide jöhet: get_input_names()?
+    get_input_names();
 
     Playing = true;
     while (Playing) {
@@ -95,6 +129,38 @@ void play_game() {
     }
     game_end(game);
 }
+
+/*********************************************** NEW FUNCTIONS ***************************************************/
+
+void get_input_names() {
+    wprintf(L"Enter Player1's name (WHITE): ");
+    get_input(player_one_name, 100);
+
+    wprintf(L"\nEnter Player2's name (BLACK): ");
+    get_input(player_two_name, 100);
+}
+
+void offer_draw();
+
+void accept_draw();
+
+void forfeit();
+
+bool checked();
+
+bool can_transform();
+
+void transform();
+
+bool get_input_piece_to_transform();
+
+bool is_revivable_piece();
+
+void get_input_tranform_piece();
+
+void show_winner();
+
+/*****************************************************************************************************************/
 
 void get_choice(Game *game) {
     bool valid_choice = false;
@@ -111,10 +177,20 @@ void get_choice(Game *game) {
                 bool back = false;
                 char from[10], to[10];
 
+
+                // ide jöhet: checked()?
+
                 while (!back && !valid_tile_from(from, &back));     /* Take user input until valid FROM tile */
                 while (!back && !valid_tile_to(to, &back));         /* AND valid TO tile is provided.        */
                 if (!back) {                                        /* Setting the back flag to true         */
-                    move(game, from, to);                                 /* terminates the input prompt loop      */
+                    move(game, from, to);                           /* terminates the input prompt loop      */
+
+                    //  ide jöhet: transform()?
+                        //  if (enemys row && your pawn)
+                        //      do while ( !(valid piece input && is_revivable_piece) )
+                        //          prompt_for_transform()
+                        //      transform_piece()
+
                 }
 
                 system("clear");
@@ -127,6 +203,9 @@ void get_choice(Game *game) {
 
                 if (get_confirmation()) {
                     wprintf(L"YES BRANCH\n");
+
+                    // undo game state
+
                 } else {
                     wprintf(L"NO BRANCH\n");
                 }
@@ -138,6 +217,11 @@ void get_choice(Game *game) {
 
                 if (get_confirmation()) {
                     wprintf(L"YES BRANCH\n");
+
+                    // ide jöhet: offer_draw()?
+                    //              -> accept_draw()
+                    //              -> show_winner()
+
                 } else {
                     wprintf(L"NO BRANCH\n");
                 }
@@ -149,6 +233,10 @@ void get_choice(Game *game) {
 
                 if (get_confirmation()) {
                     wprintf(L"YES BRANCH\n");
+
+                    // ide jöhet: forfeit()?
+                    //              -> show_winner()
+
                 } else {
                     wprintf(L"NO BRANCH\n");
                 }
@@ -194,7 +282,8 @@ void print_main_menu() {
  */
 void print_move_menu() {
     draw_board();
-    wprintf(L"Round: %d. %s's turn. ", round_count + 1, get_current_turn_color() == WHITE ? "WHITE" : "BLACK");
+    wprintf(L"Round: %d. %s's %s turn. ", round_count + 1, get_current_turn_color() == WHITE ? player_one_name : player_two_name,
+            get_current_turn_color() == WHITE ? "(WHITE)" : "(BLACK)");
     wprintf(L"Enter choice: \n");
     wprintf(L"1. MOVE \n");
     wprintf(L"2. UNDO \n");
