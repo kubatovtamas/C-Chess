@@ -93,21 +93,22 @@ int main() {
 
         long input = parse_input_to_long();
         switch (input) {
-            PLAY: case 1: {
+            case 2: { // LOAD
+                system("clear");
+                if (!get_input_load_game()) {
+                    break;
+                }
+                LoadedGame = true;
+            }
+            // FALLTHROUGH
+            case 1: { // NEW GAME
                 system("clear");
                 In_Menu = false;
                 play_game();
                 break;
             }
-            case 2: {
-                system("clear");
-                if (get_input_load_game()) {
-                    LoadedGame = true;
-                    goto PLAY;
-                }
-                break;
-            }
-            case 3: {
+
+            case 3: { // QUIT GAME
                 wprintf(L"Goodbye!\n");
                 In_Menu = false;
                 break;
@@ -329,7 +330,9 @@ void get_input_save_game() {
 
     save_to_file(file_name, Round_Count, Player_One_Name, Player_Two_Name);
 }
-
+/*
+ * does this get included
+ */
 bool get_input_load_game() {
     char input_load_name[100];
     print_menu_saved_games();
