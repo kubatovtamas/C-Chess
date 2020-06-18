@@ -12,8 +12,6 @@
 #include "piece.h"
 #include "libsakk.h"
 
-//_Bool is_even(round_count) ? white : black
-
 // Board tester
 // Starting Position
 PIECE_T Board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {

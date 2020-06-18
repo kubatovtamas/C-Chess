@@ -41,8 +41,6 @@ long parse_input_to_long();
 bool InMenu = true;
 bool Playing = false;
 //char GameChoice[10];
-//COLOR PlayerColor = WHITE;
-extern int round_count;
 
 /*****************************************************************************************************************/
 
