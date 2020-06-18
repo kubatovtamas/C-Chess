@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include "libsakk.h"
 
-/*****************************************************************************************************************/
+/*********************************************** Declarations ***********************************************/
 
 void play_game();
 
@@ -51,7 +51,7 @@ void forfeit();
 
 
 
-/*****************************************************************************************************************/
+/********************************************** Not implemented yet ***********************************************/
 
 
 
@@ -67,7 +67,7 @@ bool is_revivable_piece();
 
 void get_input_tranform_piece();
 
-/*****************************************************************************************************************/
+/*********************************************** Globals ***********************************************/
 
 bool In_Menu = true;
 bool Playing = false;
@@ -76,7 +76,7 @@ char Player_Two_Name[100];
 bool Is_Draw_Offered = false;
 int Winner = -1; // -1: none, 0: draw, 1: player1 (white), 2: player2(black)
 
-/*****************************************************************************************************************/
+/*********************************************** Main ***********************************************/
 
 int main() {
     setlocale(LC_CTYPE, "");
@@ -110,7 +110,7 @@ int main() {
     return 0;
 }
 
-/*****************************************************************************************************************/
+/*********************************************** Play Game ***********************************************/
 
 void play_game() {
     Game *game = game_start();
@@ -124,29 +124,21 @@ void play_game() {
 
     Playing = true;
     while (Playing) {
-        system("clear");
-
         // If draw or either player won, exit main loop
         if (Winner != -1) {
             Playing = false;
         }
-
         get_input_game_choice(game);
-//        if (!In_Menu) {
-//            change_state(); // TODO remove this?
-//        }
     }
     print_menu_winner();
     game_end(game);
 }
 
-/*****************************************************************************************************************/
+/*********************************************** Game Choice ***********************************************/
 
 void get_input_game_choice(Game *game) {
     bool valid_choice = false;
     while (!valid_choice) {
-
-
         print_menu_move();
         if (Winner != -1) {
             break;
@@ -221,7 +213,7 @@ void get_input_game_choice(Game *game) {
     }
 }
 
-/*****************************************************************************************************************/
+/*********************************************** Implementations ***********************************************/
 
 /*
  * Clear the terminal and print the main menu.
@@ -349,7 +341,7 @@ bool is_valid_tile_from(char *input, bool *back) {
  * back in the menu. Returns false in this case.
  */
 bool is_valid_tile_to(char *input, bool *back) {
-    // Input prompt
+    // Input p  rompt
     wprintf(L"TO (A1-H8) or BACK: \n");
     get_input_saved_to(input, 10);
 
@@ -382,11 +374,20 @@ void get_input_names() {
     get_input_saved_to(Player_Two_Name, 100);
 }
 
+/*
+ * Sets the global Is_Draw_Offered variable to true.
+ * This will trigger an acceptation input from the opponent.
+ */
 void offer_draw() {
     Round_Count++;
     Is_Draw_Offered = true;
 }
 
+/*
+ * Takes a Yes/No input from the user.
+ * If yes is provided, game ends with draw.
+ * If no is provided, game continues.
+ */
 bool get_input_accept_draw() {
     wprintf(L"%s %s offered a draw. \n", get_current_turn_color() == WHITE ? Player_Two_Name : Player_One_Name,
             get_current_turn_color() == WHITE ? "(BLACK)" : "(WHITE)");
@@ -401,6 +402,9 @@ bool get_input_accept_draw() {
 
 }
 
+/*
+ * Sets the global Winner variable, opponent wins
+ */
 void forfeit() {
     if (get_current_turn_color() == WHITE) {
         Winner = 2;
@@ -409,6 +413,10 @@ void forfeit() {
     }
 }
 
+
+/*
+ * Prints the result of the game at the end.
+ */
 void print_menu_winner() {
     if (Winner == 0) {
         wprintf(L"It's a draw.\n");
@@ -419,6 +427,9 @@ void print_menu_winner() {
     }
 }
 
+/*
+ * Prints the options you have in a round.
+ */
 void print_menu_options() {
     wprintf(L"Enter choice: \n");
     wprintf(L"1. MOVE \n");
