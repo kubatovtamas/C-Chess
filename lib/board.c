@@ -10,7 +10,7 @@
 
 #include "board.h"
 #include "piece.h"
-#include "libsakk.h"
+#include "game.h"
 
 // Board tester
 // Starting Position
@@ -78,15 +78,28 @@ void draw_board() {
  * Eg.  D2 -> Board[7][4]
  *      D4 -> Board[5][4]
  */
-bool move(char *from, char *to) {
+bool move(Game *game, char *from, char *to) {
     int from_letter = convert_tile_letter_to_int(from[0]);
     int from_number = convert_tile_number_to_int(from[1]);
     int to_letter = convert_tile_letter_to_int(to[0]);
     int to_number = convert_tile_number_to_int(to[1]);
 
+    // Game Data Before
+    char* tiles[4] = { from, to, NULL, NULL };        // Castling not implemented
+    PIECE_T before[2] = { Board[from_number][from_letter], Board[to_number][to_letter] };
+
+    // Move
     Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
     Board[from_number][from_letter] = ' '; // from set
     round_count++;
+
+    // Game Data After
+    PIECE_T after[2] = { Board[from_number][from_letter], Board[to_number][to_letter] };
+
+    // save move to game_state
+    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
+    new_game_state(game, game_state_data);
+
 }
 
 /*

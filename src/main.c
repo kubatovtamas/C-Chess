@@ -19,7 +19,7 @@
 
 void play_game();
 
-void get_choice();
+void get_choice(Game *game);
 
 void get_input(char *str, int size);
 
@@ -88,15 +88,15 @@ void play_game() {
     Playing = true;
     while (Playing) {
         system("clear");
-        get_choice();
+        get_choice(game);
         if (!InMenu) {
-            new_game_state(game);
+            // change_state(); // TODO remove this?
         }
     }
     game_end(game);
 }
 
-void get_choice() {
+void get_choice(Game *game) {
     bool valid_choice = false;
     while (!valid_choice) {
         print_move_menu();
@@ -114,7 +114,7 @@ void get_choice() {
                 while (!back && !valid_tile_from(from, &back));     /* Take user input until valid FROM tile */
                 while (!back && !valid_tile_to(to, &back));         /* AND valid TO tile is provided.        */
                 if (!back) {                                        /* Setting the back flag to true         */
-                    move(from, to);                                 /* terminates the input prompt loop      */
+                    move(game, from, to);                                 /* terminates the input prompt loop      */
                 }
 
                 system("clear");

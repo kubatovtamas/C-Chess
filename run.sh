@@ -1,1 +1,1 @@
-./build/main
+./build/src/main
