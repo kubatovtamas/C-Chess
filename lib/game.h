@@ -31,7 +31,7 @@ typedef struct Game_State {
 // Step struct idea and pseudocode by Kuba
 // Modified by Gigi
 typedef struct Game_State_Data {
-    char* tiles[4];                      // e.g. normal move: [C2, C3, NULL, NULL]
+    char tiles[4][2];                      // e.g. normal move: [C2, C3, NULL, NULL]
     PIECE_T before[2];                   // moved piece before move
     PIECE_T after[2];                    // after move (info new position and if promoted)
     //PIECE_T hit;                       // piece that was hit and moved out of play

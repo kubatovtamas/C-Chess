@@ -75,7 +75,14 @@ void game_end(Game* game) {
 Game_State_Data* new_game_state_data(char* tiles[4], PIECE_T before[2], PIECE_T after[2]) {
     Game_State_Data *game_state_data = malloc(sizeof(Game_State_Data));
 
-    memcpy(game_state_data->tiles, tiles, sizeof(game_state_data->tiles));
+    for(int i = 0; i < 4; i++ ) {
+        if (tiles[i]) {
+            memcpy(game_state_data->tiles[i], tiles[i], sizeof(game_state_data->tiles[i]));
+        } else {
+            tiles[i] = NULL;
+        }
+    }
+
     memcpy(game_state_data->before, before, sizeof(game_state_data->before));
     memcpy(game_state_data->after, after, sizeof(game_state_data->after));
     //game_state_data->hit = hit;
