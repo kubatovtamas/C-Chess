@@ -23,5 +23,6 @@ int convert_tile_letter_to_int(char ch);
 int convert_tile_number_to_int(char ch);
 
 bool move(Game *game, char *from, char *to);
+void undo(Game* game);
 
 #endif //C_CHESS_BOARD_H
