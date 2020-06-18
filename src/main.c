@@ -27,11 +27,17 @@ void get_input_names();
 
 bool get_input_accept_draw();
 
+
+
 void print_menu_main();
 
 void print_menu_move();
 
 void print_menu_winner();
+
+void print_menu_options();
+
+
 
 bool is_valid_tile_from(char *input, bool *back);
 
@@ -180,8 +186,7 @@ void get_input_game_choice(Game *game) {
                 }
                 break;
 
-            case 3:
-                // DRAW
+            case 3: // DRAW
                 valid_choice = true;
 
                 if (get_input_confirm_choice("SURE? Y/N")) {
@@ -189,8 +194,7 @@ void get_input_game_choice(Game *game) {
                 }
                 break;
 
-            case 4:
-                // FORFEIT
+            case 4: // FORFEIT
                 valid_choice = true;
 
                 if (get_input_confirm_choice("SURE? Y/N")) {
@@ -198,23 +202,17 @@ void get_input_game_choice(Game *game) {
                 }
                 break;
 
-            case 5:
-                // SAVE
+            case 5: // SAVE
                 valid_choice = true;
                 break;
 
-            case 6:
-                // BACK TO MAIN
+            case 6: // BACK TO MAIN
                 valid_choice = true;
                 if (get_input_confirm_choice("SURE? Y/N")) {
-                    wprintf(L"YES BRANCH\n");
-
                     reset_board();
                     Playing = false;
                     In_Menu = true;
                     system("clear");
-                } else {
-                    wprintf(L"NO BRANCH\n");
                 }
                 break;
             default:
@@ -240,21 +238,15 @@ void print_menu_main() {
  */
 void print_menu_move() {
     draw_board();
-    wprintf(L"Round: %d. %s's %s turn. ", round_count + 1, get_current_turn_color() == WHITE ? Player_One_Name : Player_Two_Name,
+    wprintf(L"Round: %d. %s's %s turn. ", Round_Count + 1,
+            get_current_turn_color() == WHITE ? Player_One_Name : Player_Two_Name,
             get_current_turn_color() == WHITE ? "(WHITE)" : "(BLACK)");
 
     if (Is_Draw_Offered) {
         get_input_accept_draw();
     } else {
-        wprintf(L"Enter choice: \n");
-        wprintf(L"1. MOVE \n");
-        wprintf(L"2. UNDO \n");
-        wprintf(L"3. OFFER DRAW \n");
-        wprintf(L"4. FORFEIT MATCH \n");
-        wprintf(L"5. SAVE MATCH \n");
-        wprintf(L"6. BACK TO MAIN MENU \n");
+        print_menu_options();
     }
-
 }
 
 /*
@@ -391,7 +383,7 @@ void get_input_names() {
 }
 
 void offer_draw() {
-    round_count++;
+    Round_Count++;
     Is_Draw_Offered = true;
 }
 
@@ -404,7 +396,7 @@ bool get_input_accept_draw() {
         Winner = 0;
     } else {
         Is_Draw_Offered = false;
-        round_count++;
+        Round_Count++;
     }
 
 }
@@ -425,6 +417,16 @@ void print_menu_winner() {
     } else if (Winner == 2) {
         wprintf(L"%s (BLACK) wins.\n", Player_Two_Name);
     }
+}
+
+void print_menu_options() {
+    wprintf(L"Enter choice: \n");
+    wprintf(L"1. MOVE \n");
+    wprintf(L"2. UNDO \n");
+    wprintf(L"3. OFFER DRAW \n");
+    wprintf(L"4. FORFEIT MATCH \n");
+    wprintf(L"5. SAVE MATCH \n");
+    wprintf(L"6. BACK TO MAIN MENU \n");
 }
 
 bool checked();

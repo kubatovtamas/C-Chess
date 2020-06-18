@@ -65,7 +65,7 @@ Game state:
    a b c d e f g h
 
 global variables:
-    bool is_even(round_count) ? white : black
+    bool is_even(Round_Count) ? white : black
     bool has_moved_white_king
     bool has_moved_white_rook_long
     bool has_moved_white_rook_short

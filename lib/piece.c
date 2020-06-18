@@ -16,8 +16,8 @@ bool has_moved_black_rook_long = false;
 bool has_moved_black_rook_short = false;
 
 COLOR get_current_turn_color() {
-    // return is_even(round_count) ? WHITE : BLACK;
-    return (round_count % 2 == 0) ? WHITE : BLACK;
+    // return is_even(Round_Count) ? WHITE : BLACK;
+    return (Round_Count % 2 == 0) ? WHITE : BLACK;
 }
 
 /*

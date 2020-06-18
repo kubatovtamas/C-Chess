@@ -8,7 +8,7 @@
 #include "game.h"
 #include "piece.h"
 
-extern int round_count;         // from libsakk.c, not really sure where to put this.
+extern int Round_Count;         // from libsakk.c, not really sure where to put this.
 
 enum { BOARD_ROW_SIZE = 10, BOARD_COL_SIZE = 10 };
 
