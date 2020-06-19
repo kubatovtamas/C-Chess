@@ -47,19 +47,58 @@ bool check_if_own_piece(int row, int col) {
     }
 }
 
-void change_hasmoved_values(Position_Data* from_position) {
+
+//void toggle_hasmoved_values(Position_Data* from_position) {
+//    if( get_current_turn_color() == WHITE ) {
+//        switch (from_position->type) {
+//            case WHITEKING:
+//                has_moved_white_king = !has_moved_white_king;
+//                break;
+//            case WHITEROOK:
+//                // check which rook
+//                if( from_position->colLetter == 2
+//                    && from_position->rowNumber == 3 ) {
+//                    has_moved_white_rook_queenside = !has_moved_white_rook_queenside;
+//                } else {
+//                    has_moved_white_rook_kingside = !has_moved_white_rook_kingside;
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    } else {
+//        switch (from_position->type) {
+//            case BLACKKING:
+//                has_moved_white_king = !has_moved_white_king;
+//                break;
+//            case BLACKROOK:
+//                // check which rook
+//                if( from_position->colLetter == 2
+//                    && from_position->rowNumber == 3 ) {
+//                    has_moved_black_rook_queenside = !has_moved_black_rook_queenside;
+//                } else {
+//                    has_moved_black_rook_kingside = !has_moved_black_rook_kingside;
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+//}
+
+void set_hasmoved_values(Position_Data* from_position, bool setTo) {
     if( get_current_turn_color() == WHITE ) {
         switch (from_position->type) {
             case WHITEKING:
-                has_moved_white_king = true;
+                has_moved_white_king = setTo;
                 break;
             case WHITEROOK:
                 // check which rook
                 if( from_position->colLetter == 2
                     && from_position->rowNumber == 3 ) {
-                    has_moved_white_rook_queenside = true;
+                    has_moved_white_rook_queenside = setTo;
                 } else {
-                    has_moved_white_rook_kingside = true;
+                    has_moved_white_rook_kingside = setTo;
                 }
                 break;
             default:
@@ -68,15 +107,15 @@ void change_hasmoved_values(Position_Data* from_position) {
     } else {
         switch (from_position->type) {
             case BLACKKING:
-                has_moved_white_king = true;
+                has_moved_white_king = setTo;
                 break;
             case BLACKROOK:
                 // check which rook
                 if( from_position->colLetter == 2
                     && from_position->rowNumber == 3 ) {
-                    has_moved_black_rook_queenside = true;
+                    has_moved_black_rook_queenside = setTo;
                 } else {
-                    has_moved_black_rook_kingside = true;
+                    has_moved_black_rook_kingside = setTo;
                 }
                 break;
             default:

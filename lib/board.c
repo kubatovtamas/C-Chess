@@ -299,7 +299,7 @@ bool move(Game *game, char *from, char *to) {
     Position_Data* from_position = convert_to_position_data(from);
     Position_Data* to_position = convert_to_position_data(to);
 
-    set_hasmoved_values(from_position);
+    set_hasmoved_values(from_position, true);
 
     // save move to game_state
     Game_State_Data* game_state_data = new_game_state_data(from_position, to_position, NULL, NULL);
@@ -357,6 +357,8 @@ void undo(Game *game) {
     Board[to->rowNumber][to->colLetter] = to->type;         // set to tile to original to type
     Board[from->rowNumber][from->colLetter] = from->type;   // set from tile to original from type
 
+    set_hasmoved_values(from, false);
+
     if (displayed_game_state_ptr->data->fromCastle
         && displayed_game_state_ptr->data->toCastle ) {
         // get position data
@@ -366,13 +368,14 @@ void undo(Game *game) {
         Board[to_castle->rowNumber][to_castle->colLetter] = to_castle->type;         // set to tile to original to type
         Board[from_castle->rowNumber][from_castle->colLetter] = from_castle->type;   // set from tile to original from type
 
-        reset_has_moved_values();
+        set_hasmoved_values(from_castle, false);
     }
 
     // Change round count to reflect undo
     Round_Count--;
 
     undo_to_previous_state();
+
 
     debug_print_game(game);
 }

@@ -36,7 +36,7 @@ extern bool has_moved_black_rook_kingside;     // H8
 COLOR get_current_turn_color();
 bool check_if_own_piece(int row, int col);
 
-void change_hasmoved_values(Position_Data* from_position);
+void set_hasmoved_values(Position_Data* from_position, bool setTo);
 
 
 #endif // C_CHESS_PIECE_H
