@@ -125,6 +125,7 @@ void move_after_undo(Game* game, Game_State* game_state) {
 }
 
 void debug_print_game(Game* game) {
+    #ifdef DEBUG
     Game_State *next_state = game->defaultstate;
 
     wprintf(L"Current: %x\n", displayed_game_state_ptr);
@@ -137,4 +138,5 @@ void debug_print_game(Game* game) {
     }
 
     wprintf(L"Last: %x\n", game->currentstate);
+    #endif
 }

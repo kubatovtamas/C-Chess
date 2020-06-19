@@ -177,11 +177,7 @@ bool move(Game *game, char *from, char *to) {
     set_has_moved_values(from_position, true);
     Round_Count++;
 
-    if (DEBUGGING) {
-        debug_print_game(game);
-    }
-
-
+    debug_print_game(game);
 }
 
 void undo(Game *game) {
