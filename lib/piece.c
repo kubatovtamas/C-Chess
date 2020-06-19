@@ -5,12 +5,8 @@
 #include "piece.h"
 #include "board.h"
 
-#include "libsakk.h"        // is_even
-
-
 
 COLOR get_current_turn_color() {
-    // return is_even(Round_Count) ? WHITE : BLACK;
     return (Round_Count % 2 == 0) ? WHITE : BLACK;
 }
 
@@ -47,6 +43,44 @@ bool check_if_own_piece(int row, int col) {
                 return 1;
             default:
                 return 0;
+        }
+    }
+}
+
+void change_hasmoved_values(Position_Data* from_position) {
+    if( get_current_turn_color() == WHITE ) {
+        switch (from_position->type) {
+            case WHITEKING:
+                has_moved_white_king = true;
+                break;
+            case WHITEROOK:
+                // check which rook
+                if( from_position->colLetter == 2
+                    && from_position->rowNumber == 3 ) {
+                    has_moved_white_rook_queenside = true;
+                } else {
+                    has_moved_white_rook_kingside = true;
+                }
+                break;
+            default:
+                break;
+        }
+    } else {
+        switch (from_position->type) {
+            case BLACKKING:
+                has_moved_white_king = true;
+                break;
+            case BLACKROOK:
+                // check which rook
+                if( from_position->colLetter == 2
+                    && from_position->rowNumber == 3 ) {
+                    has_moved_black_rook_queenside = true;
+                } else {
+                    has_moved_black_rook_kingside = true;
+                }
+                break;
+            default:
+                break;
         }
     }
 }

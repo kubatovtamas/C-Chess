@@ -65,6 +65,7 @@ void draw_board() {
 }
 
 /******************** CASTLING ****************/
+// TODO NOTE: I added an extern definition for these in piece.h since I needed them
 bool has_moved_white_king = false;              // D1
 bool has_moved_white_rook_queenside = false;    // A1
 bool has_moved_white_rook_kingside = false;     // H1
@@ -298,6 +299,8 @@ bool move(Game *game, char *from, char *to) {
     Position_Data* from_position = convert_to_position_data(from);
     Position_Data* to_position = convert_to_position_data(to);
 
+    set_hasmoved_values(from_position);
+
     // save move to game_state
     Game_State_Data* game_state_data = new_game_state_data(from_position, to_position, NULL, NULL);
     new_game_state(game, game_state_data);
@@ -310,6 +313,8 @@ bool move(Game *game, char *from, char *to) {
         debug_print_game(game);
     }
 }
+
+
 
 /******* DEPRECATED ******/
 //void undo(Game *game) {
@@ -361,7 +366,7 @@ void undo(Game *game) {
         Board[to_castle->rowNumber][to_castle->colLetter] = to_castle->type;         // set to tile to original to type
         Board[from_castle->rowNumber][from_castle->colLetter] = from_castle->type;   // set from tile to original from type
 
-
+        reset_has_moved_values();
     }
 
     // Change round count to reflect undo
@@ -386,11 +391,13 @@ bool mutate_board(char *from, char *to) {
 }
 
 void reset_has_moved_values() {
-    has_moved_white_king = false;              // D1
-    has_moved_white_rook_queenside = false;    // A1
-    has_moved_white_rook_kingside = false;     // H1
 
-    has_moved_black_king = false;              // D8
-    has_moved_black_rook_queenside = false;    // A8
-    has_moved_black_rook_kingside = false;     // H8
+        has_moved_white_king = false;              // D1
+        has_moved_white_rook_queenside = false;    // A1
+        has_moved_white_rook_kingside = false;     // H1
+
+        has_moved_black_king = false;              // D8
+        has_moved_black_rook_queenside = false;    // A8
+        has_moved_black_rook_kingside = false;     // H8
+
 }
