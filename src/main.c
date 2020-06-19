@@ -54,6 +54,8 @@ void offer_draw();
 
 void forfeit();
 
+void castle_queenside();
+
 
 
 /********************************************** Not implemented yet ***********************************************/

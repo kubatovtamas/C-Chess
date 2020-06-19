@@ -62,6 +62,8 @@ void free_game_state_to_end(Game_State* game_state) {
         free_game_state(game_state);                // free current Game_State
     }
 
+
+
 }
 
 // free_game_state_to_end(game->first) and free(game);
