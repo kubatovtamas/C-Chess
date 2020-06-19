@@ -6,7 +6,6 @@
 #include <CUnit/CUnit.h>
 #include "utest-piece.h"
 
-
 void test_load_from_file() {
 
 }
