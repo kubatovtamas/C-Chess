@@ -8,8 +8,10 @@
 #include "piece.h"
 
 enum {
-    WHITE_QUEENSIDE_ROOK_ROW = 1,
-    WHITE_QUEENSIDE_ROOK_COL = 8,
+    // A1
+    WHITE_QUEENSIDE_ROOK_ROW = 8,
+    WHITE_QUEENSIDE_ROOK_COL = 1,
+    // A8
     BLACK_QUEENSIDE_ROOK_ROW = 1,
     BLACK_QUEENSIDE_ROOK_COL = 1,
 };
