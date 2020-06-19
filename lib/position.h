@@ -7,6 +7,7 @@
 
 #include "piece.h"
 
+// Gigi
 enum {
     // A1
     WHITE_QUEENSIDE_ROOK_ROW = 8,
@@ -16,6 +17,7 @@ enum {
     BLACK_QUEENSIDE_ROOK_COL = 1,
 };
 
+// Gigi
 ///************* Position Data ************/
 typedef struct Position_Data {
     PIECE_T type;

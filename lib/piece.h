@@ -1,3 +1,5 @@
+// Piece_H by Gigi
+
 #ifndef PIECE_H
 #define PIECE_H
 

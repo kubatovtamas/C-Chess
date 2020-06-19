@@ -7,6 +7,7 @@
 #include "board.h"      // access to Board array and has_moved bools
 #include "ctype.h"      // tolower
 
+// Gigi
 Position_Data* new_position_data(PIECE_T type, int colLetter, int rowNumber) {
     Position_Data* position = malloc(sizeof(Position_Data));
 
@@ -17,10 +18,14 @@ Position_Data* new_position_data(PIECE_T type, int colLetter, int rowNumber) {
     return position;
 }
 
+// 50-50
 Position_Data* convert_to_position_data(char* from) {
 
+    // Kuba
     int from_letter = convert_tile_letter_to_int(from[0]);
     int from_number = convert_tile_number_to_int(from[1]);
+
+    // Gigi
     PIECE_T fromPiece = Board[from_number][from_letter];
 
     Position_Data* position = new_position_data(fromPiece, from_letter, from_number);
@@ -64,6 +69,7 @@ int convert_tile_number_to_int(char ch) {
     return 9 - (ch - '0');
 }
 
+// Gigi
 void set_has_moved_values(Position_Data* from_position, bool setTo) {
     if( get_current_turn_color() == WHITE ) {
         switch (from_position->type) {

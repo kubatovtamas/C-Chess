@@ -1,5 +1,6 @@
 //
 // Created by gigi on 6/18/20.
+// game.c by Gigi
 //
 
 #include <stdlib.h>     // NULL

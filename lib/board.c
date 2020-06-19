@@ -14,6 +14,8 @@
 #include "position.h"
 
 // Starting Position
+// Gigi
+// Modified by Kuba
 PIECE_T Board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
         // Black
         {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'},
@@ -169,6 +171,8 @@ bool can_transform(int* pos, COLOR* color) {
     }
 }
 
+// function declaration by Kuba
+// implementation by Gigi
 bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook) {
     move_after_undo(game, displayed_game_state_ptr);
 
@@ -190,6 +194,7 @@ bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *t
     Round_Count++;
 }
 
+// Gigi
 bool move(Game *game, char *from, char *to) {
     move_after_undo(game, displayed_game_state_ptr);
 
@@ -209,6 +214,7 @@ bool move(Game *game, char *from, char *to) {
     debug_print_game(game);
 }
 
+// Gigi
 void undo(Game *game) {
     if (!displayed_game_state_ptr->previous) { return; }
 
