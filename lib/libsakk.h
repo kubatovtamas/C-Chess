@@ -6,7 +6,7 @@
 #define C_CHESS_LIBSAKK_H
 
 #include "board.h"
-#include "filehandler.h"
+#include "file_handler.h"
 #include "game.h"
 #include "piece.h"
 
