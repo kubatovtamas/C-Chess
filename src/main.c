@@ -27,7 +27,7 @@ bool get_input_load_game();
 
 void get_input_names();
 
-bool get_input_accept_draw();
+void get_input_accept_draw();
 
 long get_input_transform_piece();
 
@@ -67,7 +67,7 @@ char Player_Two_Name[100];
 bool Is_Draw_Offered = false;
 int Winner = -1; // -1: none, 0: draw, 1: player1 (white), 2: player2(black)
 bool Loaded_Game = false;
-
+bool Skip = false;
 
 
 int main() {
@@ -140,8 +140,10 @@ void play_game() {
 void get_input_game_choice(Game *game) {
     bool valid_choice = false;
     while (!valid_choice) {
+        Skip = false;
         print_menu_move();
         if (Winner != -1) break;    // Game ended -> break game loop
+        if (Skip) continue;         // If declined draw -> skip input loop
 
         long input = parse_input_to_long();
         switch (input) {
@@ -308,16 +310,16 @@ void get_input_names() {
  * If yes is provided, game ends with a draw.
  * If no is provided, game continues.
  */
-bool get_input_accept_draw() {
+void get_input_accept_draw() {
     wprintf(L"%s %s offered a draw. \n", get_current_turn_color() == WHITE ? Player_Two_Name : Player_One_Name,
             get_current_turn_color() == WHITE ? "(BLACK)" : "(WHITE)");
     bool accepted = get_input_confirm_choice("Do you accept? Y/N");
     if (accepted) {
-        Is_Draw_Offered = false;
         Winner = 0;
     } else {
         Is_Draw_Offered = false;
         Round_Count++;
+        Skip = true;
     }
 }
 
