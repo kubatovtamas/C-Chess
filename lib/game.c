@@ -54,12 +54,20 @@ void free_game_state(Game_State* game_state) {
 
 // iterate through Game_States from node and free all of them
 void free_game_state_to_end(Game_State* game_state) {
-    Game_State *next = game_state;                  // starting node to delete from
+    /*Game_State *next = game_state;                  // starting node to delete from
 
     while(next) {
         Game_State *game_state = next;              // set current Game_State to next in list
         next = game_state->next;
         free_game_state(game_state);                // free current Game_State
+    }*/
+
+    Game_State* tmp;
+
+    while(game_state) {
+        tmp = game_state;
+        game_state = game_state->next;
+        free_game_state(tmp);
     }
 
 
@@ -80,8 +88,6 @@ Game_State_Data* new_game_state_data(char* tiles[4], PIECE_T before[2], PIECE_T 
     for(int i = 0; i < 4; i++ ) {
         if (tiles[i]) {
             memcpy(game_state_data->tiles[i], tiles[i], sizeof(game_state_data->tiles[i]));
-        } else {
-            tiles[i] = NULL;
         }
     }
 
@@ -98,4 +104,9 @@ void undo_to_previous_state(Game *game) {
         return;
     }
     displayed_game_state_ptr = displayed_game_state_ptr->previous;
+}
+
+void move_after_undo(Game_State* game_state) {
+    free_game_state_to_end(game_state);
+    displayed_game_state_ptr->next = NULL;
 }

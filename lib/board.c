@@ -190,7 +190,7 @@ bool move(Game *game, char *from, char *to) {
     PIECE_T after[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
 
     if (displayed_game_state_ptr->next) {
-        free_game_state_to_end(displayed_game_state_ptr->next);
+        move_after_undo(displayed_game_state_ptr->next);
     }
 
     // save move to game_state
