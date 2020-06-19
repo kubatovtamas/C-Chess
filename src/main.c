@@ -33,6 +33,8 @@ bool get_input_load_game();
 
 long parse_input_to_long();
 
+long get_input_transform_piece();
+
 
 void print_menu_main();
 
@@ -56,17 +58,7 @@ bool is_valid_tile_from(char *input, bool *back, int *castling);
 
 bool is_valid_tile_to(char *input, bool *back);
 
-/********************************************** Not implemented yet ***********************************************/
-
-bool can_transform();
-
-void transform_piece();
-
-bool get_input_piece_to_transform();
-
-bool is_revivable_piece();
-
-void get_input_tranform_piece();
+void check_transform_piece();
 
 /*********************************************** Globals ***********************************************/
 
@@ -130,6 +122,7 @@ void play_game() {
     system("clear");
     if (!Loaded_Game) {
         get_input_names();
+        system("clear");
     }
 
     Playing = true;
@@ -160,28 +153,22 @@ void get_input_game_choice(Game *game) {
                 int castling = 0;       // 0: none, 1: kingside, 2: queenside
                 char from[20], to[20];
 
-                // Prompt: from (or castling, or back)
+                // Prompt user until valid input is given (valid tile, "back", "kingside", or "queenside")
                 while (!back && !is_valid_tile_from(from, &back, &castling));
                 if (castling == 1) {
                     castle_kingside(game);
                 } else if (castling == 2) {
                     castle_queenside(game);
                 } else {
-                    // Prompt: to (or back)
+                    // Prompt user until valid input is given (valid tile or "back")
                     while (!back && !is_valid_tile_to(to, &back));
-                    // Move
+
                     if (!back) {
-                        move(game, from, to);
-                        if (can_transform()) {
-                            get_input_tranform_piece();
-                        }
-                        //  ide jöhet: transform_piece()
-                        //  if (enemys row && your pawn)
-                        //      do while ( !(valid piece input && is_revivable_piece) )
-                        //          prompt_for_transform()
-                        //      transform_piece()
+                        move(game, from, to);       // Change game state according to user input
+                        check_transform_piece();    // Check if transforming a piece is necessary at this point
                     }
                 }
+
                 system("clear");
                 draw_board();
                 break;
@@ -326,8 +313,8 @@ void get_input_names() {
 bool get_input_accept_draw() {
     wprintf(L"%s %s offered a draw. \n", get_current_turn_color() == WHITE ? Player_Two_Name : Player_One_Name,
             get_current_turn_color() == WHITE ? "(BLACK)" : "(WHITE)");
-
-    if (get_input_confirm_choice("Do you accept? Y/N")) {
+    bool accepted = get_input_confirm_choice("Do you accept? Y/N");
+    if (accepted) {
         Is_Draw_Offered = false;
         Winner = 0;
     } else {
@@ -544,37 +531,60 @@ bool is_valid_tile_to(char *input, bool *back) {
 
 
 
-bool can_transform() {
-    if (get_current_turn_color() == BLACK) {
-        for (int i = 1; i < 9; ++i) {
-            if (Board[1][i] == WHITEPAWN) {
-                return true;
+
+
+void check_transform_piece() {
+    int pos;
+    COLOR color;
+    if (can_transform(&pos, &color)) {
+        long transform_to = get_input_transform_piece();
+        if (color == WHITE) {
+            switch (transform_to) {
+                case 1:
+                    Board[1][pos] = WHITEQUEEN;
+                    break;
+                case 2:
+                    Board[1][pos] = WHITEROOK;
+                    break;
+                case 3:
+                    Board[1][pos] = WHITEBISHOP;
+                    break;
+                case 4:
+                    Board[1][pos] = WHITEKNIGHT;
+                    break;
+                default:
+                    break;
+            }
+        } else if (color == BLACK) {
+            switch (transform_to) {
+                case 1:
+                    Board[8][pos] = BLACKQUEEN;
+                    break;
+                case 2:
+                    Board[8][pos] = BLACKROOK;
+                    break;
+                case 3:
+                    Board[8][pos] = BLACKBISHOP;
+                    break;
+                case 4:
+                    Board[8][pos] = BLACKKNIGHT;
+                    break;
+                default:
+                    break;
             }
         }
-        return false;
-    } else {
-        for (int i = 0; i < 9; ++i) {
-            if (Board[8][i] == BLACKPAWN) {
-                return true;
-            }
-        }
-        return false;
     }
 }
 
-void transform_piece();
-
-bool get_input_piece_to_transform();
-
-bool is_revivable_piece();
-
-void get_input_tranform_piece() {
+long get_input_transform_piece() {
     long transform_to;
     wprintf(L"1: QUEEN\n");
-    wprintf(L"2: BISHOP\n");
-    wprintf(L"3: KNIGHT\n");
-    wprintf(L"Transform pawn to 1/2/3: ");
+    wprintf(L"2: ROOK\n");
+    wprintf(L"3: BISHOP\n");
+    wprintf(L"4: KNIGHT\n");
+    wprintf(L"Transform pawn to 1/2/3/4: ");
     do {
         transform_to = parse_input_to_long();
-    } while (!(1 <= transform_to  && transform_to <= 3));
+    } while (!(1 <= transform_to  && transform_to <= 4));
+    return transform_to;
 }

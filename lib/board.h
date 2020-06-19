@@ -43,6 +43,8 @@ void castle_queenside(Game* game);
 
 void castle_kingside(Game* game);
 
+bool can_transform(int* transform_pos, COLOR* color);
+
 bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook);
 
 bool mutate_board(char *from, char *to);
