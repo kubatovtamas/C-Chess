@@ -13,6 +13,7 @@
 #include "board.h"
 #include "piece.h"
 #include "game.h"
+#include "position.h"
 
 // Starting Position
 PIECE_T Board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
@@ -30,6 +31,40 @@ PIECE_T Board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
         // White
 };
 
+/*
+ * Resets the board to the starting state.
+ * Overwrites the memory of the starting Board.
+ */
+void reset_board() {
+    PIECE_T original_board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
+            // Black
+            {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'},
+            {'8', BLACKROOK, BLACKKNIGHT, BLACKBISHOP, BLACKQUEEN, BLACKKING, BLACKBISHOP, BLACKKNIGHT, BLACKROOK, '8'},
+            {'7', BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN,  BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN, '7'},
+            {'6', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '6'},
+            {'5', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '5'},
+            {'4', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '4'},
+            {'3', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '3'},
+            {'2', WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN,  WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN, '2'},
+            {'1', WHITEROOK, WHITEKNIGHT, WHITEBISHOP, WHITEQUEEN, WHITEKING, WHITEBISHOP, WHITEKNIGHT, WHITEROOK, '1'},
+            {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'}
+            // White
+    };
+    memcpy(Board, original_board, (sizeof(PIECE_T) * BOARD_ROW_SIZE * BOARD_COL_SIZE));
+}
+
+void draw_board() {
+    setlocale(LC_CTYPE, "");
+    for (int i = 0; i < BOARD_ROW_SIZE; i++) {
+        for (int j = 0; j < BOARD_COL_SIZE; ++j) {
+            wchar_t ch = Board[i][j];
+            wprintf(L" %lc ", ch);
+        }
+        wprintf(L"\n");
+    }
+}
+
+/******************** CASTLING ****************/
 bool has_moved_white_king = false;              // D1
 bool has_moved_white_rook_queenside = false;    // A1
 bool has_moved_white_rook_kingside = false;     // H1
@@ -106,126 +141,51 @@ void castle_kingside(Game* game) {
     }
 }
 
-/*
- * Takes two string args, in the form of "A1"/"D4"/"g7". (case insensitive)
- * Mutates the Board accordingly. Increments the global Round_Count.
- *
- * Converter functions handle the proper conversions from str to int.
- * The letter is responsible for the second,
- * The number is responsible for the first
- * array selector.
- *
- * Eg.  D2 -> Board[7][4]
- *      D4 -> Board[5][4]
- */
-bool move(Game *game, char *from, char *to) {
-    int from_letter = convert_tile_letter_to_int(from[0]);
-    int from_number = convert_tile_number_to_int(from[1]);
-    int to_letter = convert_tile_letter_to_int(to[0]);
-    int to_number = convert_tile_number_to_int(to[1]);
-
-    // Game Data Before
-    char tiles[4][2] = {from, to, NULL, NULL};
-//    int fromTile[2] = { from_letter, from_number };
-//    int toTile[2] = { to_letter, to_number };
-    PIECE_T before[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
-
-    // Move
-    Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
-    Board[from_number][from_letter] = ' '; // from set
-    Round_Count++;
-
-    // Game Data After
-    PIECE_T after[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
-
-    move_after_undo(game, displayed_game_state_ptr);
-
-    // save move to game_state
-//    Game_State_Data *game_state_data = new_game_state_data(fromTile, toTile, before, after);
-    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
-    new_game_state(game, game_state_data);
-
-    if (DEBUGGING) {
-        debug_print_game(game);
-    }
-
-}
+/*** DEPRECATED *****/
+//bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook) {
+//    // King
+//    int from_king_letter = convert_tile_letter_to_int(from_king[0]);
+//    int from_king_number = convert_tile_number_to_int(from_king[1]);
+//    int to_king_letter = convert_tile_letter_to_int(to_king[0]);
+//    int to_king_number = convert_tile_number_to_int(to_king[1]);
+//
+//    // Rook
+//    int from_rook_letter = convert_tile_letter_to_int(from_rook[0]);
+//    int from_rook_number = convert_tile_number_to_int(from_rook[1]);
+//    int to_rook_letter = convert_tile_letter_to_int(to_rook[0]);
+//    int to_rook_number = convert_tile_number_to_int(to_rook[1]);
+//
+//    // Game Data Before
+//    char *tiles[4] = {from_king, to_king, from_rook, to_rook};
+//    PIECE_T before[4] = {Board[from_king_number][from_king_letter], Board[to_king_number][to_king_letter],  // King from-to
+//                         Board[from_rook_number][from_rook_letter], Board[to_rook_number][to_rook_letter]}; // Rook from-to
+//
+//    // Move
+//    Board[to_king_number][to_king_letter] = Board[from_king_number][from_king_letter];  // King to
+//    Board[from_king_number][from_king_letter] = ' ';                                    // King from
+//    Board[to_rook_number][to_rook_letter] = Board[from_rook_number][from_rook_letter];  // Rook to
+//    Board[from_rook_number][from_rook_letter] = ' ';                                    // King from
+//    Round_Count++;
+//
+//    // Game Data After
+//    PIECE_T after[4] = {Board[from_king_number][from_king_letter], Board[to_king_number][to_king_letter],  // King from-to
+//                        Board[from_rook_number][from_rook_letter], Board[to_rook_number][to_rook_letter]}; // Rook from-to
+//
+//    if (displayed_game_state_ptr->next) {
+//        free_game_state_to_end(displayed_game_state_ptr->next);
+//    }
+//
+//    // Save move to game_state
+//    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
+//    new_game_state(game, game_state_data);
+//}
 
 bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook) {
-    // King
-    int from_king_letter = convert_tile_letter_to_int(from_king[0]);
-    int from_king_number = convert_tile_number_to_int(from_king[1]);
-    int to_king_letter = convert_tile_letter_to_int(to_king[0]);
-    int to_king_number = convert_tile_number_to_int(to_king[1]);
-
-    // Rook
-    int from_rook_letter = convert_tile_letter_to_int(from_rook[0]);
-    int from_rook_number = convert_tile_number_to_int(from_rook[1]);
-    int to_rook_letter = convert_tile_letter_to_int(to_rook[0]);
-    int to_rook_number = convert_tile_number_to_int(to_rook[1]);
-
-    // Game Data Before
-    char *tiles[4] = {from_king, to_king, from_rook, to_rook};
-    PIECE_T before[4] = {Board[from_king_number][from_king_letter], Board[to_king_number][to_king_letter],  // King from-to
-                         Board[from_rook_number][from_rook_letter], Board[to_rook_number][to_rook_letter]}; // Rook from-to
-
-    // Move
-    Board[to_king_number][to_king_letter] = Board[from_king_number][from_king_letter];  // King to
-    Board[from_king_number][from_king_letter] = ' ';                                    // King from
-    Board[to_rook_number][to_rook_letter] = Board[from_rook_number][from_rook_letter];  // Rook to
-    Board[from_rook_number][from_rook_letter] = ' ';                                    // King from
-    Round_Count++;
-
-    // Game Data After
-    PIECE_T after[4] = {Board[from_king_number][from_king_letter], Board[to_king_number][to_king_letter],  // King from-to
-                        Board[from_rook_number][from_rook_letter], Board[to_rook_number][to_rook_letter]}; // Rook from-to
-
-    if (displayed_game_state_ptr->next) {
-        free_game_state_to_end(displayed_game_state_ptr->next);
-    }
-
-    // Save move to game_state
-    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
-    new_game_state(game, game_state_data);
-}
-
-void undo(Game *game) {
-
-    if (!displayed_game_state_ptr->previous) { return; }
-
-    char *from = (displayed_game_state_ptr->data->tiles)[0];      // { from, to, NULL, NULL };
-    char *to = displayed_game_state_ptr->data->tiles[1];        // { from, to, NULL, NULL };
-
-    int from_letter = convert_tile_letter_to_int(from[0]);
-    int from_number = convert_tile_number_to_int(from[1]);
-    int to_letter = convert_tile_letter_to_int(to[0]);
-    int to_number = convert_tile_number_to_int(to[1]);
-
-    // this is a little hairy
-//    int to_letter = displayed_game_state_ptr->data->toTile[0];
-//    int to_number = displayed_game_state_ptr->data->toTile[1];
-//
-//    int from_letter = displayed_game_state_ptr->data->fromTile[0];
-//    int from_number = displayed_game_state_ptr->data->fromTile[1];
-
-    PIECE_T originalFromPiece = (displayed_game_state_ptr->data->before)[0];        // e.g ['pawn', 'queen'] if pawn hit queen
-    PIECE_T originalToPiece = (displayed_game_state_ptr->data->before)[1];
-
-    // Change board accordingly
-    Board[to_number][to_letter] = originalToPiece;
-    Board[from_number][from_letter] = originalFromPiece;
-
-    // Change round count to reflect undo
-    Round_Count--;
-
-    //debug_print_game(game);
-
-    undo_to_previous_state();
-
-    debug_print_game(game);
 
 }
 
+
+/*********** FILE HANDLING ******************/
 bool load_from_file(char *input_name, int *global_round_count,
                     char *global_p1_name, char *global_p2_name, PIECE_T game_board[BOARD_ROW_SIZE][BOARD_COL_SIZE]) {
     FILE *file_pointer;
@@ -269,74 +229,22 @@ void save_to_file(char *file_name, int global_round_count, char *global_p1_name,
     fclose(file_pointer);
 }
 
-/*
- * Resets the board to the starting state.
- * Overwrites the memory of the starting Board.
- */
-void reset_board() {
-    PIECE_T original_board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
-            // Black
-            {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'},
-            {'8', BLACKROOK, BLACKKNIGHT, BLACKBISHOP, BLACKQUEEN, BLACKKING, BLACKBISHOP, BLACKKNIGHT, BLACKROOK, '8'},
-            {'7', BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN,  BLACKPAWN, BLACKPAWN,   BLACKPAWN,   BLACKPAWN, '7'},
-            {'6', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '6'},
-            {'5', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '5'},
-            {'4', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '4'},
-            {'3', ' ',       ' ',         ' ',         ' ',        ' ',       ' ',         ' ',         ' ',       '3'},
-            {'2', WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN,  WHITEPAWN, WHITEPAWN,   WHITEPAWN,   WHITEPAWN, '2'},
-            {'1', WHITEROOK, WHITEKNIGHT, WHITEBISHOP, WHITEQUEEN, WHITEKING, WHITEBISHOP, WHITEKNIGHT, WHITEROOK, '1'},
-            {' ', 'A',       'B',         'C',         'D',        'E',       'F',         'G',         'H'}
-            // White
-    };
-    memcpy(Board, original_board, (sizeof(PIECE_T) * BOARD_ROW_SIZE * BOARD_COL_SIZE));
-}
 
-void draw_board() {
-    setlocale(LC_CTYPE, "");
-    for (int i = 0; i < BOARD_ROW_SIZE; i++) {
-        for (int j = 0; j < BOARD_COL_SIZE; ++j) {
-            wchar_t ch = Board[i][j];
-            wprintf(L" %lc ", ch);
-        }
-        wprintf(L"\n");
-    }
-}
+
+/******************* DEPRECATED **************/
 
 /*
- * Handles the conversion from Tile letter to int.
- * Returns the proper array selector for the Tile.
- * A -> 1
- * B -> 2
- * C -> 3
- * D -> 4
- * E -> 5
- * F -> 6
- * G -> 7
- * H -> 8
+ * Takes two string args, in the form of "A1"/"D4"/"g7". (case insensitive)
+ * Mutates the Board accordingly. Increments the global Round_Count.
+ *
+ * Converter functions handle the proper conversions from str to int.
+ * The letter is responsible for the second,
+ * The number is responsible for the first
+ * array selector.
+ *
+ * Eg.  D2 -> Board[7][4]
+ *      D4 -> Board[5][4]
  */
-int convert_tile_letter_to_int(char ch) {
-
-    return tolower(ch) - 'a' + 1;
-}
-
-/*
- * Handles the conversion from Tile number to int.
- * Returns the proper array selector for the Tile.
- * 1 -> 8
- * 2 -> 7
- * 3 -> 6
- * 4 -> 5
- * 5 -> 4
- * 6 -> 3
- * 7 -> 2
- * 8 -> 1
- */
-int convert_tile_number_to_int(char ch) {
-
-    return 9 - (ch - '0');
-}
-
-//// DEPRECATED
 //bool move(Game *game, char *from, char *to) {
 //    int from_letter = convert_tile_letter_to_int(from[0]);
 //    int from_number = convert_tile_number_to_int(from[1]);
@@ -344,7 +252,7 @@ int convert_tile_number_to_int(char ch) {
 //    int to_number = convert_tile_number_to_int(to[1]);
 //
 //    // Game Data Before
-//    char *tiles[4] = {from, to, NULL, NULL};
+//    char tiles[4][2] = {from, to, NULL, NULL};
 //    PIECE_T before[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
 //
 //    // Move
@@ -355,11 +263,96 @@ int convert_tile_number_to_int(char ch) {
 //    // Game Data After
 //    PIECE_T after[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
 //
-//    if (displayed_game_state_ptr->next) {
-//        free_game_state_to_end(displayed_game_state_ptr->next);
-//    }
+//    move_after_undo(game, displayed_game_state_ptr);
 //
-//    // Save move to game_state
+//    // save move to game_state
 //    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
 //    new_game_state(game, game_state_data);
+//
+//    if (DEBUGGING) {
+//        debug_print_game(game);
+//    }
+//
 //}
+
+bool move(Game *game, char *from, char *to) {
+    move_after_undo(game, displayed_game_state_ptr);
+
+    Position_Data* from_position = convert_to_position_data(from);
+    Position_Data* to_position = convert_to_position_data(to);
+
+    // save move to game_state
+    Game_State_Data* game_state_data = new_game_state_data(from_position, to_position);
+    new_game_state(game, game_state_data);
+
+    Round_Count++;
+
+    mutate_board(from, to);
+
+    if (DEBUGGING) {
+        debug_print_game(game);
+    }
+}
+
+/******* DEPRECATED ******/
+//void undo(Game *game) {
+//
+//    if (!displayed_game_state_ptr->previous) { return; }
+//
+//    char *from = (displayed_game_state_ptr->data->tiles)[0];      // { from, to, NULL, NULL };
+//    char *to = displayed_game_state_ptr->data->tiles[1];        // { from, to, NULL, NULL };
+//
+//    int from_letter = convert_tile_letter_to_int(from[0]);
+//    int from_number = convert_tile_number_to_int(from[1]);
+//    int to_letter = convert_tile_letter_to_int(to[0]);
+//    int to_number = convert_tile_number_to_int(to[1]);
+//
+//    PIECE_T originalFromPiece = (displayed_game_state_ptr->data->before)[0];        // e.g ['pawn', 'queen'] if pawn hit queen
+//    PIECE_T originalToPiece = (displayed_game_state_ptr->data->before)[1];
+//
+//    // Change board accordingly
+//    Board[to_number][to_letter] = originalToPiece;
+//    Board[from_number][from_letter] = originalFromPiece;
+//
+//    // Change round count to reflect undo
+//    Round_Count--;
+//
+//    //debug_print_game(game);
+//
+//    undo_to_previous_state();
+//
+//    debug_print_game(game);
+//
+//}
+
+void undo(Game *game) {
+    if (!displayed_game_state_ptr->previous) { return; }
+
+    // get position data
+    Position_Data* from = displayed_game_state_ptr->data->fromPosition;
+    Position_Data* to = displayed_game_state_ptr->data->toPosition;
+
+    Board[to->rowNumber][to->colLetter] = to->type;         // set to tile to original to type
+    Board[from->rowNumber][from->colLetter] = from->type;   // set from tile to original from type
+
+    // Change round count to reflect undo
+    Round_Count--;
+
+    undo_to_previous_state();
+
+    debug_print_game(game);
+}
+
+
+
+
+bool mutate_board(char *from, char *to) {
+    int from_letter = convert_tile_letter_to_int(from[0]);
+    int from_number = convert_tile_number_to_int(from[1]);
+    int to_letter = convert_tile_letter_to_int(to[0]);
+    int to_number = convert_tile_number_to_int(to[1]);
+
+    Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
+    Board[from_number][from_letter] = ' '; // from set
+}
+

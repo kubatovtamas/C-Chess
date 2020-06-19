@@ -6,6 +6,7 @@
 #define SAKK_GAME_H
 
 #include "piece.h"
+#include "position.h"
 
 /************* Game ******************/
 typedef struct Game {
@@ -30,19 +31,17 @@ typedef struct Game_State {
 /************** Game_State_Data ***************/
 // Step struct idea and pseudocode by Kuba
 // Modified by Gigi
+//typedef struct Game_State_Data {
+//    char tiles[4][2];
+//    PIECE_T before[2];                   // moved piece before move
+//    PIECE_T after[2];                    // after move (info new position and if promoted)
+//} Game_State_Data;
+
 typedef struct Game_State_Data {
-//    int fromTile[2];                     // col then row (letter, number)
-//    int toTile[2];                       // letter, number
-    char tiles[4][2];
-    PIECE_T before[2];                   // moved piece before move
-    PIECE_T after[2];                    // after move (info new position and if promoted)
+    struct Position_Data *fromPosition;             // from position and piece_type at location
+    struct Position_Data *toPosition;               // to position and piece_type at location
 } Game_State_Data;
 
-//typedef struct Game_State_Data {
-//    struct Position_Data *fromPosition;             // from position and piece_type at location
-//    struct Position_Data *toPosition;               // to position and piece_type at location
-//} Game_State_Data;
-//
 
 
 extern Game_State *displayed_game_state_ptr;
@@ -60,10 +59,8 @@ void free_game_state_to_end(Game_State*);        // iterate through Game_States 
 
 
 // creates a new Game_State_Data according to parameters
-Game_State_Data* new_game_state_data(char[4][2], PIECE_T*, PIECE_T*);
-//Game_State_Data* new_game_state_data(int from[2], int to[2], PIECE_T*, PIECE_T*);
-//Game_State_Data* new_game_state_data(Position_Data*);
-//Position_Data* new_position_data(PIECE_T type, int row, int col);
+//Game_State_Data* new_game_state_data(char[4][2], PIECE_T*, PIECE_T*);
+Game_State_Data* new_game_state_data(Position_Data*, Position_Data*);
 
 void debug_print_game(Game* game);
 

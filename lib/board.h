@@ -18,10 +18,6 @@ void draw_board();
 
 void reset_board();
 
-int convert_tile_letter_to_int(char ch);
-
-int convert_tile_number_to_int(char ch);
-
 bool move(Game *game, char *from, char *to);
 void undo(Game* game);
 
@@ -38,4 +34,7 @@ void castle_queenside(Game* game);
 void castle_kingside(Game* game);
 
 bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook);
+
+bool mutate_board(char *from, char *to);
+
 #endif //C_CHESS_BOARD_H
