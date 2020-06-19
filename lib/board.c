@@ -6,7 +6,6 @@
 #include <locale.h>
 #include <stdbool.h>
 #include <string.h>         // memcpy
-#include <ctype.h>          // tolower
 #include <stdio.h>
 
 #include "libsakk.h"        // debugging

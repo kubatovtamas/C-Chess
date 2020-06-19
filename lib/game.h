@@ -8,6 +8,8 @@
 #include "piece.h"
 #include "position.h"
 
+extern struct Game_State *displayed_game_state_ptr;
+
 /************* Game ******************/
 typedef struct Game {
     struct Game_State *defaultstate;                 // this link will always point to first Link (default board)
@@ -29,25 +31,14 @@ typedef struct Game_State {
 
 
 /************** Game_State_Data ***************/
-// Step struct idea and pseudocode by Kuba
-// Modified by Gigi
-//typedef struct Game_State_Data {
-//    char tiles[4][2];
-//    PIECE_T before[2];                   // moved piece before move
-//    PIECE_T after[2];                    // after move (info new position and if promoted)
-//} Game_State_Data;
 
 typedef struct Game_State_Data {
     struct Position_Data *fromPosition;             // from position and piece_type at location
     struct Position_Data *toPosition;               // to position and piece_type at location
-    // need to replace this with Piece pointer instead
     struct Position_Data *fromCastle;               // from position and piece_type at location if castling
     struct Position_Data *toCastle;                 // to position and piece_type at location if castling
 } Game_State_Data;
 
-
-
-extern Game_State *displayed_game_state_ptr;
 
 Game* game_start();                             // sets Game_State first and last to default Game_State (Game_Data is null)
 void game_end(Game*);                           // calls free_game_state_to_end on first state and frees game

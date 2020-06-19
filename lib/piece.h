@@ -27,5 +27,4 @@ typedef enum COLOR {WHITE, BLACK} COLOR;
 COLOR get_current_turn_color();
 bool check_if_own_piece(int row, int col);
 
-
 #endif // C_CHESS_PIECE_H
