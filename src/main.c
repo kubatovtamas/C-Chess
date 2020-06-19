@@ -172,6 +172,9 @@ void get_input_game_choice(Game *game) {
                     // Move
                     if (!back) {
                         move(game, from, to);
+                        if (can_transform()) {
+                            get_input_tranform_piece();
+                        }
                         //  ide jöhet: transform_piece()
                         //  if (enemys row && your pawn)
                         //      do while ( !(valid piece input && is_revivable_piece) )
@@ -541,7 +544,23 @@ bool is_valid_tile_to(char *input, bool *back) {
 
 
 
-bool can_transform();
+bool can_transform() {
+    if (get_current_turn_color() == BLACK) {
+        for (int i = 1; i < 9; ++i) {
+            if (Board[1][i] == WHITEPAWN) {
+                return true;
+            }
+        }
+        return false;
+    } else {
+        for (int i = 0; i < 9; ++i) {
+            if (Board[8][i] == BLACKPAWN) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
 
 void transform_piece();
 
@@ -549,4 +568,13 @@ bool get_input_piece_to_transform();
 
 bool is_revivable_piece();
 
-void get_input_tranform_piece();
+void get_input_tranform_piece() {
+    long transform_to;
+    wprintf(L"1: QUEEN\n");
+    wprintf(L"2: BISHOP\n");
+    wprintf(L"3: KNIGHT\n");
+    wprintf(L"Transform pawn to 1/2/3: ");
+    do {
+        transform_to = parse_input_to_long();
+    } while (!(1 <= transform_to  && transform_to <= 3));
+}
