@@ -52,6 +52,7 @@ void reset_board() {
     memcpy(Board, original_board, (sizeof(PIECE_T) * BOARD_ROW_SIZE * BOARD_COL_SIZE));
 }
 
+// 50-50
 void draw_board() {
     setlocale(LC_CTYPE, "");
     for (int i = 0; i < BOARD_ROW_SIZE; i++) {
@@ -72,7 +73,7 @@ bool has_moved_white_rook_kingside = false;     // H1
 bool has_moved_black_king = false;              // D8
 bool has_moved_black_rook_queenside = false;    // A8
 bool has_moved_black_rook_kingside = false;     // H8
-
+int Round_Count = 0;
 // kuba
 bool can_castle_kingside() {
     if (get_current_turn_color() == WHITE) {
@@ -168,8 +169,6 @@ bool can_transform(int* pos, COLOR* color) {
     }
 }
 
-
-// 50-50
 bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook) {
     move_after_undo(game, displayed_game_state_ptr);
 
@@ -259,7 +258,6 @@ bool mutate_board(char *from, char *to) {
 
 // kuba
 void reset_has_moved_values() {
-
         has_moved_white_king = false;              // D1
         has_moved_white_rook_queenside = false;    // A1
         has_moved_white_rook_kingside = false;     // H1
@@ -267,5 +265,4 @@ void reset_has_moved_values() {
         has_moved_black_king = false;              // D8
         has_moved_black_rook_queenside = false;    // A8
         has_moved_black_rook_kingside = false;     // H8
-
 }

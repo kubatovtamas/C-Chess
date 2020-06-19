@@ -16,6 +16,7 @@ COLOR get_current_turn_color() {
  * is the current players own piece.
  * Returns false otherwise.
  */
+// kuba
 bool check_if_own_piece(int row, int col) {
     // WHITE
     COLOR color = get_current_turn_color();
