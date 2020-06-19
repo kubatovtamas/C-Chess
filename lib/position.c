@@ -40,6 +40,7 @@ Position_Data* convert_to_position_data(char* from) {
  * G -> 7
  * H -> 8
  */
+// kuba
 int convert_tile_letter_to_int(char ch) {
 
     return tolower(ch) - 'a' + 1;
@@ -57,6 +58,7 @@ int convert_tile_letter_to_int(char ch) {
  * 7 -> 2
  * 8 -> 1
  */
+// kuba
 int convert_tile_number_to_int(char ch) {
 
     return 9 - (ch - '0');

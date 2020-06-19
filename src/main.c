@@ -59,7 +59,7 @@ bool is_valid_tile_to(char *input, bool *back);
 
 void check_transform_piece();
 
-
+// kuba
 bool In_Menu = true;
 bool Playing = false;
 char Player_One_Name[100];
@@ -69,11 +69,10 @@ int Winner = -1; // -1: none, 0: draw, 1: player1 (white), 2: player2(black)
 bool Loaded_Game = false;
 bool Skip = false;
 
-
+// kuba
 int main() {
     setlocale(LC_CTYPE, "");
 
-    // Main loop outline -Gigi
     while (In_Menu) {
         print_menu_main();
 
@@ -109,7 +108,7 @@ int main() {
 }
 
 
-
+// kuba
 void play_game() {
     Game *game = game_start();
     if (!game) {
@@ -136,7 +135,7 @@ void play_game() {
 }
 
 
-
+// kuba
 void get_input_game_choice(Game *game) {
     bool valid_choice = false;
     while (!valid_choice) {
@@ -229,6 +228,7 @@ void get_input_game_choice(Game *game) {
  * with a set max buffer size.
  * Deletes residue whitespace.
  */
+// kuba
 void get_input_saved_to(char *save_to, int size) {
     fgets(save_to, size, stdin);
     unsigned long len = strlen(save_to);
@@ -240,6 +240,7 @@ void get_input_saved_to(char *save_to, int size) {
  * Calls get_input_saved_to.
  * Plus displays a prompt to the terminal.
  */
+// kuba
 void get_input_prompted(char *save_to, char* prompt, int size) {
     wprintf(L"%s\n", prompt);
     get_input_saved_to(save_to, size);
@@ -252,6 +253,7 @@ void get_input_prompted(char *save_to, char* prompt, int size) {
  * Returns true if answer is yes.
  * Returns false if answer is no.
  */
+// kuba
 bool get_input_confirm_choice(char* prompt) {
     char save_to[10];
     int first_letter_insensitive;
@@ -271,6 +273,7 @@ bool get_input_confirm_choice(char* prompt) {
  * Prompt for save game file name.
  * Saves to Saved_Games/.
  */
+// kuba
 void get_input_save_game() {
     char input_save_name[100];
     char file_name[100] = "";
@@ -280,12 +283,14 @@ void get_input_save_game() {
 
     save_to_file(file_name, Round_Count, Player_One_Name, Player_Two_Name);
 }
+
 /*
  * Prompt for load game file name.
  * Loads from Saved_Games/.
  * Returns true if Loading was successful.
  * Returns false otherwise.
  */
+// kuba
 bool get_input_load_game() {
     char input_load_name[100];
     print_menu_saved_games();
@@ -297,6 +302,7 @@ bool get_input_load_game() {
  * Prompt users for usernames
  * saved to global vars in main.
  */
+// kuba
 void get_input_names() {
     wprintf(L"Enter Player1's name (WHITE): ");
     get_input_saved_to(Player_One_Name, 100);
@@ -310,6 +316,7 @@ void get_input_names() {
  * If yes is provided, game ends with a draw.
  * If no is provided, game continues.
  */
+// kuba
 void get_input_accept_draw() {
     wprintf(L"%s %s offered a draw. \n", get_current_turn_color() == WHITE ? Player_Two_Name : Player_One_Name,
             get_current_turn_color() == WHITE ? "(BLACK)" : "(WHITE)");
@@ -327,6 +334,7 @@ void get_input_accept_draw() {
  * Take input in the form of 1/2/3/4
  * until valid input is provided.
  */
+// kuba
 long get_input_transform_piece() {
     long transform_to;
     wprintf(L"1: QUEEN\n");
@@ -344,6 +352,7 @@ long get_input_transform_piece() {
  * Calls get_input_saved_to, parses the string
  * return a long from the beginning of the string
  */
+// kuba
 long parse_input_to_long() {
     char input[10];
     get_input_saved_to(input, 10);
@@ -355,6 +364,7 @@ long parse_input_to_long() {
  * Clear terminal.
  * Print main menu.
  */
+// kuba
 void print_menu_main() {
     system("clear");
     wprintf(L"1. New Game\n");
@@ -367,6 +377,7 @@ void print_menu_main() {
  * Draw the board.
  * Print the move selection menu OR prompt for accept draw.
  */
+// kuba
 void print_menu_move() {
     system("clear");
     draw_board();
@@ -384,6 +395,7 @@ void print_menu_move() {
 /*
  * Prints the result of the game at the end.
  */
+// kuba
 void print_menu_winner() {
     if (Winner == 0) {
         wprintf(L"It's a draw.\n");
@@ -397,6 +409,7 @@ void print_menu_winner() {
 /*
  * Prints the options you have in a round.
  */
+// kuba
 void print_menu_options() {
     wprintf(L"Enter choice: \n");
     wprintf(L"1. MOVE \n");
@@ -411,6 +424,7 @@ void print_menu_options() {
  * Lists the saved game files from
  * Saved_Games/.
  */
+// kuba
 void print_menu_saved_games() {
     wprintf(L"Saved games:\n");
 //    system("ls -1 ../../Saved_Games"); // DEBUG MODE
@@ -421,6 +435,7 @@ void print_menu_saved_games() {
  * Sets the global Is_Draw_Offered variable to true.
  * This will trigger an acceptation input from the opponent.
  */
+// kuba
 void offer_draw() {
     Round_Count++;
     Is_Draw_Offered = true;
@@ -429,6 +444,7 @@ void offer_draw() {
 /*
  * Sets the global Winner variable, opponent wins
  */
+// kuba
 void forfeit() {
     if (get_current_turn_color() == WHITE) {
         Winner = 2;
@@ -442,6 +458,7 @@ void forfeit() {
  * Loaded_Game, Round_Count to
  * starting values.
  */
+// kuba
 void reset_global_game_state() {
     memset(Player_One_Name, 0, strlen(Player_One_Name));
     memset(Player_Two_Name,0,strlen(Player_Two_Name));
@@ -460,6 +477,7 @@ void reset_global_game_state() {
  * Returns true if input matches the [A-Ha-h][1-9] regex AND is the player's own piece.
  * Returns false otherwise.
  */
+// kuba
 bool is_valid_tile_from(char *input, bool *back, int *castling) {
     // Input prompt
     bool kingside = can_castle_kingside();
@@ -514,6 +532,7 @@ bool is_valid_tile_from(char *input, bool *back, int *castling) {
  * Returns true if input matches the [A-Ha-h][1-9] regex AND is  NOT the player's own piece.
  * Returns false otherwise.
  */
+// kuba
 bool is_valid_tile_to(char *input, bool *back) {
     // Input p  rompt
     wprintf(L"TO (A1-H8) or BACK: \n");
@@ -538,6 +557,7 @@ bool is_valid_tile_to(char *input, bool *back) {
     return false;
 }
 
+// kuba
 void check_transform_piece() {
     int pos;
     COLOR color;

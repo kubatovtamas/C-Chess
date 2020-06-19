@@ -33,6 +33,7 @@ PIECE_T Board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
  * Resets the board to the starting state.
  * Overwrites the memory of the starting Board.
  */
+// kuba
 void reset_board() {
     PIECE_T original_board[BOARD_ROW_SIZE][BOARD_COL_SIZE] = {
             // Black
@@ -63,6 +64,7 @@ void draw_board() {
 }
 
 /******************** CASTLING ****************/
+// kuba
 bool has_moved_white_king = false;              // D1
 bool has_moved_white_rook_queenside = false;    // A1
 bool has_moved_white_rook_kingside = false;     // H1
@@ -71,6 +73,7 @@ bool has_moved_black_king = false;              // D8
 bool has_moved_black_rook_queenside = false;    // A8
 bool has_moved_black_rook_kingside = false;     // H8
 
+// kuba
 bool can_castle_kingside() {
     if (get_current_turn_color() == WHITE) {
         if (!has_moved_white_king) {
@@ -93,6 +96,7 @@ bool can_castle_kingside() {
     }
 }
 
+// kuba
 bool can_castle_queenside() {
     if (get_current_turn_color() == WHITE) {
         if (!has_moved_white_king) {
@@ -115,6 +119,7 @@ bool can_castle_queenside() {
     }
 }
 
+// kuba
 void castle_queenside(Game* game) {
     if (get_current_turn_color() == WHITE) {
         castle(game, "E1", "A1", "C1", "D1");
@@ -127,6 +132,7 @@ void castle_queenside(Game* game) {
     }
 }
 
+// kuba
 void castle_kingside(Game* game) {
     if (get_current_turn_color() == WHITE) {
         castle(game, "E1", "H1", "G1", "F1");
@@ -139,6 +145,7 @@ void castle_kingside(Game* game) {
     }
 }
 
+// kuba
 bool can_transform(int* pos, COLOR* color) {
     if (get_current_turn_color() == BLACK) {
         for (int i = 1; i < 9; ++i) {
@@ -162,7 +169,7 @@ bool can_transform(int* pos, COLOR* color) {
 }
 
 
-
+// 50-50
 bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook) {
     move_after_undo(game, displayed_game_state_ptr);
 
@@ -239,7 +246,7 @@ void undo(Game *game) {
 
 
 
-
+// kuba
 bool mutate_board(char *from, char *to) {
     int from_letter = convert_tile_letter_to_int(from[0]);
     int from_number = convert_tile_number_to_int(from[1]);
@@ -250,6 +257,7 @@ bool mutate_board(char *from, char *to) {
     Board[from_number][from_letter] = ' '; // from set
 }
 
+// kuba
 void reset_has_moved_values() {
 
         has_moved_white_king = false;              // D1
