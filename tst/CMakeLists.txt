@@ -1,5 +1,5 @@
 enable_testing()
-add_executable(utest-lib utest-lib.c utest-filehandler.c utest-filehandler.h utest-game.c utest-game.h)
+add_executable(utest-lib utest-lib.c utest-game.c utest-game.h)
 target_link_libraries(utest-lib libsakk)
 set_target_properties (utest-lib PROPERTIES LINK_FLAGS -Wl,-lcunit)
 add_test (utest-lib ${EXECUTABLE_OUTPUT_PATH}/utest-lib)
