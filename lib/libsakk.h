@@ -10,7 +10,7 @@
 #include "game.h"
 #include "piece.h"
 
-#if !defined(NDEBUG)
+#if !defined(NDEBUG)        // CMake NDEBUG set when compiled as Release. If not set, debug.
     #define DEBUG
 #endif
 
