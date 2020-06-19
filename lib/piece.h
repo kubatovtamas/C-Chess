@@ -3,10 +3,8 @@
 
 #include<stdbool.h>
 
-#include "position.h"
-
 // Pieces - Gigi
-typedef enum PIECE_TYPE {
+enum PIECE_TYPE {
     WHITEQUEEN = 0x2655,
     WHITEKING = 0x2654,
     WHITEROOK = 0x2656,
@@ -20,7 +18,8 @@ typedef enum PIECE_TYPE {
     BLACKBISHOP = 0x265D,
     BLACKKNIGHT = 0x265E,
     BLACKPAWN = 0x265F
-} PIECE_T;
+};
+typedef enum PIECE_TYPE PIECE_T;
 
 // color constants by Gigi
 typedef enum COLOR {WHITE, BLACK} COLOR;
@@ -35,8 +34,6 @@ extern bool has_moved_black_rook_kingside;     // H8
 
 COLOR get_current_turn_color();
 bool check_if_own_piece(int row, int col);
-
-void set_hasmoved_values(Position_Data* from_position, bool setTo);
 
 
 #endif // C_CHESS_PIECE_H

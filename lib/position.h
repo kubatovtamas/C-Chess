@@ -21,5 +21,7 @@ Position_Data* convert_to_position_data(char* from);        // converts input to
 int convert_tile_number_to_int(char ch);
 int convert_tile_letter_to_int(char ch);
 
+void set_has_moved_values(Position_Data* from_position, bool setTo);
+
 #endif //SAKK_POSITION_H
 
