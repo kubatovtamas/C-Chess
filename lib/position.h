@@ -7,6 +7,13 @@
 
 #include "piece.h"
 
+enum {
+    WHITE_QUEENSIDE_ROOK_ROW = 1,
+    WHITE_QUEENSIDE_ROOK_COL = 8,
+    BLACK_QUEENSIDE_ROOK_ROW = 1,
+    BLACK_QUEENSIDE_ROOK_COL = 1,
+};
+
 ///************* Position Data ************/
 typedef struct Position_Data {
     PIECE_T type;

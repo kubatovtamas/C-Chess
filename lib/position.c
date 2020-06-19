@@ -64,9 +64,9 @@ int convert_tile_number_to_int(char ch) {
 
 void set_has_moved_values(Position_Data* from_position, bool setTo) {
     // WHITE QUEENSIDE rook moves from A1 to D1
-    Position_Data *whitequeensiderook = convert_to_position_data("A1");
+    //Position_Data *whitequeensiderook = convert_to_position_data("A1");
     // BLACK QUEENSIDE rook moves from A8 to D8
-    Position_Data *blackqueensiderook = convert_to_position_data("A8");
+    //Position_Data *blackqueensiderook = convert_to_position_data("A8");
 
     if( get_current_turn_color() == WHITE ) {
         switch (from_position->type) {
@@ -75,8 +75,8 @@ void set_has_moved_values(Position_Data* from_position, bool setTo) {
                 break;
             case WHITEROOK:
                 // check which rook
-                if( from_position->colLetter == whitequeensiderook->colLetter
-                    && from_position->rowNumber == whitequeensiderook->rowNumber ) {
+                if(from_position->colLetter == WHITE_QUEENSIDE_ROOK_COL
+                    && from_position->rowNumber == WHITE_QUEENSIDE_ROOK_ROW ) {
                     has_moved_white_rook_queenside = setTo;
                 } else {
                     has_moved_white_rook_kingside = setTo;
@@ -92,8 +92,8 @@ void set_has_moved_values(Position_Data* from_position, bool setTo) {
                 break;
             case BLACKROOK:
                 // check which rook
-                if( from_position->colLetter == blackqueensiderook->colLetter
-                    && from_position->rowNumber == blackqueensiderook->rowNumber ) {
+                if(from_position->colLetter == BLACK_QUEENSIDE_ROOK_COL
+                    && from_position->rowNumber == BLACK_QUEENSIDE_ROOK_ROW ) {
                     has_moved_black_rook_queenside = setTo;
                 } else {
                     has_moved_black_rook_kingside = setTo;
