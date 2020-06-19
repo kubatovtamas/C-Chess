@@ -53,9 +53,6 @@ void new_game_state(Game* game, Game_State_Data *game_state_data) {
 
 // free Game_State data and free Game_State
 void free_game_state(Game_State* game_state) {
-    if (game_state->previous) {
-        (game_state->previous)->next = NULL;
-    }
     if (game_state->data) {
         free(game_state->data);
     }
@@ -123,7 +120,6 @@ void move_after_undo(Game* game, Game_State* game_state) {
     free_game_state_to_end(game_state->next);
 
     displayed_game_state_ptr = game_state;
-    //displayed_game_state_ptr->next = NULL;
     game->currentstate = game_state;
 }
 

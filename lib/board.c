@@ -9,6 +9,7 @@
 #include <ctype.h>          // tolower
 #include <stdio.h>
 
+#include "libsakk.h"        // debugging
 #include "board.h"
 #include "piece.h"
 #include "game.h"
@@ -197,7 +198,9 @@ bool move(Game *game, char *from, char *to) {
     Game_State_Data *game_state_data = new_game_state_data(fromTile, toTile, before, after);
     new_game_state(game, game_state_data);
 
-    debug_print_game(game);
+    if (DEBUGGING) {
+        debug_print_game(game);
+    }
 
 }
 

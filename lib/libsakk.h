@@ -10,4 +10,6 @@
 #include "game.h"
 #include "piece.h"
 
+#define DEBUGGING 1
+
 #endif // C_CHESS_LIBSAKK_H
