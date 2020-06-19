@@ -56,25 +56,37 @@ void free_game_state(Game_State* game_state) {
     if (game_state->data) {
         free_game_state_data(game_state->data);
     }
-    free(game_state);
+    Game_State *tmp = game_state;
+    game_state = NULL;
+    free(tmp);
 }
 
 
 void free_game_state_data(Game_State_Data* game_state_data) {
     if (game_state_data->fromPosition) {
-        free(game_state_data->fromPosition);
+        Position_Data *tmp = game_state_data->fromPosition);
+        game_state_data->fromPosition = NULL;
+        free(tmp);
     }
     if (game_state_data->toPosition) {
-        free(game_state_data->toPosition);
+        Position_Data *tmp = game_state_data->toPosition;
+        game_state_data->toPosition = NULL;
+        free(tmp);
     }
     if (game_state_data->fromCastle) {
-        free(game_state_data->fromCastle);
+        Position_Data *tmp = game_state_data->fromCastle;
+        game_state_data->fromCastle = NULL;
+        free(tmp);
     }
     if (game_state_data->toCastle) {
-        free(game_state_data->toCastle);
+        Position_Data *tmp = game_state_data->toCastle;
+        game_state_data->toCastle = NULL;
+        free(tmp);
     }
 
-    free(game_state_data);
+    Game_State_Data *tmp = game_state_data;
+    game_state_data = NULL;
+    free(tmp);
 }
 
 // iterate through Game_States from node and free all of them
@@ -93,7 +105,9 @@ void free_game_state_to_end(Game_State* game_state) {
 void game_end(Game* game) {
     free_game_state_to_end(game->defaultstate);
 
-    free(game);
+    Game *tmp = game;
+    game = NULL;
+    free(tmp);
 }
 
 Game_State_Data* new_game_state_data(Position_Data* fromPosition, Position_Data* toPosition, Position_Data* fromCastle, Position_Data* toCastle) {
