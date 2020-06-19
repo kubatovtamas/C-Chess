@@ -1,6 +1,5 @@
 enable_testing()
-add_executable(utest-piece utest-piece.c)
-
-set_target_properties (utest-piece PROPERTIES LINK_FLAGS -Wl,-lcunit)
-
-add_test (utest-piece ${EXECUTABLE_OUTPUT_PATH}/utest-piece)
+add_executable(utest-lib utest-lib.c utest-filehandler.c utest-filehandler.h)
+target_link_libraries(utest-lib libsakk)
+set_target_properties (utest-lib PROPERTIES LINK_FLAGS -Wl,-lcunit)
+add_test (utest-lib ${EXECUTABLE_OUTPUT_PATH}/utest-lib)

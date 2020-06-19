@@ -5,7 +5,7 @@
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
 #include "utest-filehandler.h"
-
+#include "../lib/board.h"       // how the fuck do you do this properyly?
 
 void test_load_from_file() {
 
