@@ -40,6 +40,9 @@ typedef struct Game_State {
 typedef struct Game_State_Data {
     struct Position_Data *fromPosition;             // from position and piece_type at location
     struct Position_Data *toPosition;               // to position and piece_type at location
+    // need to replace this with Piece pointer instead
+    struct Position_Data *fromCastle;               // from position and piece_type at location if castling
+    struct Position_Data *toCastle;                 // to position and piece_type at location if castling
 } Game_State_Data;
 
 
@@ -60,7 +63,7 @@ void free_game_state_to_end(Game_State*);        // iterate through Game_States 
 
 // creates a new Game_State_Data according to parameters
 //Game_State_Data* new_game_state_data(char[4][2], PIECE_T*, PIECE_T*);
-Game_State_Data* new_game_state_data(Position_Data*, Position_Data*);
+Game_State_Data* new_game_state_data(Position_Data*, Position_Data*, Position_Data*, Position_Data*);
 
 void debug_print_game(Game* game);
 

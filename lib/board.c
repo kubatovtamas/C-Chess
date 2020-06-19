@@ -181,7 +181,24 @@ void castle_kingside(Game* game) {
 //}
 
 bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook) {
+    move_after_undo(game, displayed_game_state_ptr);
 
+    //King
+    Position_Data* king_fromPosition = convert_to_position_data(from_king);
+    Position_Data* king_toPosition = convert_to_position_data(to_king);
+
+    // Rook
+    Position_Data* rook_fromPosition = convert_to_position_data(from_rook);
+    Position_Data* rook_toPosition = convert_to_position_data(to_rook);
+
+    Game_State_Data* game_state_data = new_game_state_data(king_fromPosition, king_toPosition, rook_fromPosition, rook_toPosition);
+    new_game_state(game, game_state_data);
+
+    // move pieces
+    mutate_board(from_king, to_king);
+    mutate_board(from_rook, to_rook);
+
+    Round_Count++;
 }
 
 
@@ -282,12 +299,12 @@ bool move(Game *game, char *from, char *to) {
     Position_Data* to_position = convert_to_position_data(to);
 
     // save move to game_state
-    Game_State_Data* game_state_data = new_game_state_data(from_position, to_position);
+    Game_State_Data* game_state_data = new_game_state_data(from_position, to_position, NULL, NULL);
     new_game_state(game, game_state_data);
 
-    Round_Count++;
-
     mutate_board(from, to);
+
+    Round_Count++;
 
     if (DEBUGGING) {
         debug_print_game(game);
@@ -334,6 +351,18 @@ void undo(Game *game) {
 
     Board[to->rowNumber][to->colLetter] = to->type;         // set to tile to original to type
     Board[from->rowNumber][from->colLetter] = from->type;   // set from tile to original from type
+
+    if (displayed_game_state_ptr->data->fromCastle
+        && displayed_game_state_ptr->data->toCastle ) {
+        // get position data
+        Position_Data* from_castle = displayed_game_state_ptr->data->fromCastle;
+        Position_Data* to_castle = displayed_game_state_ptr->data->toCastle;
+
+        Board[to_castle->rowNumber][to_castle->colLetter] = to_castle->type;         // set to tile to original to type
+        Board[from_castle->rowNumber][from_castle->colLetter] = from_castle->type;   // set from tile to original from type
+
+
+    }
 
     // Change round count to reflect undo
     Round_Count--;

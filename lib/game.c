@@ -103,11 +103,13 @@ void game_end(Game* game) {
 //    return game_state_data;
 //}
 
-Game_State_Data* new_game_state_data(Position_Data* fromPosition, Position_Data* toPosition) {
+Game_State_Data* new_game_state_data(Position_Data* fromPosition, Position_Data* toPosition, Position_Data* fromCastle, Position_Data* toCastle) {
     Game_State_Data *game_state_data = malloc(sizeof(Game_State_Data));
 
     game_state_data->fromPosition = fromPosition;
     game_state_data->toPosition = toPosition;
+    game_state_data->fromCastle = fromCastle;
+    game_state_data->toCastle = toCastle;
 
     return game_state_data;
 }
