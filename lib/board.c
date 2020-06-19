@@ -9,6 +9,7 @@
 #include <ctype.h>          // tolower
 #include <stdio.h>
 
+#include "libsakk.h"        // debugging
 #include "board.h"
 #include "piece.h"
 #include "game.h"
@@ -97,11 +98,11 @@ void castle_kingside(Game* game) {
     if (get_current_turn_color() == WHITE) {
         castle(game, "E1", "H1", "G1", "F1");
         has_moved_white_king = true;
-        has_moved_white_rook_queenside = true;
+        has_moved_white_rook_kingside = true;
     } else {
         castle(game, "E8", "H8", "G8", "F8");
         has_moved_black_king = true;
-        has_moved_black_rook_queenside = true;
+        has_moved_black_rook_kingside = true;
     }
 }
 
@@ -124,7 +125,9 @@ bool move(Game *game, char *from, char *to) {
     int to_number = convert_tile_number_to_int(to[1]);
 
     // Game Data Before
-    char *tiles[4] = {from, to, NULL, NULL};
+    //char *tiles[4] = {from, to, NULL, NULL};
+    int fromTile[2] = { from_letter, from_number };
+    int toTile[2] = { to_letter, to_number };
     PIECE_T before[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
 
     // Move
@@ -135,13 +138,15 @@ bool move(Game *game, char *from, char *to) {
     // Game Data After
     PIECE_T after[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
 
-    if (displayed_game_state_ptr->next) {
-        free_game_state_to_end(displayed_game_state_ptr->next);
-    }
+    move_after_undo(game, displayed_game_state_ptr);
 
-    // Save move to game_state
-    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
+    // save move to game_state
+    Game_State_Data *game_state_data = new_game_state_data(fromTile, toTile, before, after);
     new_game_state(game, game_state_data);
+
+    if (DEBUGGING) {
+        debug_print_game(game);
+    }
 
 }
 
@@ -172,7 +177,7 @@ bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *t
 
     // Game Data After
     PIECE_T after[4] = {Board[from_king_number][from_king_letter], Board[to_king_number][to_king_letter],  // King from-to
-                          Board[from_rook_number][from_rook_letter], Board[to_rook_number][to_rook_letter]}; // Rook from-to
+                        Board[from_rook_number][from_rook_letter], Board[to_rook_number][to_rook_letter]}; // Rook from-to
 
     if (displayed_game_state_ptr->next) {
         free_game_state_to_end(displayed_game_state_ptr->next);
@@ -187,13 +192,20 @@ void undo(Game *game) {
 
     if (!displayed_game_state_ptr->previous) { return; }
 
-    char *from = (displayed_game_state_ptr->data->tiles)[0];      // { from, to, NULL, NULL };
-    char *to = displayed_game_state_ptr->data->tiles[1];        // { from, to, NULL, NULL };
+//    char *from = (displayed_game_state_ptr->data->tiles)[0];      // { from, to, NULL, NULL };
+//    char *to = displayed_game_state_ptr->data->tiles[1];        // { from, to, NULL, NULL };
 
-    int from_letter = convert_tile_letter_to_int(from[0]);
-    int from_number = convert_tile_number_to_int(from[1]);
-    int to_letter = convert_tile_letter_to_int(to[0]);
-    int to_number = convert_tile_number_to_int(to[1]);
+//    int from_letter = convert_tile_letter_to_int(from[0]);
+//    int from_number = convert_tile_number_to_int(from[1]);
+//    int to_letter = convert_tile_letter_to_int(to[0]);
+//    int to_number = convert_tile_number_to_int(to[1]);
+
+    // this is a little hairy
+    int to_letter = displayed_game_state_ptr->data->toTile[0];
+    int to_number = displayed_game_state_ptr->data->toTile[1];
+
+    int from_letter = displayed_game_state_ptr->data->fromTile[0];
+    int from_number = displayed_game_state_ptr->data->fromTile[1];
 
     PIECE_T originalFromPiece = (displayed_game_state_ptr->data->before)[0];        // e.g ['pawn', 'queen'] if pawn hit queen
     PIECE_T originalToPiece = (displayed_game_state_ptr->data->before)[1];
@@ -205,7 +217,11 @@ void undo(Game *game) {
     // Change round count to reflect undo
     Round_Count--;
 
-    undo_to_previous_state(game);
+    //debug_print_game(game);
+
+    undo_to_previous_state();
+
+    debug_print_game(game);
 
 }
 
@@ -214,8 +230,7 @@ bool load_from_file(char *input_name, int *global_round_count,
     FILE *file_pointer;
 
     char file_name[100] = "";
-//    strcpy(file_name, "../../Saved_Games/"); // DEBUG
-    strcpy(file_name, "Saved_Games/"); // PROD
+    strcpy(file_name, "Saved_Games/");
     strcat(file_name, input_name);
 
     file_pointer = fopen(file_name, "r");
@@ -286,7 +301,6 @@ void draw_board() {
     }
 }
 
-
 /*
  * Handles the conversion from Tile letter to int.
  * Returns the proper array selector for the Tile.
@@ -320,3 +334,31 @@ int convert_tile_number_to_int(char ch) {
 
     return 9 - (ch - '0');
 }
+
+//// DEPRECATED
+//bool move(Game *game, char *from, char *to) {
+//    int from_letter = convert_tile_letter_to_int(from[0]);
+//    int from_number = convert_tile_number_to_int(from[1]);
+//    int to_letter = convert_tile_letter_to_int(to[0]);
+//    int to_number = convert_tile_number_to_int(to[1]);
+//
+//    // Game Data Before
+//    char *tiles[4] = {from, to, NULL, NULL};
+//    PIECE_T before[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
+//
+//    // Move
+//    Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
+//    Board[from_number][from_letter] = ' '; // from set
+//    Round_Count++;
+//
+//    // Game Data After
+//    PIECE_T after[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
+//
+//    if (displayed_game_state_ptr->next) {
+//        free_game_state_to_end(displayed_game_state_ptr->next);
+//    }
+//
+//    // Save move to game_state
+//    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
+//    new_game_state(game, game_state_data);
+//}

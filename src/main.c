@@ -382,7 +382,7 @@ bool is_valid_tile_from(char *input, bool *back, int *castling) {
         return false;
     }
 
-    // If input == KINGSIDE (case insensitive)
+    // If input == KINGSIDE (case insensitive)k
     if (strcasecmp(input, "kingside") == 0 && kingside) {
         system("clear");
         *castling = 1;
