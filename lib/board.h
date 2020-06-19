@@ -14,6 +14,8 @@ enum { BOARD_ROW_SIZE = 10, BOARD_COL_SIZE = 10 };
 
 extern PIECE_T Board[BOARD_ROW_SIZE][BOARD_COL_SIZE];
 
+void reset_has_moved_values();
+
 void draw_board();
 
 void reset_board();
