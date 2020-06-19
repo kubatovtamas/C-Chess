@@ -17,6 +17,9 @@ void test_game_start() {
 void test_game_end() {
     // ... there's not test for freed memory
     // possibly set all freed pointers to NULL check for NULL
+    game_end(game);
+    CU_ASSERT_PTR_NULL(game);
+    game = game_start();
 }
 
 void test_undo_to_previous_state() {
@@ -61,7 +64,7 @@ void utest_game_teardown() {
 
 CU_TestInfo game_state_tests[] = {
         {"game_start",               test_game_start},
-        //{"game_end",                 test_game_end},
+        {"game_end",                 test_game_end},
         {"undo_to_previous_state",               test_undo_to_previous_state},
         {"move_after_undo",               test_move_after_undo},
         //{"new_game_state",           test_new_game_state},
