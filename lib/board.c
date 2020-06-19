@@ -246,6 +246,7 @@ void undo(Game *game) {
     Round_Count--;
     set_has_moved_values(from, false);
 
+    // if Castling
     if (displayed_game_state_ptr->data->fromCastle
         && displayed_game_state_ptr->data->toCastle ) {
         // get position data

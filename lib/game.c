@@ -61,16 +61,21 @@ void free_game_state(Game_State* game_state) {
 
 
 void free_game_state_data(Game_State_Data* game_state_data) {
-//    if (game_state_data->fromPosition) {
-//        free(game_state_data->fromPosition);
-//    }
-//    if (game_state_data->toPosition) {
-//        free(game_state_data->toPosition);
-//    }
+    if (game_state_data->fromPosition) {
+        free(game_state_data->fromPosition);
+    }
+    if (game_state_data->toPosition) {
+        free(game_state_data->toPosition);
+    }
+    if (game_state_data->fromCastle) {
+        free(game_state_data->fromCastle);
+    }
+    if (game_state_data->toCastle) {
+        free(game_state_data->toCastle);
+    }
 
     free(game_state_data);
 }
-
 
 // iterate through Game_States from node and free all of them
 void free_game_state_to_end(Game_State* game_state) {
@@ -90,18 +95,6 @@ void game_end(Game* game) {
 
     free(game);
 }
-
-/*** DEPRECATED ****/
-// intializes new game_state_data for game data based on parameters
-//Game_State_Data* new_game_state_data(char tiles[4][2], PIECE_T before[2], PIECE_T after[2]) {
-//    Game_State_Data *game_state_data = malloc(sizeof(Game_State_Data));
-//
-//    memcpy(game_state_data->tiles, tiles, sizeof(game_state_data->tiles));
-//    memcpy(game_state_data->before, before, sizeof(game_state_data->before));
-//    memcpy(game_state_data->after, after, sizeof(game_state_data->after));
-//
-//    return game_state_data;
-//}
 
 Game_State_Data* new_game_state_data(Position_Data* fromPosition, Position_Data* toPosition, Position_Data* fromCastle, Position_Data* toCastle) {
     Game_State_Data *game_state_data = malloc(sizeof(Game_State_Data));
