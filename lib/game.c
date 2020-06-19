@@ -54,10 +54,23 @@ void new_game_state(Game* game, Game_State_Data *game_state_data) {
 // free Game_State data and free Game_State
 void free_game_state(Game_State* game_state) {
     if (game_state->data) {
-        free(game_state->data);
+        free_game_state_data(game_state->data);
     }
     free(game_state);
 }
+
+
+void free_game_state_data(Game_State_Data* game_state_data) {
+//    if (game_state_data->fromPosition) {
+//        free(game_state_data->fromPosition);
+//    }
+//    if (game_state_data->toPosition) {
+//        free(game_state_data->toPosition);
+//    }
+
+    free(game_state_data);
+}
+
 
 // iterate through Game_States from node and free all of them
 void free_game_state_to_end(Game_State* game_state) {
@@ -79,8 +92,26 @@ void game_end(Game* game) {
 }
 
 
+//// intializes new game_state_data for game data based on parameters
+//Game_State_Data* new_game_state_data(int fromTile[2], int toTile[2], PIECE_T before[2], PIECE_T after[2]) {
+//    Game_State_Data *game_state_data = malloc(sizeof(Game_State_Data));
+//
+////    for(int i = 0; i < 4; i++ ) {
+////        if (tiles[i]) {
+////            memcpy(game_state_data->tiles[i], tiles[i], sizeof(game_state_data->tiles[i]));
+////        }
+////    }
+//
+//    memcpy(game_state_data->fromTile, fromTile, sizeof(game_state_data->fromTile));
+//    memcpy(game_state_data->toTile, toTile, sizeof(game_state_data->toTile));
+//    memcpy(game_state_data->before, before, sizeof(game_state_data->before));
+//    memcpy(game_state_data->after, after, sizeof(game_state_data->after));
+//
+//    return game_state_data;
+//}
+
 // intializes new game_state_data for game data based on parameters
-Game_State_Data* new_game_state_data(int fromTile[2], int toTile[2], PIECE_T before[2], PIECE_T after[2]) {
+Game_State_Data* new_game_state_data(char tiles[4][2], PIECE_T before[2], PIECE_T after[2]) {
     Game_State_Data *game_state_data = malloc(sizeof(Game_State_Data));
 
 //    for(int i = 0; i < 4; i++ ) {
@@ -89,8 +120,7 @@ Game_State_Data* new_game_state_data(int fromTile[2], int toTile[2], PIECE_T bef
 //        }
 //    }
 
-    memcpy(game_state_data->fromTile, fromTile, sizeof(game_state_data->fromTile));
-    memcpy(game_state_data->toTile, toTile, sizeof(game_state_data->toTile));
+    memcpy(game_state_data->tiles, tiles, sizeof(game_state_data->tiles));
     memcpy(game_state_data->before, before, sizeof(game_state_data->before));
     memcpy(game_state_data->after, after, sizeof(game_state_data->after));
 
@@ -100,8 +130,8 @@ Game_State_Data* new_game_state_data(int fromTile[2], int toTile[2], PIECE_T bef
 //Game_State_Data* new_game_state_data(Position_Data fromPosition, Position_Data toPosition) {
 //    Game_State_Data *game_state_data = malloc(sizeof(Game_State_Data));
 //
-//
-//
+//    game_state_data->fromPosition = fromPosition;
+//    game_state_data->toPosition = toPosition;
 //
 //    return game_state_data;
 //}
@@ -122,16 +152,6 @@ void move_after_undo(Game* game, Game_State* game_state) {
     displayed_game_state_ptr = game_state;
     game->currentstate = game_state;
 }
-
-//Position_Data* new_position_data(PIECE_T type, int row, int col) {
-//    Position_Data* position = malloc(sizeof(Position_Data));
-//
-//    position->type = type;
-//    position->row = row;
-//    position->col = col;
-//
-//    return position;
-//}
 
 void debug_print_game(Game* game) {
     Game_State *next_state = game->defaultstate;

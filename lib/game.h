@@ -31,8 +31,9 @@ typedef struct Game_State {
 // Step struct idea and pseudocode by Kuba
 // Modified by Gigi
 typedef struct Game_State_Data {
-    int fromTile[2];                     // col then row (letter, number)
-    int toTile[2];                       // letter, number
+//    int fromTile[2];                     // col then row (letter, number)
+//    int toTile[2];                       // letter, number
+    char tiles[4][2];
     PIECE_T before[2];                   // moved piece before move
     PIECE_T after[2];                    // after move (info new position and if promoted)
 } Game_State_Data;
@@ -42,12 +43,6 @@ typedef struct Game_State_Data {
 //    struct Position_Data *toPosition;               // to position and piece_type at location
 //} Game_State_Data;
 //
-///************* Position Data ************/
-//typedef struct Position_Data {
-//    PIECE_T type;
-//    int row;
-//    int col;
-//} Position_Data;
 
 
 extern Game_State *displayed_game_state_ptr;
@@ -60,12 +55,13 @@ void move_after_undo(Game*, Game_State*);         // calls undo_to_previous_stat
 void undo_to_previous_state();                   // sets displayed_game_state_ptr to previous
 void new_game_state(Game*, Game_State_Data*);    // creates new game state and links it to game->last
 void free_game_state(Game_State*);               // free Game_State data and free Game_State
+void free_game_state_data(Game_State_Data* game_state_data);    // free game_state_data and game_state_data positions
 void free_game_state_to_end(Game_State*);        // iterate through Game_States from node and free all of them
 
 
 // creates a new Game_State_Data according to parameters
-//Game_State_Data* new_game_state_data(char[4][2], PIECE_T*, PIECE_T*);
-Game_State_Data* new_game_state_data(int from[2], int to[2], PIECE_T*, PIECE_T*);
+Game_State_Data* new_game_state_data(char[4][2], PIECE_T*, PIECE_T*);
+//Game_State_Data* new_game_state_data(int from[2], int to[2], PIECE_T*, PIECE_T*);
 //Game_State_Data* new_game_state_data(Position_Data*);
 //Position_Data* new_position_data(PIECE_T type, int row, int col);
 
