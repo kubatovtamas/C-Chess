@@ -335,6 +335,16 @@ int convert_tile_number_to_int(char ch) {
     return 9 - (ch - '0');
 }
 
+void reset_has_moved_values() {
+    has_moved_white_king = false;              // D1
+    has_moved_white_rook_queenside = false;    // A1
+    has_moved_white_rook_kingside = false;     // H1
+
+    has_moved_black_king = false;              // D8
+    has_moved_black_rook_queenside = false;    // A8
+    has_moved_black_rook_kingside = false;     // H8
+}
+
 //// DEPRECATED
 //bool move(Game *game, char *from, char *to) {
 //    int from_letter = convert_tile_letter_to_int(from[0]);

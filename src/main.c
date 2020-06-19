@@ -31,6 +31,7 @@ void get_input_save_game();
 
 bool get_input_load_game();
 
+long parse_input_to_long();
 
 
 void print_menu_main();
@@ -44,23 +45,18 @@ void print_menu_options();
 void print_menu_saved_games();
 
 
-bool is_valid_tile_from(char *input, bool *back, int *castling);
-
-bool is_valid_tile_to(char *input, bool *back);
-
-long parse_input_to_long();
 
 void offer_draw();
 
 void forfeit();
 
+void reset_global_game_state();
 
+bool is_valid_tile_from(char *input, bool *back, int *castling);
+
+bool is_valid_tile_to(char *input, bool *back);
 
 /********************************************** Not implemented yet ***********************************************/
-
-
-
-bool is_checked();
 
 bool can_transform();
 
@@ -80,7 +76,7 @@ char Player_One_Name[100];
 char Player_Two_Name[100];
 bool Is_Draw_Offered = false;
 int Winner = -1; // -1: none, 0: draw, 1: player1 (white), 2: player2(black)
-bool LoadedGame = false;
+bool Loaded_Game = false;
 
 /*********************************************** Main ***********************************************/
 
@@ -98,11 +94,12 @@ int main() {
                 if (!get_input_load_game()) {
                     break;
                 }
-                LoadedGame = true;
+                Loaded_Game = true;
             }
             // FALLTHROUGH
+
             case 1: { // NEW GAME
-//                system("clear");
+                system("clear");
                 In_Menu = false;
                 play_game();
                 break;
@@ -113,6 +110,7 @@ int main() {
                 In_Menu = false;
                 break;
             }
+
             default:
                 break;
         }
@@ -130,7 +128,7 @@ void play_game() {
     }
 
     system("clear");
-    if (!LoadedGame) {
+    if (!Loaded_Game) {
         get_input_names();
     }
 
@@ -152,9 +150,8 @@ void get_input_game_choice(Game *game) {
     bool valid_choice = false;
     while (!valid_choice) {
         print_menu_move();
-        if (Winner != -1) {
-            break;
-        }
+        if (Winner != -1) break;    // Game ended -> break game loop
+
         long input = parse_input_to_long();
         switch (input) {
             case 1: // MOVE
@@ -222,64 +219,19 @@ void get_input_game_choice(Game *game) {
                 valid_choice = true;
                 if (get_input_confirm_choice("SURE? Y/N")) {
                     reset_board();
-
-                    Playing = false;
-                    In_Menu = true;
-                    memset(Player_One_Name,0,strlen(Player_One_Name));
-                    memset(Player_Two_Name,0,strlen(Player_Two_Name));
-                    Is_Draw_Offered = false;
-                    Round_Count = 0;
-                    LoadedGame = false;
-
+                    reset_global_game_state();
+                    reset_has_moved_values();
                     system("clear");
                 }
                 break;
+
             default:
                 system("clear");
         }
     }
 }
 
-
 /*********************************************** Implementations ***********************************************/
-
-/*
- * Clear the terminal and print the main menu.
- */
-void print_menu_main() {
-    system("clear");
-    wprintf(L"1. New Game\n");
-    wprintf(L"2. Load Game\n");
-    wprintf(L"3. Quit\n");
-}
-
-/*
- * Draw the board and print the move selection menu.
- */
-void print_menu_move() {
-    system("clear");
-    draw_board();
-    wprintf(L"Round: %d. %s's %s turn. ", Round_Count + 1,
-            get_current_turn_color() == WHITE ? Player_One_Name : Player_Two_Name,
-            get_current_turn_color() == WHITE ? "(WHITE)" : "(BLACK)");
-
-    if (Is_Draw_Offered) {
-        get_input_accept_draw();
-    } else {
-        print_menu_options();
-    }
-}
-
-/*
- * Calls get_input_saved_to, parses the string
- * return a long from the beginning of the string
- */
-long parse_input_to_long() {
-    char input[10];
-    get_input_saved_to(input, 10);
-    char *input_string_part;
-    return strtol(input, &input_string_part, 10);
-}
 
 /*
  * Use this for user input, it's hard(er) to break.
@@ -325,6 +277,10 @@ bool get_input_confirm_choice(char* prompt) {
     }
 }
 
+/*
+ * Prompt for save game file name.
+ * Saves to Saved_Games/.
+ */
 void get_input_save_game() {
     char input_save_name[100];
     char file_name[100] = "";
@@ -335,7 +291,10 @@ void get_input_save_game() {
     save_to_file(file_name, Round_Count, Player_One_Name, Player_Two_Name);
 }
 /*
- * does this get included
+ * Prompt for load game file name.
+ * Loads from Saved_Games/.
+ * Returns true if Loading was successful.
+ * Returns false otherwise.
  */
 bool get_input_load_game() {
     char input_load_name[100];
@@ -344,6 +303,108 @@ bool get_input_load_game() {
     return load_from_file(input_load_name, &Round_Count, Player_One_Name, Player_Two_Name, Board);
 }
 
+/*
+ * Prompt users for usernames
+ * saved to global vars in main.
+ */
+void get_input_names() {
+    wprintf(L"Enter Player1's name (WHITE): ");
+    get_input_saved_to(Player_One_Name, 100);
+
+    wprintf(L"\nEnter Player2's name (BLACK): ");
+    get_input_saved_to(Player_Two_Name, 100);
+}
+
+/*
+ * Takes a Yes/No input from the user.
+ * If yes is provided, game ends with a draw.
+ * If no is provided, game continues.
+ */
+bool get_input_accept_draw() {
+    wprintf(L"%s %s offered a draw. \n", get_current_turn_color() == WHITE ? Player_Two_Name : Player_One_Name,
+            get_current_turn_color() == WHITE ? "(BLACK)" : "(WHITE)");
+
+    if (get_input_confirm_choice("Do you accept? Y/N")) {
+        Is_Draw_Offered = false;
+        Winner = 0;
+    } else {
+        Is_Draw_Offered = false;
+        Round_Count++;
+    }
+
+}
+
+/*
+ * Calls get_input_saved_to, parses the string
+ * return a long from the beginning of the string
+ */
+long parse_input_to_long() {
+    char input[10];
+    get_input_saved_to(input, 10);
+    char *input_string_part;
+    return strtol(input, &input_string_part, 10);
+}
+
+/*
+ * Clear terminal.
+ * Print main menu.
+ */
+void print_menu_main() {
+    system("clear");
+    wprintf(L"1. New Game\n");
+    wprintf(L"2. Load Game\n");
+    wprintf(L"3. Quit\n");
+}
+
+/*
+ * Clear terminal.
+ * Draw the board.
+ * Print the move selection menu OR prompt for accept draw.
+ */
+void print_menu_move() {
+    system("clear");
+    draw_board();
+    wprintf(L"Round: %d. %s's %s turn. ", Round_Count + 1,
+            get_current_turn_color() == WHITE ? Player_One_Name : Player_Two_Name,
+            get_current_turn_color() == WHITE ? "(WHITE)" : "(BLACK)");
+
+    if (Is_Draw_Offered) {
+        get_input_accept_draw();
+    } else {
+        print_menu_options();
+    }
+}
+
+/*
+ * Prints the result of the game at the end.
+ */
+void print_menu_winner() {
+    if (Winner == 0) {
+        wprintf(L"It's a draw.\n");
+    } else if (Winner == 1) {
+        wprintf(L"%s (WHITE) wins.\n", Player_One_Name);
+    } else if (Winner == 2) {
+        wprintf(L"%s (BLACK) wins.\n", Player_Two_Name);
+    }
+}
+
+/*
+ * Prints the options you have in a round.
+ */
+void print_menu_options() {
+    wprintf(L"Enter choice: \n");
+    wprintf(L"1. MOVE \n");
+    wprintf(L"2. UNDO \n");
+    wprintf(L"3. OFFER DRAW \n");
+    wprintf(L"4. FORFEIT MATCH \n");
+    wprintf(L"5. SAVE MATCH \n");
+    wprintf(L"6. BACK TO MAIN MENU \n");
+}
+
+/*
+ * Lists the saved game files from
+ * Saved_Games/.
+ */
 void print_menu_saved_games() {
     wprintf(L"Saved games:\n");
 //    system("ls -1 ../../Saved_Games"); // DEBUG MODE
@@ -351,14 +412,47 @@ void print_menu_saved_games() {
 }
 
 /*
+ * Sets the global Is_Draw_Offered variable to true.
+ * This will trigger an acceptation input from the opponent.
+ */
+void offer_draw() {
+    Round_Count++;
+    Is_Draw_Offered = true;
+}
+
+/*
+ * Sets the global Winner variable, opponent wins
+ */
+void forfeit() {
+    if (get_current_turn_color() == WHITE) {
+        Winner = 2;
+    } else {
+        Winner = 1;
+    }
+}
+/*
+ * Resets P1 and P2 names to empty str.
+ * Resets Playing, In_Menu, Is_Draw_Offered,
+ * Loaded_Game, Round_Count to
+ * starting values.
+ */
+void reset_global_game_state() {
+    memset(Player_One_Name, 0, strlen(Player_One_Name));
+    memset(Player_Two_Name,0,strlen(Player_Two_Name));
+    Playing = false;
+    In_Menu = true;
+    Is_Draw_Offered = false;
+    Round_Count = 0;
+    Loaded_Game = false;
+}
+
+/*
  * Validator for FROM tile.
- * Returns true IF
- * matches the [A-Ha-h][1-9] regex,
- * AND
- * is the player's own piece.
- *
- * Sets the provided bool pointer to true for navigating
- * back in the menu. Returns false in this case.
+ * Returns true if input provided is "BACK". Sets the provided bool pointer to true.
+ * Returns true if input provided is "KINGSIDE". Sets the provided int pointer to 1.
+ * Returns true if input provided is "QUEENSIDE". Sets the provided int pointer to 2.
+ * Returns true if input matches the [A-Ha-h][1-9] regex AND is the player's own piece.
+ * Returns false otherwise.
  */
 bool is_valid_tile_from(char *input, bool *back, int *castling) {
     // Input prompt
@@ -379,7 +473,7 @@ bool is_valid_tile_from(char *input, bool *back, int *castling) {
     if (strcasecmp(input, "back") == 0) {
         system("clear");
         *back = true;
-        return false;
+        return true;
     }
 
     // If input == KINGSIDE (case insensitive)k
@@ -410,13 +504,9 @@ bool is_valid_tile_from(char *input, bool *back, int *castling) {
 
 /*
  * Validator for TO tile.
- * Returns true IF
- * matches the [A-Ha-h][1-9] regex,
- * AND
- * is NOT the player's own piece.
- *
- * Sets the provided bool pointer to true for navigating
- * back in the menu. Returns false in this case.
+ * Returns true if input provided is "BACK". Sets the provided bool pointer to true.
+ * Returns true if input matches the [A-Ha-h][1-9] regex AND is  NOT the player's own piece.
+ * Returns false otherwise.
  */
 bool is_valid_tile_to(char *input, bool *back) {
     // Input p  rompt
@@ -442,83 +532,14 @@ bool is_valid_tile_to(char *input, bool *back) {
     return false;
 }
 
-/*********************************************** NEW FUNCTIONS ***************************************************/
-
-void get_input_names() {
-    wprintf(L"Enter Player1's name (WHITE): ");
-    get_input_saved_to(Player_One_Name, 100);
-
-    wprintf(L"\nEnter Player2's name (BLACK): ");
-    get_input_saved_to(Player_Two_Name, 100);
-}
-
-/*
- * Sets the global Is_Draw_Offered variable to true.
- * This will trigger an acceptation input from the opponent.
- */
-void offer_draw() {
-    Round_Count++;
-    Is_Draw_Offered = true;
-}
-
-/*
- * Takes a Yes/No input from the user.
- * If yes is provided, game ends with draw.
- * If no is provided, game continues.
- */
-bool get_input_accept_draw() {
-    wprintf(L"%s %s offered a draw. \n", get_current_turn_color() == WHITE ? Player_Two_Name : Player_One_Name,
-            get_current_turn_color() == WHITE ? "(BLACK)" : "(WHITE)");
-
-    if (get_input_confirm_choice("Do you accept? Y/N")) {
-        Is_Draw_Offered = false;
-        Winner = 0;
-    } else {
-        Is_Draw_Offered = false;
-        Round_Count++;
-    }
-
-}
-
-/*
- * Sets the global Winner variable, opponent wins
- */
-void forfeit() {
-    if (get_current_turn_color() == WHITE) {
-        Winner = 2;
-    } else {
-        Winner = 1;
-    }
-}
 
 
-/*
- * Prints the result of the game at the end.
- */
-void print_menu_winner() {
-    if (Winner == 0) {
-        wprintf(L"It's a draw.\n");
-    } else if (Winner == 1) {
-        wprintf(L"%s (WHITE) wins.\n", Player_One_Name);
-    } else if (Winner == 2) {
-        wprintf(L"%s (BLACK) wins.\n", Player_Two_Name);
-    }
-}
 
-/*
- * Prints the options you have in a round.
- */
-void print_menu_options() {
-    wprintf(L"Enter choice: \n");
-    wprintf(L"1. MOVE \n");
-    wprintf(L"2. UNDO \n");
-    wprintf(L"3. OFFER DRAW \n");
-    wprintf(L"4. FORFEIT MATCH \n");
-    wprintf(L"5. SAVE MATCH \n");
-    wprintf(L"6. BACK TO MAIN MENU \n");
-}
 
-bool is_checked();
+
+
+
+
 
 bool can_transform();
 
