@@ -64,7 +64,7 @@ void free_game_state(Game_State* game_state) {
 
 void free_game_state_data(Game_State_Data* game_state_data) {
     if (game_state_data->fromPosition) {
-        Position_Data *tmp = game_state_data->fromPosition);
+        Position_Data *tmp = game_state_data->fromPosition;
         game_state_data->fromPosition = NULL;
         free(tmp);
     }
