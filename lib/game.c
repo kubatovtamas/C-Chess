@@ -54,14 +54,6 @@ void free_game_state(Game_State* game_state) {
 
 // iterate through Game_States from node and free all of them
 void free_game_state_to_end(Game_State* game_state) {
-    /*Game_State *next = game_state;                  // starting node to delete from
-
-    while(next) {
-        Game_State *game_state = next;              // set current Game_State to next in list
-        next = game_state->next;
-        free_game_state(game_state);                // free current Game_State
-    }*/
-
     Game_State* tmp;
 
     while(game_state) {
@@ -69,8 +61,6 @@ void free_game_state_to_end(Game_State* game_state) {
         game_state = game_state->next;
         free_game_state(tmp);
     }
-
-
 
 }
 
@@ -93,14 +83,13 @@ Game_State_Data* new_game_state_data(char* tiles[4], PIECE_T before[2], PIECE_T 
 
     memcpy(game_state_data->before, before, sizeof(game_state_data->before));
     memcpy(game_state_data->after, after, sizeof(game_state_data->after));
-    //game_state_data->hit = hit;
 
     return game_state_data;
 }
 
 
 void undo_to_previous_state() {
-    if (displayed_game_state_ptr->previous == NULL) {
+    if (!displayed_game_state_ptr->previous) {
         return;
     }
     displayed_game_state_ptr = displayed_game_state_ptr->previous;
