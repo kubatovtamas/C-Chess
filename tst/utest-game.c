@@ -15,8 +15,8 @@ void test_game_start() {
 }
 
 void test_game_end() {
-    // ... there's not test for freed memory
-    // possibly set all freed pointers to NULL check for NULL
+    // there's no test for freed memory
+    // set all freed pointers to NULL check for NULL
     game_end(game);
     CU_ASSERT_PTR_NULL(game);
     game = game_start();
@@ -31,26 +31,7 @@ void test_undo_to_previous_state() {
         CU_ASSERT_PTR_EQUAL(displayed_game_state_ptr, tmp);
     }
 
-    // Actually make moves and test that way here
-
 }
-
-// move_after_undo calls undo_to_previous_state and sets remaining next_ptr to NULL
-void test_move_after_undo() {
-
-
-};
-
-//void test_new_position_data {
-//
-//};
-
-
-//void test_new_game_state() {
-//    Position_Data* from_position = new_position_data();
-//    Position_Data* to_position = new_position_data();
-//    Game_State_Data *game_state_data = new_game_state_data();
-//}
 
 
 void utest_game_setup() {
@@ -67,6 +48,5 @@ CU_TestInfo game_state_tests[] = {
         {"game_end",                 test_game_end},
         {"undo_to_previous_state",               test_undo_to_previous_state},
         {"move_after_undo",               test_move_after_undo},
-        //{"new_game_state",           test_new_game_state},
         CU_TEST_INFO_NULL
 };
