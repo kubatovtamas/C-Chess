@@ -385,3 +385,12 @@ bool mutate_board(char *from, char *to) {
     Board[from_number][from_letter] = ' '; // from set
 }
 
+void reset_has_moved_values() {
+    has_moved_white_king = false;              // D1
+    has_moved_white_rook_queenside = false;    // A1
+    has_moved_white_rook_kingside = false;     // H1
+
+    has_moved_black_king = false;              // D8
+    has_moved_black_rook_queenside = false;    // A8
+    has_moved_black_rook_kingside = false;     // H8
+}
