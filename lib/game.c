@@ -108,6 +108,9 @@ void game_end(Game* game) {
     Game *tmp = game;
     game = NULL;
     free(tmp);
+    #ifdef DEBUG
+        wprintf(L"Freed: %x is now %x\n", tmp, game);
+    #endif
 }
 
 Game_State_Data* new_game_state_data(Position_Data* fromPosition, Position_Data* toPosition, Position_Data* fromCastle, Position_Data* toCastle) {
