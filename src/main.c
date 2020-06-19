@@ -11,8 +11,6 @@
 #include <stdlib.h>
 #include "libsakk.h"
 
-/*********************************************** Declarations ***********************************************/
-
 void play_game();
 
 void get_input_game_choice(Game *game);
@@ -23,17 +21,18 @@ void get_input_prompted(char *save_to, char* prompt, int size);
 
 bool get_input_confirm_choice(char* prompt);
 
-void get_input_names();
-
-bool get_input_accept_draw();
-
 void get_input_save_game();
 
 bool get_input_load_game();
 
-long parse_input_to_long();
+void get_input_names();
+
+bool get_input_accept_draw();
 
 long get_input_transform_piece();
+
+long parse_input_to_long();
+
 
 
 void print_menu_main();
@@ -60,7 +59,6 @@ bool is_valid_tile_to(char *input, bool *back);
 
 void check_transform_piece();
 
-/*********************************************** Globals ***********************************************/
 
 bool In_Menu = true;
 bool Playing = false;
@@ -70,7 +68,7 @@ bool Is_Draw_Offered = false;
 int Winner = -1; // -1: none, 0: draw, 1: player1 (white), 2: player2(black)
 bool Loaded_Game = false;
 
-/*********************************************** Main ***********************************************/
+
 
 int main() {
     setlocale(LC_CTYPE, "");
@@ -110,7 +108,7 @@ int main() {
     return 0;
 }
 
-/*********************************************** Play Game ***********************************************/
+
 
 void play_game() {
     Game *game = game_start();
@@ -137,7 +135,7 @@ void play_game() {
     game_end(game);
 }
 
-/*********************************************** Game Choice ***********************************************/
+
 
 void get_input_game_choice(Game *game) {
     bool valid_choice = false;
@@ -221,7 +219,7 @@ void get_input_game_choice(Game *game) {
     }
 }
 
-/*********************************************** Implementations ***********************************************/
+
 
 /*
  * Use this for user input, it's hard(er) to break.
@@ -321,7 +319,23 @@ bool get_input_accept_draw() {
         Is_Draw_Offered = false;
         Round_Count++;
     }
+}
 
+/*
+ * Take input in the form of 1/2/3/4
+ * until valid input is provided.
+ */
+long get_input_transform_piece() {
+    long transform_to;
+    wprintf(L"1: QUEEN\n");
+    wprintf(L"2: ROOK\n");
+    wprintf(L"3: BISHOP\n");
+    wprintf(L"4: KNIGHT\n");
+    wprintf(L"Transform pawn to 1/2/3/4: ");
+    do {
+        transform_to = parse_input_to_long();
+    } while (!(1 <= transform_to  && transform_to <= 4));
+    return transform_to;
 }
 
 /*
@@ -522,17 +536,6 @@ bool is_valid_tile_to(char *input, bool *back) {
     return false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 void check_transform_piece() {
     int pos;
     COLOR color;
@@ -574,17 +577,4 @@ void check_transform_piece() {
             }
         }
     }
-}
-
-long get_input_transform_piece() {
-    long transform_to;
-    wprintf(L"1: QUEEN\n");
-    wprintf(L"2: ROOK\n");
-    wprintf(L"3: BISHOP\n");
-    wprintf(L"4: KNIGHT\n");
-    wprintf(L"Transform pawn to 1/2/3/4: ");
-    do {
-        transform_to = parse_input_to_long();
-    } while (!(1 <= transform_to  && transform_to <= 4));
-    return transform_to;
 }

@@ -139,6 +139,29 @@ void castle_kingside(Game* game) {
     }
 }
 
+bool can_transform(int* pos, COLOR* color) {
+    if (get_current_turn_color() == BLACK) {
+        for (int i = 1; i < 9; ++i) {
+            if (Board[1][i] == WHITEPAWN) {
+                *color = WHITE;
+                *pos = i;
+                return true;
+            }
+        }
+        return false;
+    } else {
+        for (int i = 0; i < 9; ++i) {
+            if (Board[8][i] == BLACKPAWN) {
+                *color = BLACK;
+                *pos = i;
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+
 
 bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook) {
     move_after_undo(game, displayed_game_state_ptr);
