@@ -54,7 +54,9 @@ void offer_draw();
 
 void forfeit();
 
-void castle_queenside();
+void castle_queenside() {
+
+}
 
 
 
