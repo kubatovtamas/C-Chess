@@ -12,7 +12,7 @@
 #include <CUnit/CUnit.h>
 
 CU_SuiteInfo libsakk_suites[] = {
-    {"game_state", NULL, NULL, NULL, NULL, game_state_tests },
+    {"game_state", NULL, NULL, utest_game_setup, utest_game_teardown, game_state_tests },
     /* { "libsakk", NULL, NULL, TEST_SETUP, TEST_TEARDOWN, libsakk_tests },
     { "piece", NULL, NULL, NULL, NULL, piece_tests },
     { "board", NULL, NULL, NULL, NULL, board_tests }, */
