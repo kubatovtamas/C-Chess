@@ -72,7 +72,7 @@ void game_end(Game* game) {
 }
 
 // intializes new game_state_data for game data based on parameters
-Game_State_Data* new_game_state_data(char* tiles[4], PIECE_T before[2], PIECE_T after[2]) {
+Game_State_Data* new_game_state_data(char* tiles[4], PIECE_T before[4], PIECE_T after[4]) {
     Game_State_Data *game_state_data = malloc(sizeof(Game_State_Data));
 
     for(int i = 0; i < 4; i++ ) {

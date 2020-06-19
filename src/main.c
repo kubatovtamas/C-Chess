@@ -44,7 +44,7 @@ void print_menu_options();
 void print_menu_saved_games();
 
 
-bool is_valid_tile_from(char *input, bool *back, bool *castling);
+bool is_valid_tile_from(char *input, bool *back, int *castling);
 
 bool is_valid_tile_to(char *input, bool *back);
 
@@ -160,28 +160,28 @@ void get_input_game_choice(Game *game) {
             case 1: // MOVE
                 valid_choice = true;
                 bool back = false;
-                bool castling = false;
+                int castling = 0;       // 0: none, 1: kingside, 2: queenside
                 char from[20], to[20];
 
-                // ide jöhet: can_castle()
-                // ide jöhet: is_checked()
-
+                // Prompt: from (or castling, or back)
                 while (!back && !is_valid_tile_from(from, &back, &castling));
-                if (!castling) {
+                if (castling == 1) {
+                    castle_kingside(game);
+                } else if (castling == 2) {
+                    castle_queenside(game);
+                } else {
+                    // Prompt: to (or back)
                     while (!back && !is_valid_tile_to(to, &back));
-                }                                                        /* Take user input until valid FROM tile */
-                          /* AND valid TO tile is provided.        */
-                if (!back && !castling) {                                            /* Setting the back flag to true         */
-                    move(game, from, to);                               /* terminates the input prompt loop      */
-
-                    //  ide jöhet: transform_piece()
+                    // Move
+                    if (!back) {
+                        move(game, from, to);
+                        //  ide jöhet: transform_piece()
                         //  if (enemys row && your pawn)
                         //      do while ( !(valid piece input && is_revivable_piece) )
                         //          prompt_for_transform()
                         //      transform_piece()
-
+                    }
                 }
-
                 system("clear");
                 draw_board();
                 break;
@@ -346,8 +346,8 @@ bool get_input_load_game() {
 
 void print_menu_saved_games() {
     wprintf(L"Saved games:\n");
-    system("ls -1 ../../Saved_Games"); // DEBUG MODE
-//    system("ls -1 Saved_Games"); // PROD MODE
+//    system("ls -1 ../../Saved_Games"); // DEBUG MODE
+    system("ls -1 Saved_Games"); // PROD MODE
 }
 
 /*
@@ -360,7 +360,7 @@ void print_menu_saved_games() {
  * Sets the provided bool pointer to true for navigating
  * back in the menu. Returns false in this case.
  */
-bool is_valid_tile_from(char *input, bool *back, bool *castling) {
+bool is_valid_tile_from(char *input, bool *back, int *castling) {
     // Input prompt
     bool kingside = can_castle_kingside();
     bool queenside = can_castle_queenside();
@@ -383,18 +383,16 @@ bool is_valid_tile_from(char *input, bool *back, bool *castling) {
     }
 
     // If input == KINGSIDE (case insensitive)
-    if (strcasecmp(input, "kingside") == 0) {
+    if (strcasecmp(input, "kingside") == 0 && kingside) {
         system("clear");
-        // KINGSIDE CASTLE
+        *castling = 1;
         return true;
     }
 
     // If input == QUEENSIDE (case insensitive)
-    if (strcasecmp(input, "queenside") == 0) {
+    if (strcasecmp(input, "queenside") == 0 && queenside) {
         system("clear");
-        // QUEENSIDE CASTLE
-        *castling = true;
-        castle_queenside();
+        *castling = 2;
         return true;
     }
 

@@ -33,4 +33,9 @@ bool can_castle_kingside();
 
 bool can_castle_queenside();
 
+void castle_queenside(Game* game);
+
+void castle_kingside(Game* game);
+
+bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook);
 #endif //C_CHESS_BOARD_H
