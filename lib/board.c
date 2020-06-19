@@ -178,7 +178,9 @@ bool move(Game *game, char *from, char *to) {
     int to_number = convert_tile_number_to_int(to[1]);
 
     // Game Data Before
-    char *tiles[4] = {from, to, NULL, NULL};        // Castling not implemented
+    //char *tiles[4] = {from, to, NULL, NULL};
+    int fromTile[2] = { from_letter, from_number };
+    int toTile[2] = { to_letter, to_number };
     PIECE_T before[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
 
     // Move
@@ -189,13 +191,13 @@ bool move(Game *game, char *from, char *to) {
     // Game Data After
     PIECE_T after[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
 
-    if (displayed_game_state_ptr->next) {
-        move_after_undo(displayed_game_state_ptr->next);
-    }
+    move_after_undo(game, displayed_game_state_ptr);
 
     // save move to game_state
-    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
+    Game_State_Data *game_state_data = new_game_state_data(fromTile, toTile, before, after);
     new_game_state(game, game_state_data);
+
+    debug_print_game(game);
 
 }
 
@@ -204,13 +206,20 @@ void undo(Game *game) {
 
     if (!displayed_game_state_ptr->previous) { return; }
 
-    char *from = (displayed_game_state_ptr->data->tiles)[0];      // { from, to, NULL, NULL };
-    char *to = displayed_game_state_ptr->data->tiles[1];        // { from, to, NULL, NULL };
+//    char *from = (displayed_game_state_ptr->data->tiles)[0];      // { from, to, NULL, NULL };
+//    char *to = displayed_game_state_ptr->data->tiles[1];        // { from, to, NULL, NULL };
 
-    int from_letter = convert_tile_letter_to_int(from[0]);
-    int from_number = convert_tile_number_to_int(from[1]);
-    int to_letter = convert_tile_letter_to_int(to[0]);
-    int to_number = convert_tile_number_to_int(to[1]);
+//    int from_letter = convert_tile_letter_to_int(from[0]);
+//    int from_number = convert_tile_number_to_int(from[1]);
+//    int to_letter = convert_tile_letter_to_int(to[0]);
+//    int to_number = convert_tile_number_to_int(to[1]);
+
+    // this is a little hairy
+    int to_letter = displayed_game_state_ptr->data->toTile[0];
+    int to_number = displayed_game_state_ptr->data->toTile[1];
+
+    int from_letter = displayed_game_state_ptr->data->fromTile[0];
+    int from_number = displayed_game_state_ptr->data->fromTile[1];
 
     PIECE_T originalFromPiece = (displayed_game_state_ptr->data->before)[0];        // e.g ['pawn', 'queen'] if pawn hit queen
     PIECE_T originalToPiece = (displayed_game_state_ptr->data->before)[1];
@@ -222,7 +231,11 @@ void undo(Game *game) {
     // Change round count to reflect undo
     Round_Count--;
 
+    //debug_print_game(game);
+
     undo_to_previous_state();
+
+    debug_print_game(game);
 
 }
 
