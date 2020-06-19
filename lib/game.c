@@ -99,7 +99,7 @@ Game_State_Data* new_game_state_data(char* tiles[4], PIECE_T before[2], PIECE_T 
 }
 
 
-void undo_to_previous_state(Game *game) {
+void undo_to_previous_state() {
     if (displayed_game_state_ptr->previous == NULL) {
         return;
     }

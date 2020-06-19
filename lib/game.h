@@ -44,7 +44,7 @@ Game* game_start();                             // sets Game_State first and las
 void game_end(Game*);                           // calls free_game_state_to_end on first state and frees game
 
 void move_after_undo(Game_State*);         // calls undo_to_previous_state and sets remaining next_ptr to NULL
-void undo_to_previous_state(Game *game);
+void undo_to_previous_state();                   // sets displayed_game_state_ptr to previous
 void new_game_state(Game*, Game_State_Data*);    // creates new game state and links it to game->last
 void free_game_state(Game_State*);               // free Game_State data and free Game_State
 void free_game_state_to_end(Game_State*);        // iterate through Game_States from node and free all of them

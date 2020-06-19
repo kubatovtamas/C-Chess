@@ -222,7 +222,7 @@ void undo(Game *game) {
     // Change round count to reflect undo
     Round_Count--;
 
-    undo_to_previous_state(game);
+    undo_to_previous_state();
 
 }
 
