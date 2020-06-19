@@ -62,7 +62,6 @@ void free_game_state_to_end(Game_State*);        // iterate through Game_States 
 
 
 // creates a new Game_State_Data according to parameters
-//Game_State_Data* new_game_state_data(char[4][2], PIECE_T*, PIECE_T*);
 Game_State_Data* new_game_state_data(Position_Data*, Position_Data*, Position_Data*, Position_Data*);
 
 void debug_print_game(Game* game);

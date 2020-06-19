@@ -9,6 +9,14 @@
 #include "piece.h"
 
 extern int Round_Count;         // from libsakk.c, not really sure where to put this.
+extern bool has_moved_white_king;              // D1
+extern bool has_moved_white_rook_queenside;    // A1
+extern bool has_moved_white_rook_kingside;     // H1
+
+extern bool has_moved_black_king;              // D8
+extern bool has_moved_black_rook_queenside;    // A8
+extern bool has_moved_black_rook_kingside;     // H8
+
 
 enum { BOARD_ROW_SIZE = 10, BOARD_COL_SIZE = 10 };
 

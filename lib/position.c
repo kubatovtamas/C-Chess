@@ -4,7 +4,7 @@
 
 #include "position.h"
 #include <stdlib.h>
-#include "board.h"      // access to Board array
+#include "board.h"      // access to Board array and has_moved bools
 #include "ctype.h"      // tolower
 
 Position_Data* new_position_data(PIECE_T type, int colLetter, int rowNumber) {
@@ -63,11 +63,6 @@ int convert_tile_number_to_int(char ch) {
 }
 
 void set_has_moved_values(Position_Data* from_position, bool setTo) {
-    // WHITE QUEENSIDE rook moves from A1 to D1
-    //Position_Data *whitequeensiderook = convert_to_position_data("A1");
-    // BLACK QUEENSIDE rook moves from A8 to D8
-    //Position_Data *blackqueensiderook = convert_to_position_data("A8");
-
     if( get_current_turn_color() == WHITE ) {
         switch (from_position->type) {
             case WHITEKING:

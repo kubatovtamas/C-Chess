@@ -65,7 +65,6 @@ void draw_board() {
 }
 
 /******************** CASTLING ****************/
-// TODO NOTE: I added an extern definition for these in piece.h since I needed them
 bool has_moved_white_king = false;              // D1
 bool has_moved_white_rook_queenside = false;    // A1
 bool has_moved_white_rook_kingside = false;     // H1
@@ -142,44 +141,6 @@ void castle_kingside(Game* game) {
     }
 }
 
-/*** DEPRECATED *****/
-//bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook) {
-//    // King
-//    int from_king_letter = convert_tile_letter_to_int(from_king[0]);
-//    int from_king_number = convert_tile_number_to_int(from_king[1]);
-//    int to_king_letter = convert_tile_letter_to_int(to_king[0]);
-//    int to_king_number = convert_tile_number_to_int(to_king[1]);
-//
-//    // Rook
-//    int from_rook_letter = convert_tile_letter_to_int(from_rook[0]);
-//    int from_rook_number = convert_tile_number_to_int(from_rook[1]);
-//    int to_rook_letter = convert_tile_letter_to_int(to_rook[0]);
-//    int to_rook_number = convert_tile_number_to_int(to_rook[1]);
-//
-//    // Game Data Before
-//    char *tiles[4] = {from_king, to_king, from_rook, to_rook};
-//    PIECE_T before[4] = {Board[from_king_number][from_king_letter], Board[to_king_number][to_king_letter],  // King from-to
-//                         Board[from_rook_number][from_rook_letter], Board[to_rook_number][to_rook_letter]}; // Rook from-to
-//
-//    // Move
-//    Board[to_king_number][to_king_letter] = Board[from_king_number][from_king_letter];  // King to
-//    Board[from_king_number][from_king_letter] = ' ';                                    // King from
-//    Board[to_rook_number][to_rook_letter] = Board[from_rook_number][from_rook_letter];  // Rook to
-//    Board[from_rook_number][from_rook_letter] = ' ';                                    // King from
-//    Round_Count++;
-//
-//    // Game Data After
-//    PIECE_T after[4] = {Board[from_king_number][from_king_letter], Board[to_king_number][to_king_letter],  // King from-to
-//                        Board[from_rook_number][from_rook_letter], Board[to_rook_number][to_rook_letter]}; // Rook from-to
-//
-//    if (displayed_game_state_ptr->next) {
-//        free_game_state_to_end(displayed_game_state_ptr->next);
-//    }
-//
-//    // Save move to game_state
-//    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
-//    new_game_state(game, game_state_data);
-//}
 
 bool castle(Game *game, char *from_king, char *from_rook, char *to_king, char *to_rook) {
     move_after_undo(game, displayed_game_state_ptr);
@@ -247,52 +208,6 @@ void save_to_file(char *file_name, int global_round_count, char *global_p1_name,
     fclose(file_pointer);
 }
 
-
-
-/******************* DEPRECATED **************/
-
-/*
- * Takes two string args, in the form of "A1"/"D4"/"g7". (case insensitive)
- * Mutates the Board accordingly. Increments the global Round_Count.
- *
- * Converter functions handle the proper conversions from str to int.
- * The letter is responsible for the second,
- * The number is responsible for the first
- * array selector.
- *
- * Eg.  D2 -> Board[7][4]
- *      D4 -> Board[5][4]
- */
-//bool move(Game *game, char *from, char *to) {
-//    int from_letter = convert_tile_letter_to_int(from[0]);
-//    int from_number = convert_tile_number_to_int(from[1]);
-//    int to_letter = convert_tile_letter_to_int(to[0]);
-//    int to_number = convert_tile_number_to_int(to[1]);
-//
-//    // Game Data Before
-//    char tiles[4][2] = {from, to, NULL, NULL};
-//    PIECE_T before[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
-//
-//    // Move
-//    Board[to_number][to_letter] = Board[from_number][from_letter]; // to set
-//    Board[from_number][from_letter] = ' '; // from set
-//    Round_Count++;
-//
-//    // Game Data After
-//    PIECE_T after[2] = {Board[from_number][from_letter], Board[to_number][to_letter]};
-//
-//    move_after_undo(game, displayed_game_state_ptr);
-//
-//    // save move to game_state
-//    Game_State_Data *game_state_data = new_game_state_data(tiles, before, after);
-//    new_game_state(game, game_state_data);
-//
-//    if (DEBUGGING) {
-//        debug_print_game(game);
-//    }
-//
-//}
-
 bool move(Game *game, char *from, char *to) {
     move_after_undo(game, displayed_game_state_ptr);
 
@@ -317,38 +232,6 @@ bool move(Game *game, char *from, char *to) {
 }
 
 
-
-/******* DEPRECATED ******/
-//void undo(Game *game) {
-//
-//    if (!displayed_game_state_ptr->previous) { return; }
-//
-//    char *from = (displayed_game_state_ptr->data->tiles)[0];      // { from, to, NULL, NULL };
-//    char *to = displayed_game_state_ptr->data->tiles[1];        // { from, to, NULL, NULL };
-//
-//    int from_letter = convert_tile_letter_to_int(from[0]);
-//    int from_number = convert_tile_number_to_int(from[1]);
-//    int to_letter = convert_tile_letter_to_int(to[0]);
-//    int to_number = convert_tile_number_to_int(to[1]);
-//
-//    PIECE_T originalFromPiece = (displayed_game_state_ptr->data->before)[0];        // e.g ['pawn', 'queen'] if pawn hit queen
-//    PIECE_T originalToPiece = (displayed_game_state_ptr->data->before)[1];
-//
-//    // Change board accordingly
-//    Board[to_number][to_letter] = originalToPiece;
-//    Board[from_number][from_letter] = originalFromPiece;
-//
-//    // Change round count to reflect undo
-//    Round_Count--;
-//
-//    //debug_print_game(game);
-//
-//    undo_to_previous_state();
-//
-//    debug_print_game(game);
-//
-//}
-
 void undo(Game *game) {
     if (!displayed_game_state_ptr->previous) { return; }
 
@@ -362,7 +245,6 @@ void undo(Game *game) {
     // Change round count to reflect undo
     // has to be before set_has_moved_values
     Round_Count--;
-
     set_has_moved_values(from, false);
 
     if (displayed_game_state_ptr->data->fromCastle
