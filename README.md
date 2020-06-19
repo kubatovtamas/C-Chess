@@ -1,4 +1,7 @@
-######## C_Chess #########
+################ C_Chess #################
+##  Pusztai Agnes Anna  -   Gigi        ##
+##  Kubatov Tamás       -   Kuba        ##
+##########################################
 
 Compiling
 compile_release.sh
@@ -10,7 +13,7 @@ make -C build
 Debugging
 debug.sh
 ```shell script
-cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
+cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug
 make -C build
 ```
 
