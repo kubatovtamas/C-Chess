@@ -1,7 +1,7 @@
-################ C_Chess #################
-##  Pusztai Agnes Anna  -   Gigi        ##
-##  Kubatov Tamás       -   Kuba        ##
-##########################################
+# C_Chess 
+##  Pusztai Agnes Anna  -   Gigi        
+##  Kubatov Tamás       -   Kuba        
+
 
 Compiling
 compile_release.sh
